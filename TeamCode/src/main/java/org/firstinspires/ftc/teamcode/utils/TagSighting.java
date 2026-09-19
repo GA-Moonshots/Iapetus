@@ -130,7 +130,8 @@ public class TagSighting {
      *
      * Honest limitation: where each tag sits on its object is private to the
      * SDK, so this is the centre of the tags we can SEE, not of the object.
-     * Every tag in view → the true centre. One tag at the edge → off by
+     * Every tag in view → the centre of the tags, which is the object's only
+     * if they're laid out evenly around it. One tag at the edge → off by
      * however far that tag is from the middle. tagCount says which case you're
      * in; a season repo that needs better can add the offsets in FieldMap.
      */

@@ -20,8 +20,14 @@ Each Hive carries a strip of four 3.25" tags. The SDK groups each strip into a c
 | BLUE SCORING | 42–45 | `Constants.BLUE_SCORING_HIVE` |
 
 Within a strip the tags sit 6.5" and 2.75" either side of the Hive's centre. See all four and the
-target is the centre; see one end tag alone and it can be up to 6.5" off toward that end.
-`tagCount` tells you which.
+target is the centre of the strip; see one end tag alone and it can be up to 6.5" off toward that
+end. `tagCount` tells you which.
+
+**The strip's centre is not the Hive's own origin.** The SDK (`AprilTagGameDatabase`, 12.0) puts
+every Hive tag at 7.19" and −5.62" from the cluster's origin on its other two axes, so even four
+tags in view land about 9" from that point. Which physical point on the Hive the origin is, the SDK
+doesn't say. If the launcher aims at something other than the tag face, measure that offset on a
+real Hive and add it in `FieldMap`.
 
 ## Using it
 

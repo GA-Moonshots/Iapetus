@@ -31,8 +31,9 @@ when a game puts several tags on one object, `AprilTagGameDatabase` ships them a
 this repo lists tag ids, so a new game's tags and clusters work without an edit.
 
 **How exact is a target?** It's the average of the tags *in view*. Every tag of the object in view:
-its centre. One tag at the edge: off by however far that tag sits from the middle. `tagCount` says
-which case you're in.
+the centre of its tags, which is the object's own centre only if the tags sit around it evenly
+(they needn't). One tag at the edge: off by however far that tag sits from the middle. `tagCount`
+says which case you're in.
 
 ## Using it
 
