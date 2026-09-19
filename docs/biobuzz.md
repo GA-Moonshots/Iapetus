@@ -49,6 +49,6 @@ the error.
 ## Subsystems
 
 `Intake` and `Launcher` are wired into `Iapetus` and registered, but empty. Build them the way
-`PedroDrive` is built: hardware names in `Constants`, lookups in the constructor, small methods
+[Ganymede's subsystems](https://github.com/GA-Moonshots/Ganymede/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystems) are built: hardware names in `Constants`, lookups in the constructor, small methods
 that each do one thing. Anything that aims at a Hive reads a `TagSighting` in its command's
 `execute()` every loop.

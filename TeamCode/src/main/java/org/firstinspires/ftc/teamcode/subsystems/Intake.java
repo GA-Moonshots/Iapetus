@@ -11,8 +11,10 @@ import org.firstinspires.ftc.teamcode.Iapetus;
  * ║  Pulls game pieces into the robot. Blank for now — nothing to eat yet.    ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  *
- * Follow PedroDrive's shape: hardware lookups in the constructor, hardware
- * names from Constants, small methods that each do one thing.
+ * Copy the shape of Ganymede's subsystems (Intake, Launcher, Turret):
+ * github.com/GA-Moonshots/Ganymede → TeamCode/.../teamcode/subsystems
+ * Hardware lookups in the constructor, hardware names from Constants,
+ * small methods that each do one thing.
  */
 public class Intake extends SubsystemBase {
 

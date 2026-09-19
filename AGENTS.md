@@ -76,8 +76,10 @@ utils/Tuning                 Pedro AutoTune — tune from a browser, see docs/tu
 utils/*Tuner, utils/Tests     the tuners it runs (copied from Pedro — don't edit)
 ```
 
-Adding a mechanism? Follow `PedroDrive`'s shape — hardware lookups in the constructor, hardware
-names from `Constants`, small methods that each do one thing. Adding a movement? Extend
+Adding a mechanism? Copy Ganymede's subsystems (`Intake`, `Launcher`, `Turret`):
+https://github.com/GA-Moonshots/Ganymede/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystems
+Hardware lookups in the constructor, hardware names from `Constants`, small methods that each do
+one thing. Not `PedroDrive`: it wraps Pedro and is no model for a mechanism. Adding a movement? Extend
 `DriveAbstract`, and give it a real timeout.
 
 ## Rule 4: numbers have exactly one home

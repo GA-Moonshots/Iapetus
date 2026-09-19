@@ -105,9 +105,10 @@ utils/*Tuner, utils/Tests     the tuners it runs (copied from Pedro — don't ed
 
 OpModes live in `utils/`. Don't add a fourth folder.
 
-Adding this year's mechanism? Copy the shape of `PedroDrive` (hardware lookups in the constructor,
-small methods that each do one thing) and pair it with a command extending `DriveAbstract` or
-`CommandBase`.
+Adding this year's mechanism? Copy [Ganymede's subsystems](https://github.com/GA-Moonshots/Ganymede/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystems)
+(`Intake`, `Launcher`, `Turret`): hardware lookups in the constructor, small methods that each do
+one thing. Pair it with a command extending `CommandBase`. Don't model it on `PedroDrive`, which
+wraps Pedro rather than showing how a mechanism should look.
 
 Coordinates and the frame of reference: [coordinates.md](coordinates.md) — read it before writing
 a path. Tuning the drivetrain: [tuning.md](tuning.md). Deeper theory the code doesn't duplicate:
