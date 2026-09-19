@@ -50,8 +50,10 @@ public abstract class DriveAbstract extends CommandBase {
 
     /**
      * Call from end(). Tells Pedro to stop chasing its path (or holding its
-     * turn) and cuts motor power — skip this and the follower keeps fighting
-     * the next command, or the driver's joystick, which is worse.
+     * turn) and cuts motor power — skip this and the follower keeps chasing
+     * the old target (at stall, if something's in the way) until a later
+     * command hands it a new job. Drive's joystick does take over cleanly:
+     * follower.manual() drops any hold.
      */
     protected void standardCleanup() {
         drive.stop();

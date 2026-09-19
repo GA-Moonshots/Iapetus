@@ -57,7 +57,8 @@ called `patience`; when it runs out, the command ends whether or not it arrived.
 That's also why the turn commands are ours rather than SolversLib's. Theirs (0.3.6) finish only
 when the heading is within tolerance — no timeout, no `end()`. Pin the robot against a wall and it
 never finishes. Their docs suggest `withTimeout(...)`, but that only ends the *command*: with no
-`end()` to call `stop()`, the follower keeps holding the turn and fights whatever comes next. Ours
+`end()` to call `stop()`, the follower keeps chasing that heading — at stall, against the wall —
+until a later command gives it a new job. Ours
 get both halves from `DriveAbstract`: `patience`, and `standardCleanup()`.
 
 Note `DriveToPose.execute()` is nearly empty. Commands hand the follower a path in `initialize()`;
