@@ -132,6 +132,12 @@ public class FieldMap {
         return ftcHeadingRad - Math.PI / 2;
     }
 
+    /** Pedro heading → FTC heading, both radians, wrapped to [-π, π]. Undoes ftcHeadingToPedro(). */
+    public static double pedroHeadingToFtc(double pedroHeadingRad) {
+        double h = pedroHeadingRad + Math.PI / 2;
+        return Math.atan2(Math.sin(h), Math.cos(h));
+    }
+
     /**
      * A tag as the Limelight sees it in "robot space" → our robot frame.
      * Returns {forward, left, up} in inches, or null if the camera sent no 3D
@@ -299,6 +305,8 @@ public class FieldMap {
                     true));
         }
 
-        return new LLFieldMap(fiducials, "frc");
+        // "ftc": the coordinates above are FTC centre-origin. Was "frc" until
+        // 2026-09-19; which of the two the camera honors is unverified on hardware.
+        return new LLFieldMap(fiducials, "ftc");
     }
 }

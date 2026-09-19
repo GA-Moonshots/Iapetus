@@ -276,8 +276,10 @@ public class Sensors extends SubsystemBase {
             if (localizationOn()) {
                 // MegaTag2 needs to know which way we're facing. Pedro already
                 // knows, so hand it over every loop — skip this and MT2 quietly
-                // returns worse numbers rather than an error.
-                limelight.updateRobotOrientation(Math.toDegrees(robot.drive.getNormalizedHeading()));
+                // returns worse numbers rather than an error. The camera wants
+                // it in the FTC frame its botpose comes back in, not Pedro's.
+                double ftcHeading = FieldMap.pedroHeadingToFtc(robot.drive.getPose().heading());
+                limelight.updateRobotOrientation(Math.toDegrees(ftcHeading));
             }
             LLResult result = limelight.getLatestResult();
             trackTags(result);
@@ -301,9 +303,11 @@ public class Sensors extends SubsystemBase {
             return;
         }
 
-        // The frame is staleMs old; so is the tag's position in it.
+        // The frame is staleMs old, so place its tags from where the robot was
+        // THEN. A turn in those few ms would otherwise swing every tag sideways.
         long seenAt = System.nanoTime() - staleMs * 1_000_000L;
         Pose here = robot.drive.getPose();
+        Pose then = robot.drive.poseAt(seenAt);
         int placed = 0;
         int flat = 0;
         for (LLResultTypes.FiducialResult f : result.getFiducialResults()) {
@@ -312,7 +316,7 @@ public class Sensors extends SubsystemBase {
                 flat++;
                 continue;
             }
-            double[] field = FieldMap.robotToField(here, rel[0], rel[1]);
+            double[] field = FieldMap.robotToField(then, rel[0], rel[1]);
             int id = f.getFiducialId();
             latestById.put(id, new TagSighting(id, FieldMap.targetName(id), 1,
                     field[0], field[1], rel[2], seenAt, here));

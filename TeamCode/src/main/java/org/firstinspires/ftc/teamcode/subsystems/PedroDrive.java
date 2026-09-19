@@ -103,6 +103,20 @@ public class PedroDrive extends SubsystemBase {
     private static final double BREADCRUMB_SPACING_INCHES = 1.0;
     private final ArrayDeque<Pose> breadcrumbs = new ArrayDeque<>();
 
+    /**
+     * Every loop's pose with when it was measured, for looking back at where
+     * we were when a camera frame was taken. Breadcrumbs can't do this: they're
+     * spaced by distance, and a turn in place drops none.
+     */
+    private static final long POSE_HISTORY_NANOS = 500_000_000L;
+    private final ArrayDeque<Stamped> poseHistory = new ArrayDeque<>();
+
+    private static final class Stamped {
+        final long nanos;
+        final Pose pose;
+        Stamped(long nanos, Pose pose) { this.nanos = nanos; this.pose = pose; }
+    }
+
     // ============================================================
     //                        CONSTRUCTOR
     // ============================================================
@@ -150,6 +164,7 @@ public class PedroDrive extends SubsystemBase {
         // Not twice (robot thinks it moved twice as far). Once.
         follower.update();
 
+        rememberPose();
         dropBreadcrumb();
         draw();
         addTelemetry();
@@ -199,6 +214,7 @@ public class PedroDrive extends SubsystemBase {
     /** Teleport the robot's *belief* about where it is (e.g. after an AprilTag fix). */
     public void setPose(Pose newPose) {
         follower.setPose(newPose);
+        poseHistory.clear();   // the old poses were in a frame we just left
     }
 
     /**
@@ -209,8 +225,23 @@ public class PedroDrive extends SubsystemBase {
      */
     public double getNormalizedHeading() {
         // Pedro 3 stores headings as 0..2π, so 350° and -10° are the same pose
-        // but not the same number. Humans and the Limelight want the signed one.
+        // but not the same number. Humans want the signed one.
         return Angle.normalizeSigned(getPose().heading());
+    }
+
+    /**
+     * Where we were at a past System.nanoTime(): the newest remembered pose
+     * no later than that. Older than the history reaches → the oldest we have;
+     * nothing remembered yet → where we are now.
+     */
+    public Pose poseAt(long nanos) {
+        Pose best = null;
+        for (Stamped s : poseHistory) {
+            if (s.nanos > nanos) break;
+            best = s.pose;
+        }
+        if (best != null) return best;
+        return poseHistory.isEmpty() ? getPose() : poseHistory.peekFirst().pose;
     }
 
     /**
@@ -349,6 +380,12 @@ public class PedroDrive extends SubsystemBase {
     }
 
     /** Remember where we are, if we've moved far enough to be worth remembering. */
+    private void rememberPose() {
+        long now = System.nanoTime();
+        poseHistory.addLast(new Stamped(now, getPose()));
+        while (now - poseHistory.peekFirst().nanos > POSE_HISTORY_NANOS) poseHistory.removeFirst();
+    }
+
     private void dropBreadcrumb() {
         Pose here = getPose();
         if (!isSane(here)) return;

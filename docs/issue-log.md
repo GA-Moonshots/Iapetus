@@ -6,6 +6,23 @@ Format: `## YYYY-MM-DD — title`, then what broke, why, and the fix.
 
 ---
 
+## 2026-09-19 — Vision: a heading in the wrong frame, and tags placed from the wrong moment
+
+**MegaTag2 was told our heading in Pedro's frame.** `limelightToPedro()` reads the camera's yaw as
+FTC-frame and subtracts 90°, so the heading we hand back with `updateRobotOrientation()` has to go
+the other way. It didn't: it was Pedro's, 90° off. Only matters with `TAG_LOCALIZATION` on.
+`FieldMap.pedroHeadingToFtc()` now does it, at the edge, where every other conversion lives.
+
+**Tags were placed using where the robot is now, not where it was when the frame was taken.** A
+frame can be up to `VISION_MAX_STALENESS_MS` (200 ms) old. Turning at 2 rad/s over 40 ms of
+latency is about 5°, which moves a tag 48" away by about 4". Breadcrumbs couldn't fix it (they're
+spaced by distance, and a turn in place drops none), so `PedroDrive` keeps half a second of
+timestamped poses and `poseAt()` looks one up. Checked off-robot against the compiled class.
+
+**The uploaded Limelight map said `"frc"`.** Now `"ftc"`, matching the FTC centre-origin
+coordinates it carries. Limelight's docs list both types without saying what the type changes, so
+this is **unverified on hardware**, like the rest of that upload.
+
 ## 2026-09-19 — A dashboard dial wired to nothing
 
 **`Tunables.DRIVE_SPEED` did nothing.** Nothing read it. The speed `PedroDrive` actually used was a

@@ -14,7 +14,9 @@ a tag on. Localization waits behind two switches in `Tunables` for a game whose 
 
 1. The camera reports each tag's position *relative to the robot*.
 2. `FieldMap` converts that to our robot frame (inches; forward, left, up), then uses odometry to
-   put the tag on the field.
+   put the tag on the field — from where the robot was when the frame was *taken*
+   (`PedroDrive.poseAt()`), not where it is now. A frame can be up to 200 ms old, and a fast turn in
+   that time would swing every tag sideways.
 3. `Sensors` keeps the latest sighting of every tag, **in field coordinates**, for
    `Tunables.TAG_MEMORY_MS`.
 4. When you ask, it re-measures from wherever the robot is *now*.
