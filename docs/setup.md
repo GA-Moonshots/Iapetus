@@ -6,8 +6,8 @@ everyone can solve, and a teammate can sit down next to you and actually help. I
 toolchain FIRST supports, so the error messages you hit are the ones the docs and forums describe.
 
 ```bash
-git clone https://github.com/GA-Moonshots/Artemis.git
-cd Artemis
+git clone https://github.com/GA-Moonshots/Iapetus.git
+cd Iapetus
 git remote add upstream https://github.com/FIRST-Tech-Challenge/FtcRobotController.git
 ./scripts/doctor.sh
 ```
@@ -15,9 +15,8 @@ git remote add upstream https://github.com/FIRST-Tech-Challenge/FtcRobotControll
 `doctor.sh` checks your setup and fixes nothing, so it's always safe to run. Each ✗ comes with the
 command that resolves it.
 
-**Not on Moonshots?** Fork `GA-Moonshots/Artemis` on GitHub first and clone *your* fork; the
-`upstream` line is the same for everyone. Then see "Using it on your team" in
-[MOONSHOTS.md](../MOONSHOTS.md).
+**Not on Moonshots?** You want [Artemis](https://github.com/GA-Moonshots/Artemis), the
+game-agnostic base, not this season repo. Its MOONSHOTS.md explains how to adopt it.
 
 ## Android Studio
 

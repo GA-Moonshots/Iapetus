@@ -8,7 +8,7 @@ keeps driving on odometry alone.
 
 ## Tier 1 — cheap wins
 
-- [x] `setBulkReading()` in `MyRobot` — one line, real loop-time gain. Pedro's accuracy depends on loop time.
+- [x] `setBulkReading()` in `Iapetus` — one line, real loop-time gain. Pedro's accuracy depends on loop time.
 - [x] `DriveTurnBy` / `DriveTurnTo` extending `DriveAbstract` — SolversLib's turn commands have no timeout and no cleanup; ours will.
 - [x] Loop-time + match-time telemetry in `Sensors` — a slow loop causes a lot of "it drifted" reports.
 - [x] `PersistentPoseManager` — hand the robot's pose from autonomous to teleop. Ganymede had this; Artemis lost it.

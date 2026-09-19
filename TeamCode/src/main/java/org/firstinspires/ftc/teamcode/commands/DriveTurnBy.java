@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import org.firstinspires.ftc.teamcode.MyRobot;
+import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Tunables;
 
 /**
@@ -30,14 +30,14 @@ public class DriveTurnBy extends DriveAbstract {
      * @param degrees how far to rotate, always positive — direction is the next argument
      * @param turnLeft true for counter-clockwise
      */
-    public DriveTurnBy(MyRobot robot, double degrees, boolean turnLeft, double timeoutSeconds) {
+    public DriveTurnBy(Iapetus robot, double degrees, boolean turnLeft, double timeoutSeconds) {
         super(robot, timeoutSeconds);
         this.degrees = Math.abs(degrees);
         this.turnLeft = turnLeft;
     }
 
     /** Signed convenience: positive turns left, negative turns right. */
-    public DriveTurnBy(MyRobot robot, double signedDegrees, double timeoutSeconds) {
+    public DriveTurnBy(Iapetus robot, double signedDegrees, double timeoutSeconds) {
         this(robot, Math.abs(signedDegrees), signedDegrees >= 0, timeoutSeconds);
     }
 

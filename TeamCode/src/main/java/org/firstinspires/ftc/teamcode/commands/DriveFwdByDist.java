@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.commands;
 import com.pedropathing.api.Paths;
 import com.pedropathing.math.Pose;
 
-import org.firstinspires.ftc.teamcode.MyRobot;
+import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Tunables;
 
 /**
@@ -36,7 +36,7 @@ public class DriveFwdByDist extends DriveAbstract {
     /**
      * @param distance inches; positive is forward, negative is backward
      */
-    public DriveFwdByDist(MyRobot robot, double distance, double timeoutSeconds) {
+    public DriveFwdByDist(Iapetus robot, double distance, double timeoutSeconds) {
         super(robot, timeoutSeconds);
         this.distance = distance;
     }

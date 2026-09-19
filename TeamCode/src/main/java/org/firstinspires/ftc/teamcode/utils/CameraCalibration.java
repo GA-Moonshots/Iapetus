@@ -5,7 +5,7 @@ import com.pedropathing.utils.Angle;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 
-import org.firstinspires.ftc.teamcode.MyRobot;
+import org.firstinspires.ftc.teamcode.Iapetus;
 
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -48,7 +48,7 @@ public class CameraCalibration extends CommandOpMode {
     public static double KNOWN_Y = 72.0;
     public static double KNOWN_HEADING_DEG = 0.0;
 
-    private MyRobot robot;
+    private Iapetus robot;
 
     @Override
     public void initialize() {
@@ -56,7 +56,7 @@ public class CameraCalibration extends CommandOpMode {
         // up in watch mode.
         Tunables.TAG_LOCALIZATION = !FieldMap.localizationTags().isEmpty();
         Tunables.VISION_CORRECTIONS_ENABLED = false;
-        robot = new MyRobot(this);
+        robot = new Iapetus(this);
 
         telemetry.addLine("Put a tag at TAG_FORWARD / TAG_LEFT, then press START.");
         telemetry.update();

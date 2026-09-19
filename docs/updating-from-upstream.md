@@ -1,6 +1,6 @@
-# Updates: two kinds, two mechanisms
+# Updates: three kinds, three mechanisms
 
-Artemis pulls from two directions, and they work completely differently. Knowing which is which
+Iapetus pulls from three directions, and they work completely differently. Knowing which is which
 saves you from merging something that was never meant to be merged.
 
 ## 1. The FTC SDK — a merge, once a season
@@ -47,6 +47,20 @@ the dashboard; no Field tab means roll back. (Quick check without a robot: the `
 contain web assets; 1.0.6 has them, 1.0.7 has none.)
 
 Bump one at a time and build in between. When something breaks you want to know which one did it.
+
+## 3. Artemis — a merge, whenever the base improves
+
+Iapetus is Artemis plus this season. When Artemis gets a fix that helps any game, pull it in:
+
+```bash
+git remote add artemis https://github.com/GA-Moonshots/Artemis.git   # once
+git fetch artemis
+git merge artemis/master
+```
+
+Conflicts land only where we changed something Artemis also changed — usually `Constants` or the
+robot class. Going the other way, a general improvement made here gets copied into Artemis by hand,
+without the BIOBUZZ parts.
 
 ## Known deviations from upstream
 

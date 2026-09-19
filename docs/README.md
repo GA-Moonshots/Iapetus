@@ -8,7 +8,8 @@
 
 **Writing a path, or a coordinate looks wrong?** [coordinates.md](coordinates.md).
 
-**Aiming at a game piece, or setting up the camera?** [vision.md](vision.md).
+**Aiming at a game piece, or setting up the camera?** [vision.md](vision.md), then
+[biobuzz.md](biobuzz.md) for this game's Hives.
 
 **Robot won't localize / coordinates frozen?** [diagnostics.md](diagnostics.md) — run Pinpoint Doctor first.
 
@@ -23,6 +24,7 @@ Short version: decline the upgrade it's offering.
 | [architecture.md](architecture.md) | Subsystems, commands, the scheduler — how it fits together |
 | [coordinates.md](coordinates.md) | The frame of reference — read before writing any path |
 | [vision.md](vision.md) | Tracking tags on game pieces, aiming an arm, camera setup |
+| [biobuzz.md](biobuzz.md) | This season only: Hive tags, tag size, the robot's subsystems |
 | [diagnostics.md](diagnostics.md) | Robot won't localize? Work down this list |
 | [tuning.md](tuning.md) | The 8-phase drivetrain tuning sequence |
 | [gradle-and-android-studio.md](gradle-and-android-studio.md) | Build errors, and what's safe to ignore |

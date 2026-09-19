@@ -1,4 +1,7 @@
-# Working in Artemis
+# Working in Iapetus
+
+Iapetus is the 2026-27 BIOBUZZ robot, built on Artemis (the game-agnostic base). Game-specific
+work goes here; anything that would help any game belongs in Artemis. See docs/biobuzz.md.
 
 FTC robot code maintained by high schoolers. Some are seeing a command scheduler for the first
 time; some have three seasons on it and will notice if you're sloppy. Write for both.
@@ -21,7 +24,7 @@ merge stays silent forever.
 
 **Always safe:** `docs/`, `scripts/`, `MOONSHOTS.md`, `AGENTS.md`, `CLAUDE.md`,
 `TeamCode/build.gradle` (FIRST ships it nearly empty and expects teams to add dependencies), and
-everything under `TeamCode/.../teamcode/` — `commands/`, `subsystems/`, `utils/`, `MyRobot.java`.
+everything under `TeamCode/.../teamcode/` — `commands/`, `subsystems/`, `utils/`, `Iapetus.java`.
 
 **Those three folders are the whole structure.** Don't add a fourth. OpModes live in `utils/`.
 
@@ -47,7 +50,7 @@ No while-loops, no `Thread.sleep()` in a Command. The scheduler runs every activ
 ## Where things go
 
 ```
-MyRobot.java                 subsystems, button bindings, autonomous plan
+Iapetus.java                 subsystems, button bindings, autonomous plan
 
 commands/DriveAbstract       base for anything that moves the robot (timeout + cleanup)
 commands/Drive               default teleop drive
@@ -59,6 +62,7 @@ commands/DriveFaceTarget     └ face the nearest tracked target (the TagSightin
 
 subsystems/PedroDrive        mecanum + Pedro + dashboard drawing — tune it, don't rewrite it
 subsystems/Sensors           every shared sensor, Limelight tag tracking, AND the only telemetry flush
+subsystems/Intake, Launcher  this season's mechanisms (empty, waiting to be built)
 
 utils/Constants              hardware names, motor directions, follower config (final)
 utils/Tunables               values you edit live from the dashboard (not final)

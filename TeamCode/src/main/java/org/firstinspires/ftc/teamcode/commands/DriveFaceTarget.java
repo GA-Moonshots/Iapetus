@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.pedropathing.utils.Angle;
 
-import org.firstinspires.ftc.teamcode.MyRobot;
+import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.TagSighting;
 import org.firstinspires.ftc.teamcode.utils.Tunables;
 
@@ -32,7 +32,7 @@ public class DriveFaceTarget extends DriveAbstract {
     private String lockedOn = null;
     private double headingRad = 0;
 
-    public DriveFaceTarget(MyRobot robot, double timeoutSeconds) {
+    public DriveFaceTarget(Iapetus robot, double timeoutSeconds) {
         super(robot, timeoutSeconds);
     }
 

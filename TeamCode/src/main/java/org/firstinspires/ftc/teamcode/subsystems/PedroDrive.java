@@ -11,7 +11,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
-import org.firstinspires.ftc.teamcode.MyRobot;
+import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Constants;
 import org.firstinspires.ftc.teamcode.utils.Tunables;
 
@@ -38,7 +38,7 @@ public class PedroDrive extends SubsystemBase {
     //                     CORE COMPONENTS
     // ============================================================
 
-    private final MyRobot robot;
+    private final Iapetus robot;
 
     /**
      * Pedro's follower: localization, path following, AND the motors. Pedro 3
@@ -114,7 +114,7 @@ public class PedroDrive extends SubsystemBase {
      *                  this from the alliance; TeleOp inherits whatever Auto
      *                  left behind (or a default if Auto never ran).
      */
-    public PedroDrive(MyRobot robot, Pose startPose) {
+    public PedroDrive(Iapetus robot, Pose startPose) {
         this.robot = robot;
 
         // ============ IMU ============

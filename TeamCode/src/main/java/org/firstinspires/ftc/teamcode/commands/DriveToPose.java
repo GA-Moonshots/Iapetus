@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.commands;
 import com.pedropathing.api.Paths;
 import com.pedropathing.math.Pose;
 
-import org.firstinspires.ftc.teamcode.MyRobot;
+import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Tunables;
 
 /**
@@ -24,7 +24,7 @@ public class DriveToPose extends DriveAbstract {
     private final Pose targetPose;
     private boolean arrived = false;
 
-    public DriveToPose(MyRobot robot, Pose target, double timeoutSeconds) {
+    public DriveToPose(Iapetus robot, Pose target, double timeoutSeconds) {
         super(robot, timeoutSeconds);
         this.targetPose = target;
     }

@@ -1,4 +1,4 @@
-# Artemis — agent rules
+# Iapetus — agent rules (built on Artemis)
 
 @AGENTS.md
 
@@ -16,7 +16,7 @@ stay byte-for-byte upstream's:
 `.github/`
 
 Our layer — safe to edit: `docs/`, `scripts/`, `MOONSHOTS.md`, `AGENTS.md`, `CLAUDE.md`,
-`TeamCode/build.gradle`, and `TeamCode/.../teamcode/{commands,subsystems,utils}/` + `MyRobot.java`.
+`TeamCode/build.gradle`, and `TeamCode/.../teamcode/{commands,subsystems,utils}/` + `Iapetus.java`.
 
 **Exactly three folders under `teamcode/`: `commands`, `subsystems`, `utils`. Don't add a fourth.**
 

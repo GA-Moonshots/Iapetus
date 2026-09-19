@@ -266,6 +266,18 @@ public class Constants {
     public static final double VISION_MAX_JUMP_INCHES = 24.0;
 
     // ============================================================
+    //                    BIOBUZZ HIVES
+    //  The SDK's cluster names, so Sensors.target() can find each Hive.
+    //  Tag ids and positions come from the SDK; only the names live here.
+    //  See docs/biobuzz.md.
+    // ============================================================
+
+    public static final String RED_SCORING_HIVE    = "RED SCORING";     // tags 30-33
+    public static final String RED_AUDIENCE_HIVE   = "RED AUDIENCE";    // tags 34-37
+    public static final String BLUE_AUDIENCE_HIVE  = "BLUE AUDIENCE";   // tags 38-41
+    public static final String BLUE_SCORING_HIVE   = "BLUE SCORING";    // tags 42-45
+
+    // ============================================================
     //                    IMU ORIENTATION
     //  ⚙ TUNE: which way is the Control Hub actually bolted on?
     // ============================================================

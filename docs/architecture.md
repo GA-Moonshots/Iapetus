@@ -20,9 +20,9 @@ end(interrupted)      // once, on finish OR cancel — stop motors, clean up
 active command's `execute()` once per loop — block in one and the whole robot freezes. To wait,
 check a timer in `isFinished()`.
 
-**MyRobot** — owns every subsystem, holds the button bindings, holds the autonomous plan.
+**Iapetus** — owns every subsystem, holds the button bindings, holds the autonomous plan.
 
-**OpMode** — builds a MyRobot and gets out of the way. `DriveyMcDriverson` (teleop),
+**OpMode** — builds an Iapetus and gets out of the way. `DriveyMcDriverson` (teleop),
 `AutoMcAutty` (autonomous).
 
 ## Default commands
@@ -78,7 +78,7 @@ robot thinks it never moved; twice and it thinks it moved twice as far.
 Three folders under `teamcode/`, and that's the whole structure:
 
 ```
-MyRobot.java                 subsystems, button bindings, auto plan
+Iapetus.java                 subsystems, button bindings, auto plan
 
 commands/Drive               default teleop drive
 commands/DriveAbstract       base for all movement commands

@@ -4,7 +4,7 @@ import com.pedropathing.follower.Follower;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.util.Timing;
 
-import org.firstinspires.ftc.teamcode.MyRobot;
+import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.subsystems.PedroDrive;
 
 import java.util.concurrent.TimeUnit;
@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class DriveAbstract extends CommandBase {
 
-    protected final MyRobot robot;
+    protected final Iapetus robot;
     protected final PedroDrive drive;
     protected final Follower follower;
 
@@ -38,7 +38,7 @@ public abstract class DriveAbstract extends CommandBase {
     /**
      * @param timeoutSeconds 3–5s for a short hop, 10–15s for a long path.
      */
-    public DriveAbstract(MyRobot robot, double timeoutSeconds) {
+    public DriveAbstract(Iapetus robot, double timeoutSeconds) {
         this.robot = robot;
         this.drive = robot.drive;
         this.follower = robot.drive.follower;

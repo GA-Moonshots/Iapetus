@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.utils;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 
-import org.firstinspires.ftc.teamcode.MyRobot;
+import org.firstinspires.ftc.teamcode.Iapetus;
 
 /**
  * ██████╗ ██████╗ ██╗██╗   ██╗███████╗██╗   ██╗
@@ -21,11 +21,11 @@ import org.firstinspires.ftc.teamcode.MyRobot;
 @TeleOp(name = "Drivey McDriverson", group = "Competition")
 public class DriveyMcDriverson extends CommandOpMode {
 
-    private MyRobot robot;
+    private Iapetus robot;
 
     @Override
     public void initialize() {
-        robot = new MyRobot(this);
+        robot = new Iapetus(this);
         robot.initTeleOp();
 
         telemetry.addData("Status", "Ready. Try not to hit the wall.");

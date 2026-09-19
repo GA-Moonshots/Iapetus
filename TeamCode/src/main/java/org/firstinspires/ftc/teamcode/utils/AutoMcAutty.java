@@ -4,7 +4,7 @@ import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 
-import org.firstinspires.ftc.teamcode.MyRobot;
+import org.firstinspires.ftc.teamcode.Iapetus;
 
 /**
  *  █████╗ ██╗   ██╗████████╗ ██████╗
@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.MyRobot;
 @Autonomous(name = "Auto McAutty", group = "Competition")
 public class AutoMcAutty extends CommandOpMode {
 
-    private MyRobot robot;
+    private Iapetus robot;
 
     // Chosen during init, before the match clock starts.
     private boolean isRed = true;
@@ -56,7 +56,7 @@ public class AutoMcAutty extends CommandOpMode {
     public void run() {
         // Build on the first loop after START, once the choices above are final.
         if (robot == null) {
-            robot = new MyRobot(this, isRed, isNearGoal, startingPose());
+            robot = new Iapetus(this, isRed, isNearGoal, startingPose());
             robot.initAuto();
         }
         super.run();

@@ -17,14 +17,18 @@ import org.firstinspires.ftc.teamcode.commands.DriveFaceTarget;
 import org.firstinspires.ftc.teamcode.commands.DriveFwdByDist;
 import org.firstinspires.ftc.teamcode.commands.DriveTurnBy;
 import org.firstinspires.ftc.teamcode.commands.DriveTurnTo;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.PedroDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Sensors;
+import org.firstinspires.ftc.teamcode.utils.Constants;
 import org.firstinspires.ftc.teamcode.utils.PersistentPoseManager;
+import org.firstinspires.ftc.teamcode.utils.TagSighting;
 import org.firstinspires.ftc.teamcode.utils.Tunables;
 
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║                             MY ROBOT                                      ║
+ * ║                              IAPETUS                                      ║
  * ║                                                                           ║
  * ║  The one object that owns everything. Subsystems live here, button        ║
  * ║  bindings live here, the autonomous plan lives here. OpModes do           ║
@@ -35,10 +39,10 @@ import org.firstinspires.ftc.teamcode.utils.Tunables;
  * ║    • Auto    — needs to know alliance + start position                    ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  *
- * Rename this to whatever this year's robot is called. It's the one file
- * where a season-specific name is actually appropriate.
+ * Our 2026-27 BIOBUZZ robot, built on Artemis. Iapetus, Saturn's two-faced
+ * moon: one side bright, one side dark. Much like teleop and auto.
  */
-public class MyRobot extends Robot {
+public class Iapetus extends Robot {
 
     // Core references
     public LinearOpMode opMode;
@@ -54,6 +58,8 @@ public class MyRobot extends Robot {
     // Subsystems
     public PedroDrive drive;
     public Sensors sensors;
+    public Intake intake;
+    public Launcher launcher;
 
     public Pose startPose;
 
@@ -67,12 +73,12 @@ public class MyRobot extends Robot {
      * ran too long ago to trust), falls back to defaults — see
      * PersistentPoseManager.
      */
-    public MyRobot(LinearOpMode opMode) {
+    public Iapetus(LinearOpMode opMode) {
         this(opMode, PersistentPoseManager.load());
     }
 
     /** Reads the handoff exactly once, then hands it to the real constructor. */
-    private MyRobot(LinearOpMode opMode, PersistentPoseManager.Handoff handoff) {
+    private Iapetus(LinearOpMode opMode, PersistentPoseManager.Handoff handoff) {
         this(opMode, handoff.isRed, true, handoff.pose);
         sensors.addTelemetry("Pose handoff",
                 handoff.wasFound ? "loaded from autonomous" : "NONE — using defaults");
@@ -82,7 +88,7 @@ public class MyRobot extends Robot {
     //                  AUTONOMOUS CONSTRUCTOR
     // ============================================================
 
-    public MyRobot(LinearOpMode opMode, boolean isRed, boolean isNearGoal, Pose startPose) {
+    public Iapetus(LinearOpMode opMode, boolean isRed, boolean isNearGoal, Pose startPose) {
         this.opMode = opMode;
         this.telemetry = opMode.telemetry;
         this.hardwareMap = opMode.hardwareMap;
@@ -104,8 +110,22 @@ public class MyRobot extends Robot {
         // Sensors first — everything else wants to log to it.
         sensors = new Sensors(this);
         drive = new PedroDrive(this, startPose);
+        intake = new Intake(this);
+        launcher = new Launcher(this);
 
-        register(drive, sensors);
+        register(drive, sensors, intake, launcher);
+    }
+
+    // ============================================================
+    //                    HIVES (BIOBUZZ)
+    // ============================================================
+
+    /**
+     * Our alliance's scoring Hive, if the camera has seen it lately. Null
+     * otherwise — no camera, not in view, or seen too long ago. Always check.
+     */
+    public TagSighting ourScoringHive() {
+        return sensors.target(isRed ? Constants.RED_SCORING_HIVE : Constants.BLUE_SCORING_HIVE);
     }
 
     // ============================================================

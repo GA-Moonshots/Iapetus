@@ -21,7 +21,7 @@ import java.util.Set;
  * When the robot won't localize, the question is always "which layer is
  * broken?" — the sensor, the Pedro config, or our code. This OpMode is a plain
  * LinearOpMode that talks to the Pinpoint DIRECTLY. No Pedro, no SolversLib,
- * no MyRobot, no dashboard. If numbers move here, the hardware is fine and the
+ * no Iapetus, no dashboard. If numbers move here, the hardware is fine and the
  * problem is above it. If they don't, stop reading code and look at the robot.
  *
  * HOW TO USE IT

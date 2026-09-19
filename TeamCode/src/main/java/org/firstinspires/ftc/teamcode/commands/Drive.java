@@ -4,7 +4,7 @@ import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.teamcode.MyRobot;
+import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.subsystems.PedroDrive;
 import org.firstinspires.ftc.teamcode.utils.Tunables;
 
@@ -24,11 +24,11 @@ import org.firstinspires.ftc.teamcode.utils.Tunables;
  */
 public class Drive extends CommandBase {
 
-    private final MyRobot robot;
+    private final Iapetus robot;
     private final PedroDrive drive;
     private final GamepadEx player1;
 
-    public Drive(MyRobot robot) {
+    public Drive(Iapetus robot) {
         this.robot = robot;
         this.drive = robot.drive;
         this.player1 = robot.player1;

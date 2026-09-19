@@ -11,7 +11,7 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.teamcode.MyRobot;
+import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Constants;
 import org.firstinspires.ftc.teamcode.utils.FieldMap;
 import org.firstinspires.ftc.teamcode.utils.TagSighting;
@@ -46,7 +46,7 @@ import java.util.Map;
  */
 public class Sensors extends SubsystemBase {
 
-    private final MyRobot robot;
+    private final Iapetus robot;
     private final Telemetry telemetry;
     private final TelemetryManager megaphone;
 
@@ -77,7 +77,7 @@ public class Sensors extends SubsystemBase {
     private int acceptedCount = 0;
     private int rejectedCount = 0;
 
-    public Sensors(MyRobot robot) {
+    public Sensors(Iapetus robot) {
         this.robot = robot;
         this.telemetry = robot.telemetry;
         this.megaphone = PanelsTelemetry.INSTANCE.getTelemetry();

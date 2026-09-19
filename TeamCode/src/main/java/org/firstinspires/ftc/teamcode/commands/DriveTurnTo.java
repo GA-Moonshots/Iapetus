@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import org.firstinspires.ftc.teamcode.MyRobot;
+import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Tunables;
 
 /**
@@ -23,7 +23,7 @@ public class DriveTurnTo extends DriveAbstract {
     private final double targetDegrees;
 
     /** @param targetDegrees absolute field heading to face */
-    public DriveTurnTo(MyRobot robot, double targetDegrees, double timeoutSeconds) {
+    public DriveTurnTo(Iapetus robot, double targetDegrees, double timeoutSeconds) {
         super(robot, timeoutSeconds);
         this.targetDegrees = targetDegrees;
     }
