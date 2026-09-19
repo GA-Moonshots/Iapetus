@@ -32,11 +32,14 @@ In [`utils/Constants.java`](../TeamCode/src/main/java/org/firstinspires/ftc/team
 
 - **`PINPOINT_NAME`** must match the Driver Station config exactly, including case. Pedro defaults
   this internally to `"pinpoint"`; we set it explicitly so a mismatch is visible instead of silent.
-- **`podType`** and the **pod offsets** in `localizerConfig` — these match
-  [Ganymede](https://github.com/GA-Moonshots/Ganymede) exactly, and Ganymede localized fine all
-  last season on this hardware. So treat them as known-good until something else is ruled out.
-  Compare against Ganymede whenever you're unsure what a working value looks like — same team,
-  same robot parts, code that actually competed.
+- **`podType`** and the **pod directions** in `localizerConfig` match
+  [Ganymede](https://github.com/GA-Moonshots/Ganymede), which localized fine all last season on
+  this hardware. Compare against Ganymede whenever you're unsure what a working value looks like.
+- **The pod offsets no longer match Ganymede.** They started as Ganymede's (3.0, −9.0) and the
+  Pinpoint Tuner re-measured them on 2026-09-17 (−3.65, 4.18): both signs flipped, not just the
+  sizes. Don't paste Ganymede's back to "fix" localization. If turning in place makes the position
+  drift, measure where the pods really sit, check that against the sign convention in the comment
+  above them in `Constants`, and write down which set was right in [issue-log.md](issue-log.md).
 
 ## 3. Do the directions and frame agree?
 
@@ -46,9 +49,9 @@ not the wiring. AutoTune's **Tests → localization** check does the same thing 
 
 ## 4. Version skew
 
-Ganymede ran SDK 11.1 with Pedro 2. We're on SDK 12.0 with Pedro Pathing 3.0.0, a full rewrite of
+Ganymede ran SDK 11.1 with Pedro 2. We're on SDK 12.0 with Pedro Pathing 3.0.1, a full rewrite of
 the follower and the Pinpoint localizer. If steps 1-3 all pass — sensor
-READY, ticks moving, config matching a season that worked — then what changed is the SDK
+READY, ticks moving, directions and hand tests right — then what changed is the SDK
 underneath Pedro, not anything in this repo. Note it in [issue-log.md](issue-log.md) before you
 start editing code.
 

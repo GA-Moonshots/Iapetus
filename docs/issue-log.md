@@ -6,6 +6,21 @@ Format: `## YYYY-MM-DD — title`, then what broke, why, and the fix.
 
 ---
 
+## 2026-09-19 — The structure check said "Clean" when it hadn't checked
+
+**`check-structure.sh` printed "✓ Clean" after skipping its main check.** With no `upstream`
+remote, an unfetched one, or the wrong repo, it warned, skipped the committed-drift comparison, and
+then said upstream's files were untouched. A fresh clone has no `upstream` remote, so that was
+everyone's first run. `doctor.sh` repeated it as "Repo structure clean". Now a skipped check says
+so and exits 2, and `doctor.sh` reports "only partly checked". Every branch was driven in a scratch
+clone: clean, not fetched, wrong repo, no remote, uncommitted edit, committed edit.
+The flip side of *"a checker that cries wolf is worse than no checker"*: a checker that says
+"clean" about something it never looked at is worse too.
+
+**`diagnostics.md` said the pod offsets match Ganymede exactly.** They did until 2026-09-17, when
+the Pinpoint Tuner re-measured them and both signs flipped. The retracted-lead entry below was
+true when it was written; the doc now says which settings still match and which don't.
+
 ## 2026-09-19 — Vision: a heading in the wrong frame, and tags placed from the wrong moment
 
 **MegaTag2 was told our heading in Pedro's frame.** `limelightToPedro()` reads the camera's yaw as

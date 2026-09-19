@@ -9,6 +9,7 @@
 # Run it whenever you like:  ./scripts/check-structure.sh
 #
 # It reports. It does not block anything, and it never changes a file.
+# Exit 0 = clean, 1 = problems found, 2 = the main check couldn't run.
 
 set -uo pipefail
 
@@ -56,6 +57,7 @@ is_allowed() {
 
 RED=$'\033[0;31m'; YELLOW=$'\033[0;33m'; GREEN=$'\033[0;32m'; DIM=$'\033[2m'; OFF=$'\033[0m'
 problems=0
+skipped=""   # a check we couldn't run must not end in "Clean"
 
 echo "Checking Artemis structure..."
 echo
@@ -79,10 +81,12 @@ fi
 # ─────────────────────────────────────────────────────────────────
 if ! git remote get-url upstream >/dev/null 2>&1; then
     echo "${YELLOW}! No 'upstream' remote — skipping the committed-drift check.${OFF}"
+    skipped="no upstream remote"
     echo "${DIM}    Fix: git remote add upstream https://github.com/FIRST-Tech-Challenge/FtcRobotController.git${OFF}"
     echo
 elif ! git rev-parse --verify --quiet upstream/master >/dev/null; then
     echo "${YELLOW}! Haven't fetched upstream yet — skipping the committed-drift check.${OFF}"
+    skipped="upstream not fetched"
     echo "${DIM}    Fix: git fetch upstream${OFF}"
     echo
 elif ! git remote get-url upstream | grep -q "FtcRobotController"; then
@@ -91,6 +95,7 @@ elif ! git remote get-url upstream | grep -q "FtcRobotController"; then
     # two repos legitimately differ on looks like our mistake — a dozen
     # confident false alarms, which is worse than saying nothing.
     echo "${YELLOW}! 'upstream' doesn't look like FIRST's SDK — skipping the committed-drift check.${OFF}"
+    skipped="upstream is the wrong repo"
     echo "${DIM}    points at: $(git remote get-url upstream)${OFF}"
     echo "${DIM}    expected:  https://github.com/FIRST-Tech-Challenge/FtcRobotController.git${OFF}"
     echo "${DIM}    Fix: git remote set-url upstream https://github.com/FIRST-Tech-Challenge/FtcRobotController.git${OFF}"
@@ -135,6 +140,14 @@ done
 # ─────────────────────────────────────────────────────────────────
 # Verdict
 # ─────────────────────────────────────────────────────────────────
+if [ "$problems" -eq 0 ] && [ -n "$skipped" ]; then
+    # Saying "Clean" here would vouch for files we never compared. A fresh
+    # clone has no upstream remote, so this is the case most people hit first.
+    echo "${YELLOW}~ Nothing wrong in what was checked — but the main check didn't run ($skipped).${OFF}"
+    echo "${DIM}  Committed edits to upstream's files are NOT ruled out. Apply the fix above and run again.${OFF}"
+    exit 2   # not a failure, not a pass: doctor.sh reads this as "partial"
+fi
+
 if [ "$problems" -eq 0 ]; then
     echo "${GREEN}✓ Clean. Upstream's files are untouched — next season's merge will be boring.${OFF}"
     echo "${DIM}  (Boring is the goal.)${OFF}"

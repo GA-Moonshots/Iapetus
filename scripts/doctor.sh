@@ -76,12 +76,14 @@ fi
 
 # ─── Structure ───────────────────────────────────────────────────
 echo
-if ./scripts/check-structure.sh >/dev/null 2>&1; then
-    ok "Repo structure clean (upstream's files untouched)"
-else
-    fail "Structure drift detected."
-    note "Details: ./scripts/check-structure.sh"
-fi
+./scripts/check-structure.sh >/dev/null 2>&1
+case $? in
+    0) ok "Repo structure clean (upstream's files untouched)" ;;
+    2) warn "Structure only partly checked — needs the upstream remote above."
+       note "Details: ./scripts/check-structure.sh" ;;
+    *) fail "Structure drift detected."
+       note "Details: ./scripts/check-structure.sh" ;;
+esac
 
 # ─── Verdict ─────────────────────────────────────────────────────
 echo
