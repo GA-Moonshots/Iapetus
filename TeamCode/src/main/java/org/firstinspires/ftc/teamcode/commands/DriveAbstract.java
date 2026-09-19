@@ -23,8 +23,9 @@ import java.util.concurrent.TimeUnit;
  * blocking every command queued behind it. Ask for a timeout you'd be
  * comfortable watching the robot do nothing for.
  *
- * Subclasses: DriveToPose (go to a spot), DriveFwdByDist (go that way a bit).
- * Adding a third is the normal way to extend this — copy the closest one.
+ * Subclasses: DriveToPose, DriveFwdByDist, DriveTurnBy, DriveTurnTo,
+ * DriveFaceTarget. Adding another is the normal way to extend this — copy the
+ * closest one.
  */
 public abstract class DriveAbstract extends CommandBase {
 

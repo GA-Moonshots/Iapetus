@@ -83,10 +83,10 @@ public class Constants {
 
     public static final double MIN_DRIVE_SPEED = 0.2;
     public static final double MAX_DRIVE_SPEED = 1.0;
-    public static final double DEFAULT_DRIVE_SPEED = 1.0;
 
-    // Slow mode, stick deadzone, and pose tolerance live in Tunables — they're
-    // read every loop and worth twiddling live. One number, one home.
+    // The speed cap itself, slow mode, stick deadzone, and pose tolerance live
+    // in Tunables — they're read every loop and worth twiddling live. These two
+    // are the bounds a dashboard edit can't escape. One number, one home.
 
     /** Field-centric: push the stick toward the far wall, robot goes there,
      *  regardless of which way it's facing. Turn this off only if a driver

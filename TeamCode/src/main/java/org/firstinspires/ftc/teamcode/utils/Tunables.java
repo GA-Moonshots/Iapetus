@@ -41,7 +41,10 @@ public class Tunables {
     /** Sticks never truly centre. Ignore noise below this. */
     public static double INPUT_THRESHOLD = 0.1;
 
-    /** Global speed cap. Drop it for a nervous driver or a top-heavy robot. */
+    /**
+     * Global speed cap. Drop it for a nervous driver or a top-heavy robot.
+     * Clamped to Constants.MIN/MAX_DRIVE_SPEED, so a typo can't zero the wheels.
+     */
     public static double DRIVE_SPEED = 1.0;
 
     // ---- Autonomous ----

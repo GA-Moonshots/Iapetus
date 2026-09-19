@@ -34,7 +34,10 @@ import java.util.Map;
  * ║    • Be the ONLY thing in this entire project that flushes telemetry      ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  *
- * !!! THIS IS THE ONLY telemetry.update() IN THE WHOLE PROJECT !!!
+ * !!! ONCE THE ROBOT IS RUNNING, THIS IS THE ONLY telemetry.update() !!!
+ *
+ * (The OpModes flush their own init prompts, before a robot exists. That's
+ * fine: no loop is running yet for them to fight.)
  *
  * Everyone else calls robot.sensors.addTelemetry(...) and walks away. The
  * scheduler calls periodic() once per loop and that's when it actually ships.

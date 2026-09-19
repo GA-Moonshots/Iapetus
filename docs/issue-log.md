@@ -6,6 +6,22 @@ Format: `## YYYY-MM-DD — title`, then what broke, why, and the fix.
 
 ---
 
+## 2026-09-19 — A dashboard dial wired to nothing
+
+**`Tunables.DRIVE_SPEED` did nothing.** Nothing read it. The speed `PedroDrive` actually used was a
+private field seeded from `Constants.DEFAULT_DRIVE_SPEED`, and its setter had no callers. So one
+number had two homes, and the one on the dashboard was the dead one: drop it for a nervous driver
+and the robot, and the "Speed" telemetry line, stayed at 100%. No error anywhere. Fixed:
+`PedroDrive.getDriveSpeed()` reads the Tunable every call, clamped to `Constants.MIN/MAX_DRIVE_SPEED`.
+**A Tunable only works if it's read where it's used, every loop.** Before trusting a new one,
+grep for a reader.
+
+Also corrected while checking the rails: `architecture.md` quoted SolversLib's turn commands as
+ending on `!follower.isBusy()`. That was 0.3.5; 0.3.6 checks heading tolerance. Still no timeout
+and no `end()`, and its suggested `withTimeout(...)` ends the command but leaves the follower
+holding the turn. And "the ONLY `telemetry.update()` in the project" was only true once the robot
+is running: the OpModes flush their own init prompts, which is fine.
+
 ## 2026-09-19 — Path end constraints lost in a paste; Pedro 3.0.1
 
 **Foresight's end constraints were gone.** Pasting AutoTune's `foresightConfig` output replaced the

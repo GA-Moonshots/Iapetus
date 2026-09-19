@@ -56,7 +56,6 @@ public class PedroDrive extends SubsystemBase {
     // ============================================================
 
     private boolean fieldCentric = Constants.DEFAULT_FIELD_CENTRIC;
-    private double driveSpeed = Constants.DEFAULT_DRIVE_SPEED;
 
     // ============================================================
     //                    DASHBOARD DRAWING
@@ -168,9 +167,10 @@ public class PedroDrive extends SubsystemBase {
      * @param turn    +1 is counter-clockwise
      */
     public void drive(double forward, double strafe, double turn) {
-        forward *= driveSpeed;
-        strafe  *= driveSpeed;
-        turn    *= driveSpeed;
+        double speed = getDriveSpeed();
+        forward *= speed;
+        strafe  *= speed;
+        turn    *= speed;
 
         if (fieldCentric) {
             // Rotates the stick by our heading, so "up" means "away from the driver".
@@ -269,13 +269,10 @@ public class PedroDrive extends SubsystemBase {
         return fieldCentric;
     }
 
-    public void setDriveSpeed(double speed) {
-        driveSpeed = Math.max(Constants.MIN_DRIVE_SPEED,
-                     Math.min(Constants.MAX_DRIVE_SPEED, speed));
-    }
-
+    /** Tunables.DRIVE_SPEED, read fresh so a dashboard edit lands on the next loop. */
     public double getDriveSpeed() {
-        return driveSpeed;
+        return Math.max(Constants.MIN_DRIVE_SPEED,
+               Math.min(Constants.MAX_DRIVE_SPEED, Tunables.DRIVE_SPEED));
     }
 
     // ============================================================
@@ -443,7 +440,7 @@ public class PedroDrive extends SubsystemBase {
         Pose pose = getPose();
         robot.sensors.addTelemetry("═══ Drive ═══", "");
         robot.sensors.addTelemetry("Mode", fieldCentric ? "Field-Centric" : "Robot-Centric");
-        robot.sensors.addTelemetry("Speed", "%.0f%%", driveSpeed * 100);
+        robot.sensors.addTelemetry("Speed", "%.0f%%", getDriveSpeed() * 100);
         robot.sensors.addTelemetry("Position", "X:%.1f\" Y:%.1f\"", pose.x(), pose.y());
         robot.sensors.addTelemetry("Heading", "%.1f°", Math.toDegrees(getNormalizedHeading()));
         robot.sensors.addTelemetry("Follower", follower.mode().toString());

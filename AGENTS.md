@@ -39,8 +39,9 @@ Run it before you commit, and after Android Studio offers you any kind of upgrad
 
 ## Rule 2: telemetry has exactly one exit
 
-`robot.sensors.addTelemetry(key, value)`. Never `telemetry.update()` anywhere but
-`Sensors.periodic()`. Two flushes = half your data, no error message, one lost afternoon.
+`robot.sensors.addTelemetry(key, value)`. Once the robot is running, never `telemetry.update()`
+anywhere but `Sensors.periodic()`. Two flushes = half your data, no error message, one lost
+afternoon. (An OpMode flushing its own init prompt, before `Iapetus` exists, is fine.)
 
 ## Rule 3: `execute()` never blocks
 
