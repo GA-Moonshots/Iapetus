@@ -6,6 +6,37 @@ Format: `## YYYY-MM-DD — title`, then what broke, why, and the fix.
 
 ---
 
+## 2026-09-20 — `reset()` doesn't cancel anything, and `cancel()`'s docs name a method that isn't there
+
+**`reset()` is documented "Cancels all previous commands". It cancels nothing.**
+`CommandOpMode.reset()` and `Robot.reset()` both call `CommandScheduler.reset()`, whose entire body
+is `instance = null`. The singleton is thrown away, so scheduled commands are *dropped*, not
+canceled: no command's `end(true)` runs, and every subsystem registration and default command goes
+with the instance. `CommandScheduler.cancelAll()` is the method that does what that sentence
+describes — it cancels each scheduled command in turn, and `cancel()` calls `end(true)`.
+
+**Where it touches us.** `CommandOpMode.runOpMode()` calls `reset()` in a nested finally —
+`finally { try { end(); } finally { reset(); } }` — so it runs at every teardown. The OpMode's
+`end()` is guaranteed; a command's `end()` on that path is not. That's why the pose handoff lives in
+`AutoMcAutty.end()` rather than at the end of the auto sequence. Don't put cleanup that has to run
+inside a command's `end()` and expect it when the match clock stops.
+
+Calling `reset()` mid-match is the worse case: the replacement scheduler has no registered
+subsystems, so no `periodic()` runs, and odometry quietly stops updating with nothing on screen
+saying so.
+
+**Second one, same corner of the library.** `CommandScheduler.cancel()` is documented as calling
+"only the interrupted method of a canceled command, not the end method", and `Command.cancel()` says
+"Will call the command's interrupted() method." There is no `interrupted()` method — the lifecycle
+methods `Command` declares are `initialize`, `execute`, `end(boolean)` and `isFinished`, and
+`cancel()`'s body calls `end(true)`. The wording is left over from FTCLib, which SolversLib was
+forked and renamed from.
+
+Read at tag `0.3.6`, the version `TeamCode/build.gradle` asks for, rather than off the published
+docs. Not reported upstream — SolversLib is a one-maintainer project and this is a comment, not a
+bug. The habit worth keeping: when a dependency surprises you, read its source at the version you
+actually depend on.
+
 ## 2026-09-19 — The structure check said "Clean" when it hadn't checked
 
 **`check-structure.sh` printed "✓ Clean" after skipping its main check.** With no `upstream`

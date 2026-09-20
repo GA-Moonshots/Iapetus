@@ -120,3 +120,10 @@ the team [GitBook](https://gilmour.online/compsci/competitive-robotics/software-
 SolversLib supplies `Robot`, `CommandOpMode`, `SubsystemBase`, and `CommandBase` — it's a Gradle
 dependency, not code we own. Pedro Pathing supplies the follower. Neither is forked; both update by
 version bump ([updating-from-upstream.md](updating-from-upstream.md)).
+
+**Two of its docstrings are wrong, and one of them matters.** `reset()` says "Cancels all previous
+commands"; it discards the scheduler singleton, so scheduled commands are dropped without their
+`end()` ever running — `cancelAll()` is the one that cancels. And `cancel()`'s docs name an
+`interrupted()` method that doesn't exist; it calls `end(true)`. Both checked against 0.3.6's own
+source. When a dependency's behavior surprises you, read its source at the version in
+`TeamCode/build.gradle` before you trust its docs ([issue-log.md](issue-log.md), 2026-09-20).
