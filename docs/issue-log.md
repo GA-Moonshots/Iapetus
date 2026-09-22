@@ -6,6 +6,30 @@ Format: `## YYYY-MM-DD — title`, then what broke, why, and the fix.
 
 ---
 
+## 2026-09-22 — Android Studio's Gradle upgrade broke every laptop at once
+
+**`Failed to apply plugin 'com.android.internal.library'`, on sync and on build.** Buried at the
+bottom of a 300-line stack trace, the actual sentence: *"Plugin 'com.android.internal.library'
+relies on 'org.gradle.api.problems.internal.InternalProblems', a Gradle internal API that was
+removed in Gradle 9.6.0."*
+
+Android Studio offered a Gradle upgrade, someone accepted, and commit `86a6293 update gradle`
+pushed the wrapper from 9.1.0 to **9.7.1**. The SDK pins AGP **8.13.2** in `build.gradle`, and
+AGP 8.x uses an internal API that Gradle deleted in 9.6.0. Every AGP 8.x project breaks on Gradle
+≥ 9.6. Nothing about the code was wrong; the build tool moved out from under it.
+
+**Why "pull the latest commit" didn't help:** the latest commit *was* the break. Pulling harder
+pulled it in faster.
+
+**Fix:** `gradle/wrapper/gradle-wrapper.properties` restored byte-for-byte to what SDK v12.0 ships
+(9.1.0, with `networkTimeout` and `validateDistributionUrl` — the upgrade had dropped both lines
+and added a timestamp comment). Builds clean again.
+
+**The habit worth keeping:** `gradle/` is upstream's, and that includes the wrapper. When Android
+Studio offers to upgrade Gradle, AGP, or the wrapper, say no — FIRST picks those versions to match
+each other, and a newer Gradle is not an improvement if the plugin can't talk to it. Run
+`./scripts/check-structure.sh` after dismissing any such prompt; it catches exactly this.
+
 ## 2026-09-20 — `reset()` doesn't cancel anything, and `cancel()`'s docs name a method that isn't there
 
 **`reset()` is documented "Cancels all previous commands". It cancels nothing.**
