@@ -30,6 +30,19 @@ Studio offers to upgrade Gradle, AGP, or the wrapper, say no — FIRST picks tho
 each other, and a newer Gradle is not an improvement if the plugin can't talk to it. Run
 `./scripts/check-structure.sh` after dismissing any such prompt; it catches exactly this.
 
+**What changed because of it** (built in Artemis, copied here). Running the check was optional,
+and that's why this reached everyone. Now:
+
+- `scripts/hooks/pre-commit` refuses a commit that edits upstream's files. It lets merges through,
+  and lets a file through that's been put back exactly as upstream ships it. Android Studio's first
+  sync turns it on (`TeamCode/build.gradle`), and `doctor.sh` says if it's off.
+- `check-structure.sh` prints the exact `git checkout` that puts each file back, and names the
+  upgrade prompt when the drift is in Gradle's files.
+- `build.sh` recognises a Gradle/AGP mismatch and says so, instead of 300 lines of stack trace.
+
+When the build breaks right after a pull, look at what the pull changed before you look at your own
+code: `git log --oneline -5 -- gradle build.gradle`.
+
 ## 2026-09-20 — `reset()` doesn't cancel anything, and `cancel()`'s docs name a method that isn't there
 
 **`reset()` is documented "Cancels all previous commands". It cancels nothing.**

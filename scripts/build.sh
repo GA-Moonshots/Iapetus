@@ -41,6 +41,14 @@ fi
 
 echo
 echo "${RED}✗ Build failed.${OFF}"
+
+# The real cause of a Gradle/AGP mismatch is one sentence at the bottom of a
+# 300-line stack trace. Say it in plain words instead.
+if echo "$output" | grep -qE "Gradle internal API|removed in Gradle|Minimum supported Gradle version|incompatible with Gradle"; then
+    echo "${YELLOW}  Gradle and the Android Gradle Plugin don't fit together. That's not your code:${OFF}"
+    echo "${YELLOW}  one of them got upgraded — maybe in the last thing you pulled.${OFF}"
+    echo "${DIM}  ./scripts/check-structure.sh names the file and the command that puts it back.${OFF}"
+fi
 echo "${DIM}  Full output: ./gradlew $TASK${OFF}"
 echo "${DIM}  Stuck on a Gradle/Android Studio complaint? docs/gradle-and-android-studio.md${OFF}"
 exit 1

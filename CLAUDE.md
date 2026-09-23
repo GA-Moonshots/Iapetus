@@ -23,7 +23,8 @@ Our layer — safe to edit: `docs/`, `scripts/`, `MOONSHOTS.md`, `AGENTS.md`, `C
 SolversLib / Pedro / Panels are Gradle dependencies — update by version bump, never by merge.
 
 Think you need to edit a protected file? You don't. Add a file beside it, or ask a human.
-Verify anytime with `./scripts/check-structure.sh`.
+Verify anytime with `./scripts/check-structure.sh`. The pre-commit hook enforces it: never
+`--no-verify` past it.
 
 ## 2. Telemetry has exactly one exit
 

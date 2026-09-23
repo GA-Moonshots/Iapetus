@@ -24,6 +24,20 @@ android {
     }
 }
 
+// Turn on the commit guard (scripts/hooks/pre-commit) on first sync, so nobody has to remember to.
+// Leaves an existing hooksPath alone; no git, or a ZIP download, is silently skipped.
+// Why it exists: docs/issue-log.md, 2026-09-22.
+if (new File(rootDir, '.git').exists()) try {
+    def root = rootDir.path
+    def current = providers.exec {
+        commandLine 'git', '-C', root, 'config', '--get', 'core.hooksPath'
+        ignoreExitValue = true
+    }.result.get()
+    if (current.exitValue != 0) {
+        providers.exec { commandLine 'git', '-C', root, 'config', 'core.hooksPath', 'scripts/hooks' }.result.get()
+    }
+} catch (Exception ignored) { }
+
 repositories {
     maven {
         url = 'https://maven.brott.dev/'

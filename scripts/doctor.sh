@@ -65,6 +65,17 @@ else
     note "git remote add upstream https://github.com/FIRST-Tech-Challenge/FtcRobotController.git"
 fi
 
+# ─── Commit guard ────────────────────────────────────────────────
+hooks=$(git config --get core.hooksPath)
+if [ "$hooks" = "scripts/hooks" ]; then
+    ok "Commit guard on (won't let an edit to upstream's files be committed)"
+elif [ -n "$hooks" ]; then
+    warn "core.hooksPath is '$hooks', so the commit guard in scripts/hooks isn't running."
+else
+    fail "Commit guard off — an accepted Gradle upgrade could reach everyone's laptop."
+    note "git config core.hooksPath scripts/hooks   (Android Studio's first sync does this too)"
+fi
+
 # ─── Machine-specific config ─────────────────────────────────────
 if [ -f "local.properties" ]; then
     ok "local.properties exists (points at your SDK; correctly gitignored)"

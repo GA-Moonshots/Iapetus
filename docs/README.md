@@ -14,7 +14,7 @@
 **Robot won't localize / coordinates frozen?** [diagnostics.md](diagnostics.md) — run Pinpoint Doctor first.
 
 **Android Studio yelling at you?** [gradle-and-android-studio.md](gradle-and-android-studio.md).
-Short version: decline the upgrade it's offering.
+Short version: decline the upgrade it's offering. Build broke right after a pull? Same page.
 
 ---
 

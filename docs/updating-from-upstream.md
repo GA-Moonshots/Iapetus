@@ -13,7 +13,9 @@ git merge upstream/master
 ```
 
 FIRST's `TeamCode` holds only a `readme.md`, so their releases barely touch our code. Expect
-changes in `FtcRobotController/`, the root `build*.gradle` files, and `gradle/`.
+changes in `FtcRobotController/`, the root `build*.gradle` files, and `gradle/`. This is the only
+way a new Gradle or AGP should arrive: FIRST ships them as a pair that works together. The commit
+guard lets merges through, conflicts and all.
 
 ## 2. Libraries — a version bump, any time
 
@@ -73,7 +75,9 @@ as errors:
 | `FtcRobotController/build.gradle` | same |
 
 If a merge reverts those to 30, the build breaks immediately with "Recommended action: Update this
-project to use a newer compileSdk." Put 34 back.
+project to use a newer compileSdk." Put 34 back. Best done inside the merge commit, where the
+commit guard allows it. In a commit of its own, it's the one deliberate case for
+`git commit --no-verify`.
 
 ## After any update
 

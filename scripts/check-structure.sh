@@ -12,52 +12,25 @@
 # Exit 0 = clean, 1 = problems found, 2 = the main check couldn't run.
 
 set -uo pipefail
+source "$(dirname "$0")/_common.sh"   # PROTECTED, ALLOWED_DRIFT, colors
+cd "$REPO"
 
-cd "$(git rev-parse --show-toplevel 2>/dev/null)" || {
-    echo "Not inside a git repository."
-    exit 1
-}
-
-# Files and folders upstream owns. See AGENTS.md for the reasoning.
-#
-# Upstream is FIRST-Tech-Challenge/FtcRobotController — the SDK itself.
-# TeamCode/build.gradle is deliberately NOT on this list: FIRST ships it
-# nearly empty and expects teams to add dependencies there, so it's ours.
-PROTECTED=(
-    "README.md"
-    "build.gradle"
-    "build.common.gradle"
-    "build.dependencies.gradle"
-    "gradle.properties"
-    "settings.gradle"
-    "gradlew"
-    "gradlew.bat"
-    "gradle"
-    "FtcRobotController"
-    ".github"
-)
-
-# Deliberate, permanent exceptions. FIRST ships compileSdkVersion 30, which is
-# too low for our dependency set — the build fails outright without this bump.
-# So these two files carry a known edit. They're reported as a note, not an
-# error, because a warning that never goes away is a warning everyone ignores.
-# If you add to this list, write down WHY, right here.
-ALLOWED_DRIFT=(
-    "build.common.gradle"                 # compileSdk 34 (FIRST ships 30 — won't build)
-    "FtcRobotController/build.gradle"     # compileSdk 34, same reason
-)
-
-is_allowed() {
-    local f="$1" a
-    for a in "${ALLOWED_DRIFT[@]}"; do
-        [ "$f" = "$a" ] && return 0
-    done
-    return 1
-}
-
-RED=$'\033[0;31m'; YELLOW=$'\033[0;33m'; GREEN=$'\033[0;32m'; DIM=$'\033[2m'; OFF=$'\033[0m'
 problems=0
 skipped=""   # a check we couldn't run must not end in "Clean"
+
+# Gradle drifting on its own is how a whole team's build breaks in one pull
+# (docs/issue-log.md, 2026-09-22), so it gets its own sentence.
+tooling_hint() {
+    local f
+    while IFS= read -r f; do
+        if is_build_tooling "$f"; then
+            echo "${YELLOW}    Gradle/AGP files changed — almost always Android Studio's upgrade prompt.${OFF}"
+            echo "${YELLOW}    Put them back: a newer Gradle can't load the AGP this SDK pins.${OFF}"
+            echo "${DIM}    Why: docs/gradle-and-android-studio.md${OFF}"
+            return
+        fi
+    done
+}
 
 echo "Checking Artemis structure..."
 echo
@@ -70,6 +43,7 @@ if [ -n "$uncommitted" ]; then
     echo "${RED}✗ Uncommitted changes to files upstream owns:${OFF}"
     echo "$uncommitted" | sed 's/^/    /'
     echo "${DIM}    Undo with: git checkout -- <file>${OFF}"
+    echo "$uncommitted" | awk '{print $NF}' | tooling_hint
     echo
     problems=$((problems + 1))
 fi
@@ -107,18 +81,22 @@ else
         unexpected=""; known=""
         while IFS= read -r f; do
             [ -z "$f" ] && continue
-            if is_allowed "$f"; then known+="    $f"$'\n'; else unexpected+="    $f"$'\n'; fi
+            if is_allowed "$f"; then known+="    $f"$'\n'; else unexpected+="$f"$'\n'; fi
         done <<< "$drift"
 
         if [ -n "$unexpected" ]; then
+            short=$(git rev-parse --short "$base")
             echo "${RED}✗ Committed edits to files upstream owns:${OFF}"
-            printf '%s' "$unexpected"
-            echo "${DIM}    These will fight the next upstream merge. See docs/updating-from-upstream.md${OFF}"
+            printf '    %s\n' $unexpected
+            echo "${DIM}    Put upstream's version back, then commit:${OFF}"
+            printf "${DIM}      git checkout $short -- %s${OFF}\n" $unexpected
+            echo "${DIM}    Which commit did it: git log --oneline $short..HEAD -- <file>${OFF}"
+            printf '%s' "$unexpected" | tooling_hint
             echo
             problems=$((problems + 1))
         fi
         if [ -n "$known" ]; then
-            echo "${DIM}· Known deviations (deliberate, see ALLOWED_DRIFT in this script):${OFF}"
+            echo "${DIM}· Known deviations (deliberate, see ALLOWED_DRIFT in scripts/_common.sh):${OFF}"
             printf "${DIM}%s${OFF}" "$known"
             echo
         fi

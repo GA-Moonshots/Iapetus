@@ -59,3 +59,51 @@ require_adb() {
     fi
     echo "$adb"
 }
+
+# ─── What upstream owns ──────────────────────────────────────────
+# One list, read by check-structure.sh (reports drift) and hooks/pre-commit
+# (refuses to commit it). See AGENTS.md for the reasoning.
+#
+# Upstream is FIRST-Tech-Challenge/FtcRobotController — the SDK itself.
+# TeamCode/build.gradle is deliberately NOT on this list: FIRST ships it
+# nearly empty and expects teams to add dependencies there, so it's ours.
+PROTECTED=(
+    "README.md"
+    "build.gradle"
+    "build.common.gradle"
+    "build.dependencies.gradle"
+    "gradle.properties"
+    "settings.gradle"
+    "gradlew"
+    "gradlew.bat"
+    "gradle"
+    "FtcRobotController"
+    ".github"
+)
+
+# Deliberate, permanent exceptions. FIRST ships compileSdkVersion 30, which is
+# too low for our dependency set — the build fails outright without this bump.
+# So these two files carry a known edit. They're reported as a note, not an
+# error, because a warning that never goes away is a warning everyone ignores.
+# If you add to this list, write down WHY, right here.
+ALLOWED_DRIFT=(
+    "build.common.gradle"                 # compileSdk 34 (FIRST ships 30 — won't build)
+    "FtcRobotController/build.gradle"     # compileSdk 34, same reason
+)
+
+is_allowed() {
+    local f="$1" a
+    for a in "${ALLOWED_DRIFT[@]}"; do
+        [ "$f" = "$a" ] && return 0
+    done
+    return 1
+}
+
+# Gradle, the wrapper, and AGP are chosen by FIRST to fit each other. When one
+# of these drifts, it was almost always Android Studio's upgrade prompt.
+is_build_tooling() {
+    case "$1" in
+        gradle/*|build.gradle|gradle.properties|settings.gradle|gradlew|gradlew.bat) return 0 ;;
+    esac
+    return 1
+}

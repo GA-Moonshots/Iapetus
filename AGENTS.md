@@ -37,6 +37,9 @@ the entire point of the repo — don't undo it because a one-line edit looked ea
 Check yourself anytime: `./scripts/check-structure.sh`. It reports drift and changes nothing.
 Run it before you commit, and after Android Studio offers you any kind of upgrade.
 
+`scripts/hooks/pre-commit` refuses commits that edit those files. **Never bypass it with
+`--no-verify`.** If it fires on your commit, the edit is the mistake. Roll it back.
+
 ## Rule 2: telemetry has exactly one exit
 
 `robot.sensors.addTelemetry(key, value)`. Once the robot is running, never `telemetry.update()`

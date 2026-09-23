@@ -9,6 +9,7 @@ toolchain FIRST supports, so the error messages you hit are the ones the docs an
 git clone https://github.com/GA-Moonshots/Iapetus.git
 cd Iapetus
 git remote add upstream https://github.com/FIRST-Tech-Challenge/FtcRobotController.git
+git config core.hooksPath scripts/hooks     # commit guard (Android Studio's first sync does it too)
 ./scripts/doctor.sh
 ```
 
@@ -26,7 +27,8 @@ game-agnostic base, not this season repo. Its MOONSHOTS.md explains how to adopt
 3. Let Gradle sync fully the first time. It needs internet; dependencies download on first build.
 4. **Decline any prompt offering to upgrade Gradle or the Android Gradle Plugin.** Those versions
    are pinned deliberately — [gradle-and-android-studio.md](gradle-and-android-studio.md) explains
-   why. Clicked it by accident? `./scripts/check-structure.sh` names exactly what to put back.
+   why. Clicked it by accident? The commit guard stops you committing it, and
+   `./scripts/check-structure.sh` prints the command that puts it back.
 
 Deploy with the **Run** button, same as always. Pick your OpMode on the Driver Station:
 *Drivey McDriverson* (teleop), *Auto McAutty* (autonomous), *Camera Calibration* (see
@@ -52,6 +54,8 @@ the actual stack trace goes to the robot's log. `./scripts/logs.sh --crash` show
 `Caused by:` line.
 
 Run `check-structure.sh` before you commit. It catches the one mistake that costs real time later.
+The commit guard in `scripts/hooks/` runs the essential part of it for you on every commit, and
+refuses any edit to FIRST's files. It says what to roll back when it fires.
 
 ## Working with others
 

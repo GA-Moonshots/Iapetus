@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#
+# pre-commit — refuses a commit that edits a file upstream owns.
+#
+# check-structure.sh reports drift, but only when someone runs it. This runs
+# on every commit, including from Android Studio's Commit window. It exists
+# because an accepted Gradle upgrade got committed, pushed, and pulled onto
+# every laptop on the team (docs/issue-log.md, 2026-09-22).
+#
+# Let through: finishing a merge, and putting a file back exactly as upstream
+# ships it. Everything else stops here, with the command that undoes it.
+#
+# On when core.hooksPath = scripts/hooks. Android Studio's first sync sets that
+# (TeamCode/build.gradle); ./scripts/doctor.sh tells you if it's off.
+
+set -uo pipefail
+source "$(git rev-parse --show-toplevel)/scripts/_common.sh"
+
+# Finishing a merge (git merge upstream/master hit a conflict): upstream's
+# files are supposed to change.
+git rev-parse -q --verify MERGE_HEAD >/dev/null && exit 0
+
+staged=$(git diff --cached --name-only -- "${PROTECTED[@]}")
+[ -z "$staged" ] && exit 0
+
+# Staged back to exactly upstream's version is a repair, not drift. Needs the
+# upstream remote to tell; without it, every edit counts.
+base=""
+if git remote get-url upstream 2>/dev/null | grep -q "FtcRobotController"; then
+    base=$(git merge-base HEAD upstream/master 2>/dev/null)
+fi
+
+offenders=""
+while IFS= read -r f; do
+    if [ -n "$base" ] && [ "$(git rev-parse -q --verify ":$f")" = "$(git rev-parse -q --verify "$base:$f")" ]; then
+        continue
+    fi
+    offenders+="$f"$'\n'
+done <<< "$staged"
+[ -z "$offenders" ] && exit 0
+
+echo "${RED}✗ Commit stopped: it changes files FIRST's SDK owns.${OFF}"
+printf '    %s\n' $offenders
+echo
+for f in $offenders; do
+    if is_build_tooling "$f"; then
+        echo "  That's Gradle or the Android Gradle Plugin — almost always Android Studio's"
+        echo "  upgrade prompt. Decline it: FIRST picks those versions to fit each other, and a"
+        echo "  newer Gradle broke every laptop on the team last time (docs/issue-log.md)."
+        echo
+        break
+    fi
+done
+echo "  Keep your other changes, put these back:"
+printf "${DIM}    git restore --staged --worktree -- %s${OFF}\n" $offenders
+echo "  ${DIM}(Android Studio: select them in the Commit window → right-click → Rollback)${OFF}"
+echo
+echo "  Genuinely meant it? Ask a mentor, then: ${DIM}git commit --no-verify${OFF}"
+exit 1
