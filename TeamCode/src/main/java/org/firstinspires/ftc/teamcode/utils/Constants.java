@@ -67,7 +67,7 @@ public class Constants {
 
     public static final DcMotorSimple.Direction LEFT_FRONT_DIRECTION  = DcMotorSimple.Direction.REVERSE;
     public static final DcMotorSimple.Direction LEFT_BACK_DIRECTION   = DcMotorSimple.Direction.FORWARD;
-    public static final DcMotorSimple.Direction RIGHT_FRONT_DIRECTION = DcMotorSimple.Direction.FORWARD;
+    public static final DcMotorSimple.Direction RIGHT_FRONT_DIRECTION = DcMotorSimple.Direction.REVERSE;
     public static final DcMotorSimple.Direction RIGHT_BACK_DIRECTION  = DcMotorSimple.Direction.REVERSE;
 
     /**
@@ -82,7 +82,7 @@ public class Constants {
     // ============================================================
 
     public static final double MIN_DRIVE_SPEED = 0.2;
-    public static final double MAX_DRIVE_SPEED = 1.0;
+    public static final double MAX_DRIVE_SPEED = 0.8;
 
     // The speed cap itself, slow mode, stick deadzone, and pose tolerance live
     // in Tunables — they're read every loop and worth twiddling live. These two
@@ -174,8 +174,8 @@ public class Constants {
         /** ⚙ TUNE: Pinpoint Tuner measures these. xPodOffset is how far LEFT of
          *  centre the forward pod sits; yPodOffset is how far FORWARD the strafe
          *  pod sits. (Pedro 2 called these forwardPodY and strafePodX.) */
-        c.xPodOffset.set(-3.654345114400068);
-        c.yPodOffset.set(4.175518666665385);
+        c.xPodOffset.set(-6.982244056040847);
+        c.yPodOffset.set(3.900486803430272);
         c.offsetUnits.set(DistanceUnit.INCH);
         c.globalDistanceUnit.set(DistanceUnit.INCH);
 
