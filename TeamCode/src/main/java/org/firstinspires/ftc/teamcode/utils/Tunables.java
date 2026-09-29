@@ -36,7 +36,7 @@ public class Tunables {
     // ---- Driver feel ----
 
     /** Held right bumper. Lower = finer control. */
-    public static double SLOW_MODE_MULTIPLIER = 0.3;
+    public static double SLOW_MODE_MULTIPLIER = 0.5;
 
     /** Sticks never truly centre. Ignore noise below this. */
     public static double INPUT_THRESHOLD = 0.1;
