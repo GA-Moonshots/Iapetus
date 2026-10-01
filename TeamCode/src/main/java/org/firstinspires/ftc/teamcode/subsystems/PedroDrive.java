@@ -253,6 +253,8 @@ public class PedroDrive extends SubsystemBase {
         follower.algorithm().reset();   // hold() doesn't clear the last move's controllers; this does
     }
 
+    //public void toggleHoldPosition(boolean activated) {
+
     /**
      * Facing within {@code degrees} of {@code radians}, and not still swinging
      * through it? Don't use follower.isBusy() for turns — while holding, it
