@@ -174,6 +174,18 @@ public class PedroDrive extends SubsystemBase {
     //                    DRIVE CONTROL
     // ============================================================
 
+    private boolean isHoldingPosition = false;
+
+    /*public void holdPosition() {
+        isHoldingPosition = !isHoldingPosition;
+        if(isHoldingPosition) {
+            follower.hold(getPose());
+            follower.algorithm().reset();
+        }
+        else {
+            return;
+        }
+    }*/
     /**
      * Mecanum teleop drive. All three inputs are -1.0 to 1.0.
      *
@@ -182,6 +194,13 @@ public class PedroDrive extends SubsystemBase {
      * @param turn    +1 is counter-clockwise
      */
     public void drive(double forward, double strafe, double turn) {
+       /* if(Math.abs(forward) > 0.0 || Math.abs(strafe) > 0.0 || Math.abs(turn) > 0.0){
+            isHoldingPosition = false;
+        }
+        else holdPosition();*/
+
+
+
         double speed = getDriveSpeed();
         forward *= speed;
         strafe  *= speed;
@@ -201,6 +220,7 @@ public class PedroDrive extends SubsystemBase {
      */
     public void stop() {
         follower.stop();
+        isHoldingPosition = false;
     }
 
     // ============================================================
@@ -252,8 +272,6 @@ public class PedroDrive extends SubsystemBase {
         follower.hold(getPose().withHeading(radians));
         follower.algorithm().reset();   // hold() doesn't clear the last move's controllers; this does
     }
-
-    //public void toggleHoldPosition(boolean activated) {
 
     /**
      * Facing within {@code degrees} of {@code radians}, and not still swinging
@@ -483,5 +501,8 @@ public class PedroDrive extends SubsystemBase {
         robot.sensors.addTelemetry("Position", "X:%.1f\" Y:%.1f\"", pose.x(), pose.y());
         robot.sensors.addTelemetry("Heading", "%.1f°", Math.toDegrees(getNormalizedHeading()));
         robot.sensors.addTelemetry("Follower", follower.mode().toString());
+        if(isHoldingPosition){
+            robot.sensors.addTelemetry("Holding Position", "True");
+        }
     }
 }
