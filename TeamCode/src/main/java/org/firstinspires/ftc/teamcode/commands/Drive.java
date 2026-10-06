@@ -60,6 +60,10 @@ public class Drive extends CommandBase {
         // left running — the driver never fights a ghost.
         drive.drive(forward * easyDoesIt, strafe * easyDoesIt, turn * easyDoesIt);
 
+        // FIGHT TO HOLD SPOT
+        if (forward == 0 && strafe == 0 && turn == 0) {
+            robot.drive.follower.hold(robot.drive.getPose());
+        }
         robot.sensors.addTelemetry("Speed Mode", easyDoesIt < 1.0 ? "SLOW" : "NORMAL");
     }
 
