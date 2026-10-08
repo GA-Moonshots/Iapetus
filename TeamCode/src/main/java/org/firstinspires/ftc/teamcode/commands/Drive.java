@@ -28,7 +28,7 @@ public class Drive extends CommandBase {
     private final PedroDrive drive;
     private final GamepadEx player1;
     private int count = 0;
-    private final int DELAY_COUNT = 10;
+    private final int HOLD_DELAY_COUNT = 20;
 
     public Drive(Iapetus robot) {
         this.robot = robot;
@@ -58,8 +58,10 @@ public class Drive extends CommandBase {
         }
 
         if (forward == 0 && strafe == 0 && turn == 0) {
-            if (count > DELAY_COUNT) {
-                robot.drive.follower.hold(robot.drive.getPose());
+            if (count < HOLD_DELAY_COUNT) {
+                drive.drive(0, 0, 0);
+            } else if (count == HOLD_DELAY_COUNT) {
+                drive.holdCurrent();
             }
             count++;
         } else {

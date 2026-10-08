@@ -72,8 +72,6 @@ dependencies {
     implementation 'com.pedropathing:revhub:3.0.1'
     implementation 'com.pedropathing:tuning:1.0.0'
 
-    // Panels Dashboard. Held at 1.0.12: 1.0.13's only change is field plugin 1.0.7, which shipped
-    // without its web files, so the Field tab (the robot overlay) vanishes. Check before bumping:
-    // docs/updating-from-upstream.md.
-    implementation "com.bylazar:fullpanels:1.0.12"
+    // Panels
+    implementation "com.bylazar:fullpanels:1.0.18"
 }

@@ -173,7 +173,7 @@ public class PedroDrive extends SubsystemBase {
     // ============================================================
     //                    DRIVE CONTROL
     // ============================================================
-    
+
     /**
      * Mecanum teleop drive. All three inputs are -1.0 to 1.0.
      *
@@ -202,6 +202,11 @@ public class PedroDrive extends SubsystemBase {
      */
     public void stop() {
         follower.stop();
+    }
+
+    public void holdCurrent() {
+        follower.hold(getPose());
+        follower.algorithm().reset();
     }
 
     // ============================================================
