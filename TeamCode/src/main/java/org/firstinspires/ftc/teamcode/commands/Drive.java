@@ -27,6 +27,8 @@ public class Drive extends CommandBase {
     private final Iapetus robot;
     private final PedroDrive drive;
     private final GamepadEx player1;
+    private int count = 0;
+    private final int DELAY_COUNT = 10;
 
     public Drive(Iapetus robot) {
         this.robot = robot;
@@ -55,15 +57,16 @@ public class Drive extends CommandBase {
             strafe = -strafe;
         }
 
-
-        // This also takes the wheels back from any path or hold the last command
-        // left running — the driver never fights a ghost.
-        drive.drive(forward * easyDoesIt, strafe * easyDoesIt, turn * easyDoesIt);
-
-        // FIGHT TO HOLD SPOT
         if (forward == 0 && strafe == 0 && turn == 0) {
-            robot.drive.follower.hold(robot.drive.getPose());
+            if (count > DELAY_COUNT) {
+                robot.drive.follower.hold(robot.drive.getPose());
+            }
+            count++;
+        } else {
+            drive.drive(forward * easyDoesIt, strafe * easyDoesIt, turn * easyDoesIt);
+            count = 0;
         }
+
         robot.sensors.addTelemetry("Speed Mode", easyDoesIt < 1.0 ? "SLOW" : "NORMAL");
     }
 
