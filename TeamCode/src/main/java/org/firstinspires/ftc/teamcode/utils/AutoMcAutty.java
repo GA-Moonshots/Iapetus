@@ -80,8 +80,8 @@ public class AutoMcAutty extends CommandOpMode {
      */
     private Pose startingPose() {
         if (isRed) {
-            return new Pose(48, -63.75, Math.toRadians(270));
+            return new Pose(8.25, 24, Math.toRadians(90));
         }
-        return new Pose(-48, 63.75, Math.toRadians(90));
+        return new Pose(135.75, 120, Math.toRadians(90));
     }
 }
