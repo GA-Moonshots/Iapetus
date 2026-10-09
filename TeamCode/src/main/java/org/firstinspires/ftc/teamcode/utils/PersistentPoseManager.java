@@ -32,7 +32,7 @@ public class PersistentPoseManager {
     /** A pose older than this is from a previous match. Don't trust it. */
     private static final long MAX_AGE_MS = 10 * 60 * 1000;  // 10 minutes
 
-    private static final Pose DEFAULT_POSE = new Pose(9.5, 24, 270);
+    private static final Pose DEFAULT_POSE = new Pose(9.5, 24, 0);
     private static final boolean DEFAULT_IS_RED = true;
 
     /** What auto left behind, already checked for staleness. */
