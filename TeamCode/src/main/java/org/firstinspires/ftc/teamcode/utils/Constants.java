@@ -39,7 +39,8 @@ public class Constants {
     // ============================================================
     //                    HARDWARE MAP NAMES
     //     Must match the Driver Station config EXACTLY, including case.
-    //     A typo here is a NullPointerException three seconds into a match.
+    //     A typo here throws IllegalArgumentException, naming the device, the
+    //     moment the robot is built. Not a NullPointerException mid-match.
     // ============================================================
 
     public static final String LEFT_FRONT_NAME  = "leftFront";
