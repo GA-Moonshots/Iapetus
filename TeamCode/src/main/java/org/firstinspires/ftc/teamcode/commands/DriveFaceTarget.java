@@ -38,6 +38,7 @@ public class DriveFaceTarget extends DriveAbstract {
 
     @Override
     public void initialize() {
+        lockedOn = null;   // the bumper reuses this object; forget the last press's target
         patience.start();
         TagSighting target = robot.sensors.nearestTarget();
         if (target == null) {
