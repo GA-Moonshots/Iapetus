@@ -47,6 +47,13 @@ public class Tunables {
      */
     public static double DRIVE_SPEED = 1.0;
 
+    /**
+     * Sticks still this long (ms) and Drive holds its spot: bumped, the robot
+     * drives back. Long enough to brake to a stop first, or the hold drags the
+     * robot back to where the sticks were let go.
+     */
+    public static double HOLD_DELAY_MS = 300;
+
     // ---- Autonomous ----
 
     /** How close (inches) counts as "arrived" for a path command. */

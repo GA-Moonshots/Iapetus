@@ -159,9 +159,11 @@ public class PedroDrive extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Pedro's localization update. EXACTLY ONCE PER LOOP.
-        // Not zero times (robot thinks it never moved).
-        // Not twice (robot thinks it moved twice as far). Once.
+        // Pedro's update: reads the Pinpoint, plans for the time since the last
+        // call, and writes the wheels. EXACTLY ONCE PER LOOP. Zero times and
+        // nothing moves. Twice isn't twice as far (each call only counts the
+        // change since the one before); it's a second sensor read, and on
+        // dead-wheel odometry a velocity measured over a millisecond.
         follower.update();
 
         rememberPose();
@@ -204,6 +206,10 @@ public class PedroDrive extends SubsystemBase {
         follower.stop();
     }
 
+    /**
+     * Fight to stay right here: bumped, the robot drives back. Any stick
+     * movement ends it, because follower.manual() drops a hold.
+     */
     public void holdCurrent() {
         follower.hold(getPose());
         follower.algorithm().reset();

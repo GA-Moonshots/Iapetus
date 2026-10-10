@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandBase;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
@@ -21,14 +22,18 @@ import org.firstinspires.ftc.teamcode.utils.Tunables;
  *
  * isFinished() returns false forever. Default commands don't end — they get
  * interrupted. That's the whole trick.
+ *
+ * Let go of the sticks for Tunables.HOLD_DELAY_MS and it holds its spot:
+ * bumped, it drives back. Any stick takes the wheels straight back.
  */
 public class Drive extends CommandBase {
 
     private final Iapetus robot;
     private final PedroDrive drive;
     private final GamepadEx player1;
-    private int count = 0;
-    private final int HOLD_DELAY_COUNT = 20;
+
+    private final ElapsedTime sticksStill = new ElapsedTime();
+    private boolean holding = false;
 
     public Drive(Iapetus robot) {
         this.robot = robot;
@@ -36,6 +41,14 @@ public class Drive extends CommandBase {
         this.player1 = robot.player1;
 
         addRequirements(robot.drive);
+    }
+
+    @Override
+    public void initialize() {
+        // The scheduler reuses this one object every time it hands the wheels
+        // back, so whatever the last run left in these has to go.
+        sticksStill.reset();
+        holding = false;
     }
 
     @Override
@@ -57,16 +70,19 @@ public class Drive extends CommandBase {
             strafe = -strafe;
         }
 
-        if (forward == 0 && strafe == 0 && turn == 0) {
-            if (count < HOLD_DELAY_COUNT) {
-                drive.drive(0, 0, 0);
-            } else if (count == HOLD_DELAY_COUNT) {
-                drive.holdCurrent();
-            }
-            count++;
-        } else {
+        if (forward != 0 || strafe != 0 || turn != 0) {
+            // This also takes the wheels back from any path or hold, our own
+            // included — the driver never fights a ghost.
             drive.drive(forward * easyDoesIt, strafe * easyDoesIt, turn * easyDoesIt);
-            count = 0;
+            sticksStill.reset();
+            holding = false;
+        } else if (!holding) {
+            if (sticksStill.milliseconds() < Tunables.HOLD_DELAY_MS) {
+                drive.drive(0, 0, 0);   // brake to a stop first
+            } else {
+                drive.holdCurrent();    // then fight for the spot until a stick moves
+                holding = true;
+            }
         }
 
         robot.sensors.addTelemetry("Speed Mode", easyDoesIt < 1.0 ? "SLOW" : "NORMAL");
