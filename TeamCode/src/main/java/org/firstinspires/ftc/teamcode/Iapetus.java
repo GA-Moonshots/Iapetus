@@ -8,13 +8,16 @@ import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.Robot;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
+import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
+
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.Drive;
 import org.firstinspires.ftc.teamcode.commands.DriveFaceTarget;
 import org.firstinspires.ftc.teamcode.commands.DriveFwdByDist;
+import org.firstinspires.ftc.teamcode.commands.DriveToPose;
 import org.firstinspires.ftc.teamcode.commands.DriveTurnBy;
 import org.firstinspires.ftc.teamcode.commands.DriveTurnTo;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -218,7 +221,10 @@ public class Iapetus extends Robot {
         drive.follower.update();  // know where we are before we move
 
         new SequentialCommandGroup(
-                new DriveFwdByDist(this, 24, 5)
+                new DriveToPose(this, new Pose(60, 25, Math.toRadians(90)),5),
+                new WaitCommand(2000),
+                new DriveToPose(this, startPose, 5)
+
                 // ...then the rest of this year's plan.
         ).schedule();
     }
