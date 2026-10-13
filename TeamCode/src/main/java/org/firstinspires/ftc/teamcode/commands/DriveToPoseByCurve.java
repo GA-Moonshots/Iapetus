@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class DriveToPoseByCurve extends DriveAbstract {
 
     private final Pose targetPose;
-    private final ArrayList<Pose> controlPoints = new ArrayList<Pose>();
+    private final ArrayList<Vector2D> controlPoints = new ArrayList<Vector2D>();
     private boolean arrived = false;
 
     public DriveToPoseByCurve(Iapetus robot, Pose target, Pose[] controlPoints, double timeoutSeconds) {
