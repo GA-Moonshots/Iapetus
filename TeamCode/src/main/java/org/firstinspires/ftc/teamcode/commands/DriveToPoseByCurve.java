@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.pedropathing.api.Paths;
 import com.pedropathing.math.Pose;
+import com.pedropathing.math.Vector2D;
 
 import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Tunables;
@@ -31,7 +32,7 @@ public class DriveToPoseByCurve extends DriveAbstract {
         super(robot, timeoutSeconds);
         this.targetPose = target;
         for (Pose p : controlPoints) {
-            this.controlPoints.add(p);
+            this.controlPoints.add(Vector2D.cartesian(p.x(), p.y()));
         }
     }
 
