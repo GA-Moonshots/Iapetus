@@ -2,38 +2,36 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.pedropathing.api.Paths;
 import com.pedropathing.math.Pose;
-import com.pedropathing.math.Vector2D;
 
 import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Tunables;
 
-import java.util.ArrayList;
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║                        DRIVE TO POSE                                      ║
+ * ║                     DRIVE TO POSE BY CURVE                                ║
  * ║                                                                           ║
- * ║  "Go stand exactly there, facing exactly that way." The workhorse of      ║
- * ║  autonomous — most routines are a stack of these in a                     ║
- * ║  SequentialCommandGroup.                                                  ║
+ * ║  "Get there, but swing past THIS spot on the way." DriveToPose with a     ║
+ * ║  bend in it.                                                              ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  *
- * Note how empty execute() is. We hand the follower a path during
- * initialize() and it does the actual driving from PedroDrive.periodic().
- * Commands say WHAT; the follower handles HOW.
+ * The via pose is a Bézier CONTROL POINT: the curve is pulled toward it but
+ * doesn't pass through it. Put it further out than you think you need, and
+ * watch the result in Panels before trusting it near a wall.
+ *
+ * Only via's x and y matter; its heading is ignored. The robot holds the
+ * target's heading the whole way. Pedro's frame (inches, corner origin).
+ * Mirror for the other alliance in FieldMap, not here.
  */
 public class DriveToPoseByCurve extends DriveAbstract {
 
     private final Pose targetPose;
-    private final ArrayList<Vector2D> controlPoints = new ArrayList<Vector2D>();
+    private final Pose viaPose;
     private boolean arrived = false;
 
-    public DriveToPoseByCurve(Iapetus robot, Pose target, Pose[] controlPoints, double timeoutSeconds) {
+    public DriveToPoseByCurve(Iapetus robot, Pose target, Pose via, double timeoutSeconds) {
         super(robot, timeoutSeconds);
         this.targetPose = target;
-        for (Pose p : controlPoints) {
-            this.controlPoints.add(Vector2D.cartesian(p.x(), p.y()));
-        }
+        this.viaPose = via;
     }
 
     @Override
@@ -41,12 +39,13 @@ public class DriveToPoseByCurve extends DriveAbstract {
         patience.start();
         arrived = false;
 
-        // A path with no heading rule throws the moment it's followed. constant() is the rule.
-        follower.follow(Paths.curve(drive.getPose(), targetPose).constant(targetPose));
+        // start -> via -> target. Read the start now, not in the constructor:
+        // where we are depends on whatever command ran before this one.
+        follower.follow(Paths.through(drive.getPose(), viaPose, targetPose).constant(targetPose));
         drive.setTargetPose(targetPose);   // so the dashboard shows intent vs. reality
 
-        robot.sensors.addTelemetry("DriveToPose", "→ (%.1f, %.1f)",
-                targetPose.x(), targetPose.y());
+        robot.sensors.addTelemetry("DriveToPoseByCurve", "→ (%.1f, %.1f) via (%.1f, %.1f)",
+                targetPose.x(), targetPose.y(), viaPose.x(), viaPose.y());
     }
 
     @Override
@@ -55,9 +54,8 @@ public class DriveToPoseByCurve extends DriveAbstract {
             arrived = true;
         }
 
-        Pose current = drive.getPose();
         robot.sensors.addTelemetry("Distance Remaining", "%.1f\"",
-                current.distance(targetPose));
+                drive.getPose().distance(targetPose));
     }
 
     @Override
@@ -70,7 +68,7 @@ public class DriveToPoseByCurve extends DriveAbstract {
     public void end(boolean interrupted) {
         standardCleanup();
         drive.clearTargetPose();
-        robot.sensors.addTelemetry("DriveToPose",
+        robot.sensors.addTelemetry("DriveToPoseByCurve",
                 interrupted ? "INTERRUPTED" : (arrived ? "Arrived" : "TIMED OUT"));
     }
 }

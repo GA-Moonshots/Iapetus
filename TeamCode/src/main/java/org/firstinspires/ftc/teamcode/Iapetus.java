@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.commands.Drive;
 import org.firstinspires.ftc.teamcode.commands.DriveFaceTarget;
 import org.firstinspires.ftc.teamcode.commands.DriveFwdByDist;
 import org.firstinspires.ftc.teamcode.commands.DriveToPose;
+import org.firstinspires.ftc.teamcode.commands.DriveToPoseByCurve;
 import org.firstinspires.ftc.teamcode.commands.DriveTurnBy;
 import org.firstinspires.ftc.teamcode.commands.DriveTurnTo;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -82,7 +83,7 @@ public class Iapetus extends Robot {
 
     /** Reads the handoff exactly once, then hands it to the real constructor. */
     private Iapetus(LinearOpMode opMode, PersistentPoseManager.Handoff handoff) {
-        this(opMode, handoff.isRed, true, handoff.pose);
+        this(opMode, handoff.isRed, handoff.pose);
         sensors.addTelemetry("Pose handoff",
                 handoff.wasFound ? "loaded from autonomous" : "NONE — using defaults");
     }
@@ -91,12 +92,11 @@ public class Iapetus extends Robot {
     //                  AUTONOMOUS CONSTRUCTOR
     // ============================================================
 
-    public Iapetus(LinearOpMode opMode, boolean isRed, boolean isNearGoal, Pose startPose) {
+    public Iapetus(LinearOpMode opMode, boolean isRed, Pose startPose) {
         this.opMode = opMode;
         this.telemetry = opMode.telemetry;
         this.hardwareMap = opMode.hardwareMap;
         this.isRed = isRed;
-        this.isNearGoal = isNearGoal;
         this.startPose = startPose;
 
         this.player1 = new GamepadEx(opMode.gamepad1);
@@ -223,8 +223,8 @@ public class Iapetus extends Robot {
         new SequentialCommandGroup(
                 new DriveToPose(this, new Pose(60, 25, Math.toRadians(90)),5),
                 new WaitCommand(2000),
-                new DriveToPose(this, startPose, 5)
-
+                new DriveToPose(this, startPose, 5),
+                new DriveToPoseByCurve(this, Constants.RED_PARK, Constants.RED_SHOOT_DRIVEWAY, 5)
                 // ...then the rest of this year's plan.
         ).schedule();
     }

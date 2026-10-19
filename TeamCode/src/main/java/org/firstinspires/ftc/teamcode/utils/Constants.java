@@ -5,6 +5,7 @@ import com.pedropathing.algorithm.ForesightConfig;
 import com.pedropathing.controllers.Controller;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Matrix;
+import com.pedropathing.math.Pose;
 import com.pedropathing.math.Vector2D;
 import com.pedropathing.revhub.drivetrains.Mecanum;
 import com.pedropathing.revhub.drivetrains.MecanumConfig;
@@ -277,6 +278,26 @@ public class Constants {
     public static final String RED_AUDIENCE_HIVE   = "RED AUDIENCE";    // tags 34-37
     public static final String BLUE_AUDIENCE_HIVE  = "BLUE AUDIENCE";   // tags 38-41
     public static final String BLUE_SCORING_HIVE   = "BLUE SCORING";    // tags 42-45
+
+    // ============================================================
+    //                    IMPORTANT POSITIONS
+    //  Poses of important positions where we want our robot to be
+    //  or to avoid.
+    // ============================================================
+
+    public static final Pose RED_START_POSE_CORNER = new Pose(8.25, 24, Math.toRadians(0));
+    public static final Pose RED_START_POSE_MIDDLE = new Pose(8.25, 72, Math.toRadians(0));
+    public static final Pose BLUE_START_POSE_CORNER = new Pose(135.75, 120, Math.toRadians(180));
+    public static final Pose BLUE_START_POSE_MIDDLE = new Pose(135.75, 72, Math.toRadians(180));
+    public static final Pose RED_PARK = new Pose(8.25, 108, Math.toRadians(0));
+    public static final Pose BLUE_PARK = new Pose(135.75, 36, Math.toRadians(180));
+
+    public static final Pose RED_SHOOT_DRIVEWAY = new Pose(60, 120, Math.toRadians(270));
+    public static final Pose RED_SHOOT_STREET = new Pose(60, 24, Math.toRadians(90));;
+    public static final Pose BLUE_SHOOT_DRIVEWAY = new Pose(84, 24, Math.toRadians(90));;
+    public static final Pose BLUE_SHOOT_STREET = new Pose(84, 120, Math.toRadians(270));;
+
+
 
     // ============================================================
     //                    IMU ORIENTATION
