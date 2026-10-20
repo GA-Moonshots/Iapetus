@@ -83,7 +83,7 @@ public class Iapetus extends Robot {
 
     /** Reads the handoff exactly once, then hands it to the real constructor. */
     private Iapetus(LinearOpMode opMode, PersistentPoseManager.Handoff handoff) {
-        this(opMode, handoff.isRed, handoff.pose);
+        this(opMode, handoff.isRed, true, handoff.pose);
         sensors.addTelemetry("Pose handoff",
                 handoff.wasFound ? "loaded from autonomous" : "NONE — using defaults");
     }
@@ -92,7 +92,7 @@ public class Iapetus extends Robot {
     //                  AUTONOMOUS CONSTRUCTOR
     // ============================================================
 
-    public Iapetus(LinearOpMode opMode, boolean isRed, Pose startPose) {
+    public Iapetus(LinearOpMode opMode, boolean isRed, boolean isNearGoal, Pose startPose) {
         this.opMode = opMode;
         this.telemetry = opMode.telemetry;
         this.hardwareMap = opMode.hardwareMap;
@@ -224,7 +224,8 @@ public class Iapetus extends Robot {
                 new DriveToPose(this, new Pose(60, 25, Math.toRadians(90)),5),
                 new WaitCommand(2000),
                 new DriveToPose(this, startPose, 5),
-                new DriveToPoseByCurve(this, Constants.RED_PARK, Constants.RED_SHOOT_DRIVEWAY, 5)
+                new DriveToPoseByCurve(this, Constants.RED_PARK, new Pose(30,64), 5),
+                new DriveToPoseByCurve(this, startPose, new Pose(30,64), 5)
                 // ...then the rest of this year's plan.
         ).schedule();
     }
