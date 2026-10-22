@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 
 import org.firstinspires.ftc.teamcode.Iapetus;
-import org.firstinspires.ftc.teamcode.commands.DriveToPose;
 
 /**
  *  █████╗ ██╗   ██╗████████╗ ██████╗
@@ -28,7 +27,7 @@ public class AutoMcAutty extends CommandOpMode {
 
     // Chosen during init, before the match clock starts.
     private boolean isRed = true;
-    private boolean isNearGoal = true;
+    private boolean isCorner = true;
 
     @Override
     public void initialize() {
@@ -44,11 +43,11 @@ public class AutoMcAutty extends CommandOpMode {
     public void initialize_loop() {
         if (gamepad1.x) isRed = false;
         if (gamepad1.b) isRed = true;
-        if (gamepad1.dpad_up) isNearGoal = true;
-        if (gamepad1.dpad_down) isNearGoal = false;
+        if (gamepad1.dpad_up) isCorner = false;
+        if (gamepad1.dpad_down) isCorner = true;
 
         telemetry.addData("Alliance", isRed ? "RED" : "BLUE");
-        telemetry.addData("Position", isNearGoal ? "NEAR GOAL" : "FAR");
+        telemetry.addData("Position", isCorner ? "CORNER" : "MIDDLE");
         telemetry.addData("Ready?", "Press START when this looks right");
         telemetry.update();
     }
@@ -57,7 +56,7 @@ public class AutoMcAutty extends CommandOpMode {
     public void run() {
         // Build on the first loop after START, once the choices above are final.
         if (robot == null) {
-            robot = new Iapetus(this, isRed, isNearGoal, startingPose());
+            robot = new Iapetus(this, isRed, isCorner, startingPose());
             robot.initAuto();
         }
         super.run();
@@ -81,8 +80,10 @@ public class AutoMcAutty extends CommandOpMode {
      */
     private Pose startingPose() {
         if (isRed) {
-            return Constants.RED_START_POSE_CORNER;
+            if (isCorner) return Constants.RED_START_POSE_CORNER;
+            return Constants.RED_START_POSE_MIDDLE;
         }
-        return Constants.BLUE_START_POSE_CORNER;
+        if (isCorner) return Constants.BLUE_START_POSE_CORNER;
+        return Constants.BLUE_START_POSE_MIDDLE;
     }
 }

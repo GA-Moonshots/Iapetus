@@ -220,13 +220,24 @@ public class Iapetus extends Robot {
     public void initAuto() {
         drive.follower.update();  // know where we are before we move
 
-        new SequentialCommandGroup(
-                new DriveToPose(this, new Pose(60, 25, Math.toRadians(90)),5),
-                new WaitCommand(2000),
-                new DriveToPose(this, startPose, 5),
-                new DriveToPoseByCurve(this, Constants.RED_PARK, new Pose(30,64), 5),
-                new DriveToPoseByCurve(this, startPose, new Pose(30,64), 5)
-                // ...then the rest of this year's plan.
-        ).schedule();
+        if (isRed) {
+            new SequentialCommandGroup(
+                    new DriveToPose(this, Constants.RED_SHOOT_STREET, 5),
+                    new WaitCommand(2000),
+                    new DriveToPose(this, startPose, 5),
+                    new DriveToPoseByCurve(this, Constants.RED_PARK, new Pose(30, 72), 5),
+                    new DriveToPoseByCurve(this, startPose, new Pose(30, 72), 5)
+                    // ...then the rest of this year's plan.
+            ).schedule();
+        } else {
+            new SequentialCommandGroup(
+                    new DriveToPose(this, Constants.BLUE_SHOOT_STREET, 5),
+                    new WaitCommand(2000),
+                    new DriveToPose(this, startPose, 5),
+                    new DriveToPoseByCurve(this, Constants.BLUE_PARK, new Pose(114, 72), 5),
+                    new DriveToPoseByCurve(this, startPose, new Pose(114, 72), 5)
+                    // ...then the rest of this year's plan.
+            ).schedule();
+        }
     }
 }

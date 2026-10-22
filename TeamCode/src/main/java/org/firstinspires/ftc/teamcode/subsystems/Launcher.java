@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.teamcode.Iapetus;
@@ -19,6 +20,9 @@ import org.firstinspires.ftc.teamcode.Iapetus;
 public class Launcher extends SubsystemBase {
 
     private final Iapetus robot;
+
+    private DcMotorEx frontMotor;
+    private DcMotorEx backMotor;
 
     public Launcher(Iapetus robot) {
         this.robot = robot;

@@ -44,12 +44,18 @@ public class Constants {
     //     moment the robot is built. Not a NullPointerException mid-match.
     // ============================================================
 
+    // Drivetrain motors
     public static final String LEFT_FRONT_NAME  = "leftFront";
     public static final String RIGHT_FRONT_NAME = "rightFront";
     public static final String LEFT_BACK_NAME   = "leftBack";
     public static final String RIGHT_BACK_NAME  = "rightBack";
 
     public static final String IMU_NAME = "imu";
+
+    // Intake/Launcher
+    public static final String INTAKE_MOTOR_NAME = "intake";
+    public static final String LAUNCHER_MOTOR_FRONT_NAME = "launcherFront";
+    public static final String LAUNCHER_MOTOR_BACK_NAME = "launcherBack";
 
     /**
      * The odometry computer's name in the Driver Station config.

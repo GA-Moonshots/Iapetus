@@ -57,7 +57,7 @@ public class Tunables {
     // ---- Autonomous ----
 
     /** How close (inches) counts as "arrived" for a path command. */
-    public static double POSE_TOLERANCE = 0.5;
+    public static double POSE_TOLERANCE = 1.0;
 
     /** How close (degrees) counts as "facing it" for a turn command. */
     public static double HEADING_TOLERANCE_DEG = 1.0;
