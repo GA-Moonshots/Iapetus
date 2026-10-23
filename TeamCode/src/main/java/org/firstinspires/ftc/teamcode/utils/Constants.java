@@ -78,6 +78,10 @@ public class Constants {
     public static final DcMotorSimple.Direction RIGHT_FRONT_DIRECTION = DcMotorSimple.Direction.REVERSE;
     public static final DcMotorSimple.Direction RIGHT_BACK_DIRECTION  = DcMotorSimple.Direction.REVERSE;
 
+    public static final DcMotorSimple.Direction INTAKE_MOTOR_DIRECTION = DcMotorSimple.Direction.FORWARD;
+    public static final DcMotorSimple.Direction LAUNCHER_MOTOR_FRONT_DIRECTION = DcMotorSimple.Direction.FORWARD;
+    public static final DcMotorSimple.Direction LAUNCHER_MOTOR_BACK_DIRECTION = DcMotorSimple.Direction.FORWARD;
+
     /**
      * Driver lets go of the sticks: true = stop dead, false = coast like it's
      * on ice. Keep true. (Pedro coasts on purpose while following a path —
@@ -298,10 +302,10 @@ public class Constants {
     public static final Pose RED_PARK = new Pose(8.25, 108, Math.toRadians(0));
     public static final Pose BLUE_PARK = new Pose(135.75, 36, Math.toRadians(180));
 
-    public static final Pose RED_SHOOT_DRIVEWAY = new Pose(60, 120, Math.toRadians(270));
-    public static final Pose RED_SHOOT_STREET = new Pose(60, 24, Math.toRadians(90));;
-    public static final Pose BLUE_SHOOT_DRIVEWAY = new Pose(84, 24, Math.toRadians(90));;
-    public static final Pose BLUE_SHOOT_STREET = new Pose(84, 120, Math.toRadians(270));;
+    public static final Pose RED_SHOOT_SCORING = new Pose(60, 120, Math.toRadians(270));
+    public static final Pose RED_SHOOT_AUDIENCE = new Pose(60, 24, Math.toRadians(90));;
+    public static final Pose BLUE_SHOOT_AUDIENCE = new Pose(84, 24, Math.toRadians(90));;
+    public static final Pose BLUE_SHOOT_SCORING = new Pose(84, 120, Math.toRadians(270));;
 
 
 

@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.teamcode.Iapetus;
+import org.firstinspires.ftc.teamcode.utils.Constants;
 
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -25,6 +26,7 @@ public class Intake extends SubsystemBase {
 
     public Intake(Iapetus robot) {
         this.robot = robot;
+        intakeMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.INTAKE_MOTOR_NAME);
     }
 
     @Override

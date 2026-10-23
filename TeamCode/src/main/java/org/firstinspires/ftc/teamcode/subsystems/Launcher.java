@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.teamcode.Iapetus;
+import org.firstinspires.ftc.teamcode.utils.Constants;
 
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -24,8 +25,12 @@ public class Launcher extends SubsystemBase {
     private DcMotorEx frontMotor;
     private DcMotorEx backMotor;
 
+    private double launchSpeedFactor;
+
     public Launcher(Iapetus robot) {
         this.robot = robot;
+        frontMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.LAUNCHER_MOTOR_FRONT_NAME);
+        backMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.LAUNCHER_MOTOR_BACK_NAME);
     }
 
     @Override

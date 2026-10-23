@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.Robot;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
+import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
@@ -20,7 +21,6 @@ import org.firstinspires.ftc.teamcode.commands.DriveFwdByDist;
 import org.firstinspires.ftc.teamcode.commands.DriveToPose;
 import org.firstinspires.ftc.teamcode.commands.DriveToPoseByCurve;
 import org.firstinspires.ftc.teamcode.commands.DriveTurnBy;
-import org.firstinspires.ftc.teamcode.commands.DriveTurnTo;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.PedroDrive;
@@ -128,6 +128,7 @@ public class Iapetus extends Robot {
      * otherwise — no camera, not in view, or seen too long ago. Always check.
      */
     public TagSighting ourScoringHive() {
+
         return sensors.target(isRed ? Constants.RED_SCORING_HIVE : Constants.BLUE_SCORING_HIVE);
     }
 
@@ -222,7 +223,7 @@ public class Iapetus extends Robot {
 
         if (isRed) {
             new SequentialCommandGroup(
-                    new DriveToPose(this, Constants.RED_SHOOT_STREET, 5),
+                    new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 5),
                     new WaitCommand(2000),
                     new DriveToPose(this, startPose, 5),
                     new DriveToPoseByCurve(this, Constants.RED_PARK, new Pose(30, 72), 5),
@@ -231,7 +232,7 @@ public class Iapetus extends Robot {
             ).schedule();
         } else {
             new SequentialCommandGroup(
-                    new DriveToPose(this, Constants.BLUE_SHOOT_STREET, 5),
+                    new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 5),
                     new WaitCommand(2000),
                     new DriveToPose(this, startPose, 5),
                     new DriveToPoseByCurve(this, Constants.BLUE_PARK, new Pose(114, 72), 5),
