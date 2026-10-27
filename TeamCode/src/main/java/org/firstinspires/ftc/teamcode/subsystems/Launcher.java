@@ -42,6 +42,10 @@ public class Launcher extends SubsystemBase {
         launching = !launching;
     }
 
+    public void setLaunchSpeed(double launchSpeed){
+        this.launchSpeed = launchSpeed;
+    }
+
     @Override
     public void periodic() {
         if(launching){

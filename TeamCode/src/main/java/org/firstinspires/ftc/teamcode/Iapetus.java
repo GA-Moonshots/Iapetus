@@ -12,6 +12,7 @@ import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
+import com.seattlesolvers.solverslib.command.RunCommand;
 
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -139,6 +140,7 @@ public class Iapetus extends Robot {
     public void initTeleOp() {
         // The default command: runs whenever nothing else claims the wheels.
         drive.setDefaultCommand(new Drive(this));
+        launcher.setDefaultCommand(new RunCommand(() -> launcher.setLaunchSpeed(player1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)), launcher));
 
         /*
          ██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗      ██╗
