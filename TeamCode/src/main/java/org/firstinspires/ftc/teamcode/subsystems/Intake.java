@@ -26,7 +26,7 @@ public class Intake extends SubsystemBase {
 
     public Intake(Iapetus robot) {
         this.robot = robot;
-        intakeMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.INTAKE_MOTOR_NAME);
+        // intakeMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.INTAKE_MOTOR_NAME);
     }
 
     @Override

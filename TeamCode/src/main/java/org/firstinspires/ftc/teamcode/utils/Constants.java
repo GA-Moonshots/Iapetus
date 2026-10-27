@@ -50,6 +50,7 @@ public class Constants {
     public static final String LEFT_BACK_NAME   = "leftBack";
     public static final String RIGHT_BACK_NAME  = "rightBack";
 
+    // IMU
     public static final String IMU_NAME = "imu";
 
     // Intake/Launcher

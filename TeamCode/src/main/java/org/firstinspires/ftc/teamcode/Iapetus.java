@@ -182,8 +182,8 @@ public class Iapetus extends Robot {
                 .whenPressed(new DriveFaceTarget(this, 2));
 
         //DPAD LEFT- Toggle holding current position
-        //new GamepadButton(player1,GamepadKeys.Button.DPAD_LEFT)
-        //        .whenPressed(new InstantCommand(() -> drive.i()));
+        new GamepadButton(player1,GamepadKeys.Button.DPAD_LEFT)
+                .whenPressed(new InstantCommand(() -> launcher.toggleLaunch()));
 
         // Right bumper is slow mode — read directly in Drive.execute(), not bound here.
 

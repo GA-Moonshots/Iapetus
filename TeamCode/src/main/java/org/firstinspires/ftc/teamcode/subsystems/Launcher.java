@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.pedropathing.utils.Angle;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
@@ -26,14 +28,31 @@ public class Launcher extends SubsystemBase {
     private DcMotorEx backMotor;
 
     private double launchSpeedFactor;
+    private double currentRpm;
+    private boolean launching;
+    private double launchSpeed;
 
     public Launcher(Iapetus robot) {
         this.robot = robot;
         frontMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.LAUNCHER_MOTOR_FRONT_NAME);
         backMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.LAUNCHER_MOTOR_BACK_NAME);
+        this.launching = false;
+    }
+    public void toggleLaunch(){
+        launching = !launching;
     }
 
     @Override
     public void periodic() {
+        if(launching){
+            frontMotor.setPower(launchSpeed);
+            backMotor.setPower(launchSpeed);
+        }else{
+            frontMotor.setPower(0);
+            backMotor.setPower(0);
+        }
+        this.currentRpm = frontMotor.getVelocity(AngleUnit.RADIANS) * (30/Math.PI);
+        robot.sensors.addTelemetry("Current RPM", "%.1f", currentRpm);
+
     }
 }
