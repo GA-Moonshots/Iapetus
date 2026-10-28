@@ -48,13 +48,8 @@ public class Launcher extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(launching){
-            frontMotor.setPower(launchSpeed);
-            backMotor.setPower(launchSpeed);
-        }else{
-            frontMotor.setPower(0);
-            backMotor.setPower(0);
-        }
+        frontMotor.setPower(launchSpeed);
+        backMotor.setPower(launchSpeed);
         this.currentRpm = frontMotor.getVelocity(AngleUnit.RADIANS) * (30/Math.PI);
         robot.sensors.addTelemetry("Current RPM", "%.1f", currentRpm);
 

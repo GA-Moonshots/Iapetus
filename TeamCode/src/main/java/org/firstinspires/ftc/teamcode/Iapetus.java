@@ -140,7 +140,7 @@ public class Iapetus extends Robot {
     public void initTeleOp() {
         // The default command: runs whenever nothing else claims the wheels.
         drive.setDefaultCommand(new Drive(this));
-        launcher.setDefaultCommand(new RunCommand(() -> launcher.setLaunchSpeed(player1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)), launcher));
+        launcher.setDefaultCommand(new RunCommand(() -> launcher.setLaunchSpeed(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)), launcher));
 
         /*
          ██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗      ██╗
@@ -184,8 +184,8 @@ public class Iapetus extends Robot {
                 .whenPressed(new DriveFaceTarget(this, 2));
 
         //DPAD LEFT- Toggle holding current position
-        new GamepadButton(player1,GamepadKeys.Button.DPAD_LEFT)
-                .whenPressed(new InstantCommand(() -> launcher.toggleLaunch()));
+        //new GamepadButton(player2, GamepadKeys.Button.DPAD_LEFT)
+        //        .whenPressed(new InstantCommand(() -> launcher.toggleLaunch()));
 
         // Right bumper is slow mode — read directly in Drive.execute(), not bound here.
 
