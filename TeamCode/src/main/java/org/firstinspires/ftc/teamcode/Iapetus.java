@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.commands.Drive;
 import org.firstinspires.ftc.teamcode.commands.DriveFaceTarget;
 import org.firstinspires.ftc.teamcode.commands.DriveFwdByDist;
 import org.firstinspires.ftc.teamcode.commands.DriveToPose;
-import org.firstinspires.ftc.teamcode.commands.DriveToPoseByCurve;
+import org.firstinspires.ftc.teamcode.commands.DriveToPoseByPoint;
 import org.firstinspires.ftc.teamcode.commands.DriveTurnBy;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
@@ -140,7 +140,6 @@ public class Iapetus extends Robot {
     public void initTeleOp() {
         // The default command: runs whenever nothing else claims the wheels.
         drive.setDefaultCommand(new Drive(this));
-        launcher.setDefaultCommand(new RunCommand(() -> launcher.setLaunchSpeed(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)), launcher));
 
         /*
          ██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗      ██╗
@@ -200,6 +199,8 @@ public class Iapetus extends Robot {
             OPERATOR — runs the mechanisms. Never drives.
         */
 
+        intake.setDefaultCommand(new RunCommand(() -> intake.setIntakeSpeed(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)), intake));
+
         // A — instant action, no Command needed. Servo flips are immediate.
         new GamepadButton(player2, GamepadKeys.Button.A);
 
@@ -228,8 +229,8 @@ public class Iapetus extends Robot {
                     new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 5),
                     new WaitCommand(2000),
                     new DriveToPose(this, startPose, 5),
-                    new DriveToPoseByCurve(this, Constants.RED_PARK, new Pose(30, 72), 5),
-                    new DriveToPoseByCurve(this, startPose, new Pose(30, 72), 5)
+                    new DriveToPoseByPoint(this, Constants.RED_PARK, new Pose(30, 72), 5),
+                    new DriveToPoseByPoint(this, startPose, new Pose(30, 72), 5)
                     // ...then the rest of this year's plan.
             ).schedule();
         } else {
@@ -237,8 +238,8 @@ public class Iapetus extends Robot {
                     new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 5),
                     new WaitCommand(2000),
                     new DriveToPose(this, startPose, 5),
-                    new DriveToPoseByCurve(this, Constants.BLUE_PARK, new Pose(114, 72), 5),
-                    new DriveToPoseByCurve(this, startPose, new Pose(114, 72), 5)
+                    new DriveToPoseByPoint(this, Constants.BLUE_PARK, new Pose(114, 72), 5),
+                    new DriveToPoseByPoint(this, startPose, new Pose(114, 72), 5)
                     // ...then the rest of this year's plan.
             ).schedule();
         }

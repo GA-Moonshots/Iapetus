@@ -36,6 +36,8 @@ public class Launcher extends SubsystemBase {
         this.robot = robot;
         frontMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.LAUNCHER_MOTOR_FRONT_NAME);
         backMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.LAUNCHER_MOTOR_BACK_NAME);
+        frontMotor.setDirection(Constants.LAUNCHER_MOTOR_FRONT_DIRECTION);
+        backMotor.setDirection(Constants.LAUNCHER_MOTOR_BACK_DIRECTION);
         this.launching = false;
     }
     public void toggleLaunch(){
@@ -50,7 +52,7 @@ public class Launcher extends SubsystemBase {
     public void periodic() {
         frontMotor.setPower(launchSpeed);
         backMotor.setPower(launchSpeed);
-        this.currentRpm = frontMotor.getVelocity(AngleUnit.RADIANS) * (30/Math.PI);
+        this.currentRpm = frontMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI));
         robot.sensors.addTelemetry("Current RPM", "%.1f", currentRpm);
 
     }

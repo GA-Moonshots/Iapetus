@@ -27,9 +27,15 @@ public class Intake extends SubsystemBase {
     public Intake(Iapetus robot) {
         this.robot = robot;
         // intakeMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.INTAKE_MOTOR_NAME);
+        intakeMotor.setDirection(Constants.INTAKE_MOTOR_DIRECTION);
+    }
+
+    public void setIntakeSpeed(double intakeSpeed) {
+        this.intakeMotor.setPower(intakeSpeed);
     }
 
     @Override
     public void periodic() {
+
     }
 }

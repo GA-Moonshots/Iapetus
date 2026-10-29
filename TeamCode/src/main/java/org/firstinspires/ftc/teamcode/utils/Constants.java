@@ -308,6 +308,20 @@ public class Constants {
     public static final Pose BLUE_SHOOT_AUDIENCE = new Pose(84, 24, Math.toRadians(90));;
     public static final Pose BLUE_SHOOT_SCORING = new Pose(84, 120, Math.toRadians(270));;
 
+    // ============================================================
+    //                   LAUNCHER CONSTANTS
+    // Needed for math calculations for the launcher. May be
+    // measurements from the robot or physical constants.
+    // ============================================================
+
+    public static final double GRAVITY = 9.81;
+    public static final double INCHES_TO_METERS = 0.0254;
+    public static final double SHOOTING_ANGLE = Math.toRadians(75);
+    public static final double HIVE_OPENING_ELEVATION = 55.0 * INCHES_TO_METERS;
+    public static final double LAUNCHER_ELEVATION = 10.0 * INCHES_TO_METERS;
+
+
+
 
 
     // ============================================================

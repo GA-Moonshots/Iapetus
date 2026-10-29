@@ -8,27 +8,25 @@ import org.firstinspires.ftc.teamcode.utils.Tunables;
 
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║                     DRIVE TO POSE BY CURVE                                ║
+ * ║                     DRIVE TO POSE BY POINT                                ║
  * ║                                                                           ║
  * ║  "Get there, but swing past THIS spot on the way." DriveToPose with a     ║
  * ║  bend in it.                                                              ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  *
- * The via pose is a Bézier CONTROL POINT: the curve is pulled toward it but
- * doesn't pass through it. Put it further out than you think you need, and
- * watch the result in Panels before trusting it near a wall.
+ * The via pose is a point you want the robot's path to move through.
  *
  * Only via's x and y matter; its heading is ignored. The robot holds the
  * target's heading the whole way. Pedro's frame (inches, corner origin).
  * Mirror for the other alliance in FieldMap, not here.
  */
-public class DriveToPoseByCurve extends DriveAbstract {
+public class DriveToPoseByPoint extends DriveAbstract {
 
     private final Pose targetPose;
     private final Pose viaPose;
     private boolean arrived = false;
 
-    public DriveToPoseByCurve(Iapetus robot, Pose target, Pose via, double timeoutSeconds) {
+    public DriveToPoseByPoint(Iapetus robot, Pose target, Pose via, double timeoutSeconds) {
         super(robot, timeoutSeconds);
         this.targetPose = target;
         this.viaPose = via;
