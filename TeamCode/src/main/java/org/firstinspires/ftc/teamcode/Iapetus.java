@@ -201,9 +201,9 @@ public class Iapetus extends Robot {
 
         intake.setDefaultCommand(new RunCommand(() -> intake.setIntakeSpeed(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)), intake));
 
-        // A — instant action, no Command needed. Servo flips are immediate.
-        new GamepadButton(player2, GamepadKeys.Button.A);
-
+        // A — Testing command: REMOVE AFTER 10/30
+        new GamepadButton(player2, GamepadKeys.Button.A)
+                .whenPressed(new InstantCommand(() -> launcher.incrementLaunchSpeed(0.05), launcher));
         // Y — a real Command, because this one takes time to finish.
         new GamepadButton(player2, GamepadKeys.Button.Y);
 

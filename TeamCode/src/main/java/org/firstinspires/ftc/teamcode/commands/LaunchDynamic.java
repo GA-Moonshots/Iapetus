@@ -25,7 +25,9 @@ public class LaunchDynamic extends LaunchAbstract {
 
     private void calculateLaunchPower() {
         double xDistance = robot.sensors.target(getTarget()).range();
-        double yDistance = robot.sensors.target(getTarget()).up;
+        double yDistance = Constants.HIVE_OPENING_ELEVATION - Constants.LAUNCHER_ELEVATION;
+
+        // Formula for initial velocity
 
     }
 }

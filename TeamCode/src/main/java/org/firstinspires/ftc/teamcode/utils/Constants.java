@@ -319,6 +319,7 @@ public class Constants {
     public static final double SHOOTING_ANGLE = Math.toRadians(75);
     public static final double HIVE_OPENING_ELEVATION = 55.0 * INCHES_TO_METERS;
     public static final double LAUNCHER_ELEVATION = 10.0 * INCHES_TO_METERS;
+    public static final double VELOCITY_TO_POWER_RATIO = 0.02;
 
 
 
