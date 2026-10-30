@@ -319,7 +319,13 @@ public class Constants {
     public static final double SHOOTING_ANGLE = Math.toRadians(75);
     public static final double HIVE_OPENING_ELEVATION = 55.0 * INCHES_TO_METERS;
     public static final double LAUNCHER_ELEVATION = 10.0 * INCHES_TO_METERS;
-    public static final double VELOCITY_TO_POWER_RATIO = 0.02;
+
+    /**
+     * Ratio of the power fed to the launcher to the angular velocity, in rads/s.
+     * The graph we measured says velocity = 30.19 * power - 1.64.
+     */
+    public static final double POWER_TO_VELOCITY_RATIO = 30;
+    public static final double WHEEL_RADIUS = 2.0 * INCHES_TO_METERS;
 
 
 

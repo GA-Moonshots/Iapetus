@@ -30,7 +30,7 @@ public class Launcher extends SubsystemBase {
     private double launchSpeedFactor;
     private double currentRpm;
     private boolean launching;
-    private double launchPower;
+    private double launchPower = 0;
 
     public Launcher(Iapetus robot) {
         this.robot = robot;
@@ -55,10 +55,15 @@ public class Launcher extends SubsystemBase {
 
     @Override
     public void periodic() {
-        frontMotor.setPower(launchPower);
-        backMotor.setPower(launchPower);
-        this.currentRpm = frontMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI));
+        if (launching) {
+            frontMotor.setPower(launchPower);
+            backMotor.setPower(launchPower);
+        }
+        // Take the average of the two motors' speeds
+        this.currentRpm = (frontMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI))
+                        + backMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI)))
+                        / 2;
         robot.sensors.addTelemetry("Current RPM", "%.1f", currentRpm);
-        robot.sensors.addTelemetry("launchPower", "%.1f", launchPower);
+        robot.sensors.addTelemetry("launchPower", "%.01f", launchPower);
     }
 }

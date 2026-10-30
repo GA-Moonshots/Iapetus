@@ -199,13 +199,15 @@ public class Iapetus extends Robot {
             OPERATOR — runs the mechanisms. Never drives.
         */
 
-        intake.setDefaultCommand(new RunCommand(() -> intake.setIntakeSpeed(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)), intake));
+        // Run the intake with right trigger
+        // intake.setDefaultCommand(new RunCommand(() -> intake.setIntakeSpeed(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)), intake));
 
         // A — Testing command: REMOVE AFTER 10/30
         new GamepadButton(player2, GamepadKeys.Button.A)
                 .whenPressed(new InstantCommand(() -> launcher.incrementLaunchSpeed(0.05), launcher));
         // Y — a real Command, because this one takes time to finish.
-        new GamepadButton(player2, GamepadKeys.Button.Y);
+        new GamepadButton(player2, GamepadKeys.Button.Y)
+                .whenPressed(new InstantCommand(() -> launcher.toggleLaunch()));
 
         // Bind this year's intake / launcher / arm the same way, then delete
         // the two grabber bindings above.
