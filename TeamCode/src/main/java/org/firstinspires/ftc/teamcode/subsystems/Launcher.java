@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.pedropathing.utils.Angle;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
@@ -27,7 +26,6 @@ public class Launcher extends SubsystemBase {
     private DcMotorEx frontMotor;
     private DcMotorEx backMotor;
 
-    private double launchSpeedFactor;
     private double currentRpm;
     private boolean launching;
     private double launchPower = 0;
@@ -44,13 +42,26 @@ public class Launcher extends SubsystemBase {
         launching = !launching;
     }
 
-    public void setLaunchSpeed(double launchSpeed){
-        this.launchPower = launchSpeed;
+    /**
+     * Set the launcher to a certain power, from 0 (stopped) to the maximum power
+     * allowed in Constants. The method will refuse values outside this range,
+     * but will not throw an exception, just let you know in telemetry.
+     * @param launchPower The power the motor should drive at.
+     */
+    public void setLaunchPower(double launchPower) {
+        if (launchPower < 0 || launchPower > Constants.LAUNCHER_MAX_POWER) {
+            robot.sensors.addTelemetry("Illegal launch power argument: ", "%.2f", launchPower);
+            return;
+        }
+        this.launchPower = launchPower;
     }
 
-    public void incrementLaunchSpeed(double launchSpeedIncrement) {
-        this.launchPower += launchSpeedIncrement;
-
+    /**
+     * Set the launcher to fire a game object at a certain speed.
+     * @param launchSpeed The speed, in meters/second.
+     */
+    public void setLaunchSpeed(double launchSpeed) {
+        setLaunchPower((launchSpeed / Constants.WHEEL_RADIUS) / Constants.POWER_TO_VELOCITY_RATIO);
     }
 
     @Override
@@ -59,11 +70,11 @@ public class Launcher extends SubsystemBase {
             frontMotor.setPower(launchPower);
             backMotor.setPower(launchPower);
         }
-        // Take the average of the two motors' speeds
+        // Take the average of the two motors' speeds and report it:
         this.currentRpm = (frontMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI))
-                        + backMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI)))
-                        / 2;
+                + backMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI)))
+                / 2;
         robot.sensors.addTelemetry("Current RPM", "%.1f", currentRpm);
-        robot.sensors.addTelemetry("launchPower", "%.01f", launchPower);
+        robot.sensors.addTelemetry("launchPower", "%.2f", launchPower);
     }
 }

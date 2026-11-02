@@ -58,7 +58,7 @@ public class Iapetus extends Robot {
 
     // Match configuration
     public boolean isRed;
-    public boolean isNearGoal;
+    public boolean isCorner;
 
     // Subsystems
     public PedroDrive drive;
@@ -93,11 +93,12 @@ public class Iapetus extends Robot {
     //                  AUTONOMOUS CONSTRUCTOR
     // ============================================================
 
-    public Iapetus(LinearOpMode opMode, boolean isRed, boolean isNearGoal, Pose startPose) {
+    public Iapetus(LinearOpMode opMode, boolean isRed, boolean isCorner, Pose startPose) {
         this.opMode = opMode;
         this.telemetry = opMode.telemetry;
         this.hardwareMap = opMode.hardwareMap;
         this.isRed = isRed;
+        this.isCorner = isCorner;
         this.startPose = startPose;
 
         this.player1 = new GamepadEx(opMode.gamepad1);
@@ -117,7 +118,8 @@ public class Iapetus extends Robot {
         intake = new Intake(this);
         launcher = new Launcher(this);
 
-        register(drive, sensors, intake, launcher);
+        //*** PUT LAUNCHER AND INTAKE BACK IN HERE IF NOT HERE ALREADY ***
+        register(drive, sensors);
     }
 
     // ============================================================
@@ -148,7 +150,6 @@ public class Iapetus extends Robot {
          ██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ██╔══╝  ██╔══██╗     ██║
          ██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║     ██║
          ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝     ╚═╝
-
             DRIVER — moves the robot. Doesn't touch game pieces.
         */
 
@@ -195,7 +196,6 @@ public class Iapetus extends Robot {
          ██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ██╔══╝  ██╔══██╗    ██╔═══╝
          ██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║    ███████╗
          ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝    ╚══════╝
-
             OPERATOR — runs the mechanisms. Never drives.
         */
 
@@ -203,11 +203,9 @@ public class Iapetus extends Robot {
         // intake.setDefaultCommand(new RunCommand(() -> intake.setIntakeSpeed(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)), intake));
 
         // A — Testing command: REMOVE AFTER 10/30
-        new GamepadButton(player2, GamepadKeys.Button.A)
-                .whenPressed(new InstantCommand(() -> launcher.incrementLaunchSpeed(0.05), launcher));
+        new GamepadButton(player2, GamepadKeys.Button.A);
         // Y — a real Command, because this one takes time to finish.
-        new GamepadButton(player2, GamepadKeys.Button.Y)
-                .whenPressed(new InstantCommand(() -> launcher.toggleLaunch()));
+        new GamepadButton(player2, GamepadKeys.Button.Y);
 
         // Bind this year's intake / launcher / arm the same way, then delete
         // the two grabber bindings above.
@@ -227,23 +225,39 @@ public class Iapetus extends Robot {
         drive.follower.update();  // know where we are before we move
 
         if (isRed) {
-            new SequentialCommandGroup(
-                    new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 5),
-                    new WaitCommand(2000),
-                    new DriveToPose(this, startPose, 5),
-                    new DriveToPoseByPoint(this, Constants.RED_PARK, new Pose(30, 72), 5),
-                    new DriveToPoseByPoint(this, startPose, new Pose(30, 72), 5)
-                    // ...then the rest of this year's plan.
-            ).schedule();
+            if(isCorner) {
+                new SequentialCommandGroup(
+                        new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 5),
+                        new WaitCommand(2000),
+                        new DriveToPose(this, startPose, 5),
+                        new DriveToPoseByPoint(this, Constants.RED_PARK, new Pose(30, 72), 5),
+                        new DriveToPoseByPoint(this, startPose, new Pose(30, 72), 5)
+                        // ...then the rest of this year's plan.
+                ).schedule();
+            }
+            /*else {
+                new SequentialCommandGroup(
+
+            }*/
         } else {
-            new SequentialCommandGroup(
-                    new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 5),
-                    new WaitCommand(2000),
-                    new DriveToPose(this, startPose, 5),
-                    new DriveToPoseByPoint(this, Constants.BLUE_PARK, new Pose(114, 72), 5),
-                    new DriveToPoseByPoint(this, startPose, new Pose(114, 72), 5)
-                    // ...then the rest of this year's plan.
-            ).schedule();
+            if(isCorner) {
+                new SequentialCommandGroup(
+                        new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 5),
+                        new WaitCommand(2000),
+                        new DriveToPose(this, startPose, 5),
+                        new DriveToPoseByPoint(this, Constants.BLUE_PARK, new Pose(114, 72), 5),
+                        new DriveToPoseByPoint(this, startPose, new Pose(114, 72), 5)
+                        // ...then the rest of this year's plan.
+                ).schedule();
+            }
+            else {
+                new SequentialCommandGroup(
+                        new DriveToPoseByPoint(this, Constants.BLUE_SHOOT_SCORING, new Pose(110, 103),5),
+                        new WaitCommand(2000),
+                        new DriveToPoseByPoint(this, startPose, new Pose(110, 103), 5)
+
+                ).schedule();
+            }
         }
     }
 }

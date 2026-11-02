@@ -41,10 +41,8 @@ public class AutoMcAutty extends CommandOpMode {
     /** Runs repeatedly between INIT and START. Where the drive team answers. */
     @Override
     public void initialize_loop() {
-        if (gamepad1.x) isRed = false;
-        if (gamepad1.b) isRed = true;
-        if (gamepad1.dpad_up) isCorner = false;
-        if (gamepad1.dpad_down) isCorner = true;
+        if (gamepad1.x) isRed = !isRed;
+        if (gamepad1.b) isRed = !isCorner;
 
         telemetry.addData("Alliance", isRed ? "RED" : "BLUE");
         telemetry.addData("Position", isCorner ? "CORNER" : "MIDDLE");
