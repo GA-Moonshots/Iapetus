@@ -42,7 +42,7 @@ public class AutoMcAutty extends CommandOpMode {
     @Override
     public void initialize_loop() {
         if (gamepad1.x) isRed = !isRed;
-        if (gamepad1.b) isRed = !isCorner;
+        if (gamepad1.b) isCorner = !isCorner;
 
         telemetry.addData("Alliance", isRed ? "RED" : "BLUE");
         telemetry.addData("Position", isCorner ? "CORNER" : "MIDDLE");

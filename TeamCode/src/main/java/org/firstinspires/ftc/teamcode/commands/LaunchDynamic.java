@@ -10,6 +10,8 @@ public class LaunchDynamic extends LaunchAbstract {
     }
 
     public void execute() {
+        getTarget();
+        launcher.setLaunchSpeed(calculateLaunchVelocity());
 
     }
 

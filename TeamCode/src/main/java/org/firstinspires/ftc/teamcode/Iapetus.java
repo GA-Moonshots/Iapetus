@@ -115,8 +115,8 @@ public class Iapetus extends Robot {
         // Sensors first — everything else wants to log to it.
         sensors = new Sensors(this);
         drive = new PedroDrive(this, startPose);
-        intake = new Intake(this);
-        launcher = new Launcher(this);
+        // intake = new Intake(this);
+        // launcher = new Launcher(this);
 
         //*** PUT LAUNCHER AND INTAKE BACK IN HERE IF NOT HERE ALREADY ***
         register(drive, sensors);
@@ -225,7 +225,8 @@ public class Iapetus extends Robot {
         drive.follower.update();  // know where we are before we move
 
         if (isRed) {
-            if(isCorner) {
+            if (isCorner) {
+                // Red Corner
                 new SequentialCommandGroup(
                         new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 5),
                         new WaitCommand(2000),
@@ -235,12 +236,16 @@ public class Iapetus extends Robot {
                         // ...then the rest of this year's plan.
                 ).schedule();
             }
-            /*else {
+            else {
+                // Red Middle
                 new SequentialCommandGroup(
+                        new DriveToPoseByPoint(this, Constants.RED_SHOOT_AUDIENCE, new Pose(34, 41),5)
+                ).schedule();
 
-            }*/
-        } else {
-            if(isCorner) {
+            }
+        }
+        if (isCorner) {
+             // Blue Corner
                 new SequentialCommandGroup(
                         new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 5),
                         new WaitCommand(2000),
@@ -248,16 +253,15 @@ public class Iapetus extends Robot {
                         new DriveToPoseByPoint(this, Constants.BLUE_PARK, new Pose(114, 72), 5),
                         new DriveToPoseByPoint(this, startPose, new Pose(114, 72), 5)
                         // ...then the rest of this year's plan.
-                ).schedule();
-            }
-            else {
+            ).schedule();
+        }
+                // Blue Middle
                 new SequentialCommandGroup(
                         new DriveToPoseByPoint(this, Constants.BLUE_SHOOT_SCORING, new Pose(110, 103),5),
                         new WaitCommand(2000),
                         new DriveToPoseByPoint(this, startPose, new Pose(110, 103), 5)
 
                 ).schedule();
-            }
         }
     }
 }
