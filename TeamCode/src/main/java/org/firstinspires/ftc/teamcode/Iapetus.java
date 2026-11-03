@@ -231,15 +231,17 @@ public class Iapetus extends Robot {
                         new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 5),
                         new WaitCommand(2000),
                         new DriveToPose(this, startPose, 5),
-                        new DriveToPoseByPoint(this, Constants.RED_PARK, new Pose(30, 72), 5),
-                        new DriveToPoseByPoint(this, startPose, new Pose(30, 72), 5)
+                        new DriveToPoseByPoint(this, Constants.RED_PARK, Constants.RED_PARK_CURVE, 5),
+                        new DriveToPoseByPoint(this, startPose, Constants.RED_PARK_CURVE, 5)
                         // ...then the rest of this year's plan.
                 ).schedule();
             }
             else {
                 // Red Middle
                 new SequentialCommandGroup(
-                        new DriveToPoseByPoint(this, Constants.RED_SHOOT_AUDIENCE, new Pose(34, 41),5)
+                        new DriveToPoseByPoint(this, Constants.RED_SHOOT_AUDIENCE, Constants.RED_MIDDLE_CURVE,5),
+                        new WaitCommand(2000),
+                        new DriveToPoseByPoint(this, startPose, Constants.RED_MIDDLE_CURVE, 5)
                 ).schedule();
 
             }
@@ -250,18 +252,18 @@ public class Iapetus extends Robot {
                         new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 5),
                         new WaitCommand(2000),
                         new DriveToPose(this, startPose, 5),
-                        new DriveToPoseByPoint(this, Constants.BLUE_PARK, new Pose(114, 72), 5),
-                        new DriveToPoseByPoint(this, startPose, new Pose(114, 72), 5)
+                        new DriveToPoseByPoint(this, Constants.BLUE_PARK, Constants.BLUE_PARK_CURVE, 5),
+                        new DriveToPoseByPoint(this, startPose, Constants.BLUE_PARK_CURVE, 5)
                         // ...then the rest of this year's plan.
             ).schedule();
         }
                 // Blue Middle
                 new SequentialCommandGroup(
-                        new DriveToPoseByPoint(this, Constants.BLUE_SHOOT_SCORING, new Pose(110, 103),5),
+                        new DriveToPoseByPoint(this, Constants.BLUE_SHOOT_SCORING, Constants.BLUE_MIDDLE_CURVE,5),
                         new WaitCommand(2000),
-                        new DriveToPoseByPoint(this, startPose, new Pose(110, 103), 5)
+                        new DriveToPoseByPoint(this, startPose, Constants.BLUE_MIDDLE_CURVE, 5)
 
                 ).schedule();
-        
+
     }
 }
