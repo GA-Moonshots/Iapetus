@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
@@ -25,6 +27,7 @@ public class Launcher extends SubsystemBase {
 
     private DcMotorEx frontMotor;
     private DcMotorEx backMotor;
+    private CRServo feedServo;
 
     private double currentRpm;
     private boolean launching;
@@ -38,7 +41,7 @@ public class Launcher extends SubsystemBase {
         backMotor.setDirection(Constants.LAUNCHER_MOTOR_BACK_DIRECTION);
         this.launching = false;
     }
-    public void toggleLaunch(){
+    public void toggleLaunch() {
         launching = !launching;
     }
 
