@@ -5,6 +5,8 @@ import org.firstinspires.ftc.teamcode.utils.Constants;
 
 public class LaunchDynamic extends LaunchAbstract {
 
+    boolean launchComplete = false;
+
     public LaunchDynamic(Iapetus robot) {
         super(robot);
     }
@@ -12,7 +14,7 @@ public class LaunchDynamic extends LaunchAbstract {
     public void execute() {
         getTarget();
         launcher.setLaunchSpeed(calculateLaunchVelocity());
-
+        launchComplete = true;
     }
 
     private String getTarget() {
@@ -24,7 +26,10 @@ public class LaunchDynamic extends LaunchAbstract {
         return Constants.BLUE_SCORING_HIVE;
     }
 
-
+    @Override
+    public boolean isFinished() {
+        return launchComplete;
+    }
 
     private double calculateLaunchVelocity() {
         // ────────────────────────────────────────────────────────────

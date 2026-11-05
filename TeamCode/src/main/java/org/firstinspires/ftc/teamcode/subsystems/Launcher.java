@@ -25,11 +25,10 @@ public class Launcher extends SubsystemBase {
 
     private final Iapetus robot;
 
-    private DcMotorEx frontMotor;
-    private DcMotorEx backMotor;
-    private CRServo feedServo;
+    private final DcMotorEx frontMotor;
+    private final DcMotorEx backMotor;
+    private final CRServo feedServo;
 
-    private double currentRpm;
     private boolean launching;
     private double launchPower = 0;
 
@@ -37,12 +36,18 @@ public class Launcher extends SubsystemBase {
         this.robot = robot;
         frontMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.LAUNCHER_MOTOR_FRONT_NAME);
         backMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.LAUNCHER_MOTOR_BACK_NAME);
+        feedServo = robot.hardwareMap.get(CRServo.class, Constants.LAUNCHER_FEED_SERVO_NAME);
         frontMotor.setDirection(Constants.LAUNCHER_MOTOR_FRONT_DIRECTION);
         backMotor.setDirection(Constants.LAUNCHER_MOTOR_BACK_DIRECTION);
         this.launching = false;
     }
+
     public void toggleLaunch() {
         launching = !launching;
+    }
+
+    public void feed() {
+
     }
 
     /**
@@ -67,6 +72,10 @@ public class Launcher extends SubsystemBase {
         setLaunchPower((launchSpeed / Constants.WHEEL_RADIUS) / Constants.POWER_TO_VELOCITY_RATIO);
     }
 
+    public void stop() {
+
+    }
+
     @Override
     public void periodic() {
         if (launching) {
@@ -74,9 +83,9 @@ public class Launcher extends SubsystemBase {
             backMotor.setPower(launchPower);
         }
         // Take the average of the two motors' speeds and report it:
-        this.currentRpm = (frontMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI))
-                + backMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI)))
-                / 2;
+        double currentRpm =  (frontMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI))
+                            + backMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI)))
+                            / 2;
         robot.sensors.addTelemetry("Current RPM", "%.1f", currentRpm);
         robot.sensors.addTelemetry("launchPower", "%.2f", launchPower);
     }
