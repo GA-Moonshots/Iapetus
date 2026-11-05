@@ -78,7 +78,7 @@ public class Constants {
     public static final DcMotorSimple.Direction LEFT_FRONT_DIRECTION  = DcMotorSimple.Direction.REVERSE;
     public static final DcMotorSimple.Direction LEFT_BACK_DIRECTION   = DcMotorSimple.Direction.FORWARD;
     public static final DcMotorSimple.Direction RIGHT_FRONT_DIRECTION = DcMotorSimple.Direction.REVERSE;
-    public static final DcMotorSimple.Direction RIGHT_BACK_DIRECTION  = DcMotorSimple.Direction.REVERSE;
+    public static final DcMotorSimple.Direction RIGHT_BACK_DIRECTION  = DcMotorSimple.Direction.FORWARD;
 
     public static final DcMotorSimple.Direction INTAKE_MOTOR_DIRECTION = DcMotorSimple.Direction.FORWARD;
     public static final DcMotorSimple.Direction LAUNCHER_MOTOR_FRONT_DIRECTION = DcMotorSimple.Direction.FORWARD;
@@ -335,7 +335,7 @@ public class Constants {
     public static final double POWER_TO_VELOCITY_RATIO = 30;
     public static final double WHEEL_RADIUS = 2.0;
 
-
+    public static final double MAX_INTAKE_POWER = 0.8;
 
 
 

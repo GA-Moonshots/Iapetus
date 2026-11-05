@@ -115,7 +115,7 @@ public class Iapetus extends Robot {
         // Sensors first — everything else wants to log to it.
         sensors = new Sensors(this);
         drive = new PedroDrive(this, startPose);
-        // intake = new Intake(this);
+        intake = new Intake(this);
         // launcher = new Launcher(this);
 
         //*** PUT LAUNCHER AND INTAKE BACK IN HERE IF NOT HERE ALREADY ***
@@ -200,7 +200,9 @@ public class Iapetus extends Robot {
         */
 
         // Run the intake with right trigger
-        // intake.setDefaultCommand(new RunCommand(() -> intake.setIntakeSpeed(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)), intake));
+        intake.setDefaultCommand(new RunCommand(() ->
+                intake.setIntakeSpeed(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
+                                                       * Constants.MAX_INTAKE_POWER), intake));
 
         // A — Testing command: REMOVE AFTER 10/30
         new GamepadButton(player2, GamepadKeys.Button.A);
