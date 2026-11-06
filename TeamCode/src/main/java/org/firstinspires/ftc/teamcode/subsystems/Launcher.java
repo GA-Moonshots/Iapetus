@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
-import com.seattlesolvers.solverslib.util.Timing;
 
 import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Constants;
@@ -33,6 +32,7 @@ public class Launcher extends SubsystemBase {
     private final ElapsedTime feedTimer;
 
     private boolean launching;
+    private boolean feeding;
     private double launchPower;
 
     public Launcher(Iapetus robot) {
@@ -52,7 +52,8 @@ public class Launcher extends SubsystemBase {
 
     public void feed() {
         feedTimer.reset();
-        feedServo.setPower(Constants.FEED_SERVO_POWER);
+        feedServo.setPower(Constants.LAUNCHER_FEED_SERVO_POWER);
+
     }
 
     /**
@@ -83,9 +84,11 @@ public class Launcher extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (launching) {
-            frontMotor.setPower(launchPower);
-            backMotor.setPower(launchPower);
+        frontMotor.setPower(launchPower);
+        backMotor.setPower(launchPower);
+
+        if (feedTimer.milliseconds() >= Constants.LAUNCHER_FEED_SERVO_DURATION_MS) {
+            feedServo.setPower(0);
         }
         // Take the average of the two motors' speeds and report it:
         double currentRpm =  (frontMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI))

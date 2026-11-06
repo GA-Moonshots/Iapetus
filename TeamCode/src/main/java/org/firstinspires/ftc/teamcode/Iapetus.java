@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.Robot;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
-import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
@@ -22,6 +21,7 @@ import org.firstinspires.ftc.teamcode.commands.DriveFwdByDist;
 import org.firstinspires.ftc.teamcode.commands.DriveToPose;
 import org.firstinspires.ftc.teamcode.commands.DriveToPoseByPoint;
 import org.firstinspires.ftc.teamcode.commands.DriveTurnBy;
+import org.firstinspires.ftc.teamcode.commands.DriveTurnTo;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.PedroDrive;
@@ -162,12 +162,13 @@ public class Iapetus extends Robot {
                 .whenPressed(new InstantCommand(() -> drive.toggleFieldCentric()));
 
         // X — nudge forward 12". Example of scheduling a real Command from a button.
-        new GamepadButton(player1, GamepadKeys.Button.X)
-                .whenPressed(new DriveFwdByDist(this, 12, 3));
+        new GamepadButton(player1, GamepadKeys.Button.X);
 
         // Y — turn by 90 degrees
         new GamepadButton(player1, GamepadKeys.Button.Y)
-                .whenPressed(new DriveTurnBy(this, 90, 3));
+                .whenPressed(new SequentialCommandGroup(
+
+                ));
 
         // Bumper-free 180: useful when a driver gets turned around.
         new GamepadButton(player1, GamepadKeys.Button.DPAD_DOWN)
@@ -202,12 +203,19 @@ public class Iapetus extends Robot {
         // Run the intake with right trigger
         intake.setDefaultCommand(new RunCommand(() ->
                 intake.setIntakeSpeed(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
-                                                       * Constants.MAX_INTAKE_POWER), intake));
+                                                       * Constants.INTAKE_MAX_POWER), intake));
 
-        // A — Testing command: REMOVE AFTER 10/30
-        new GamepadButton(player2, GamepadKeys.Button.A);
+        launcher.setDefaultCommand(new RunCommand(() ->
+                launcher.setLaunchPower(player2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)
+                                                       * Constants.LAUNCHER_MAX_POWER), launcher));
+
+        // A — Testing command
+        new GamepadButton(player2, GamepadKeys.Button.A)
+                .whenPressed(new InstantCommand(() -> launcher.toggleLaunch()));
         // Y — a real Command, because this one takes time to finish.
         new GamepadButton(player2, GamepadKeys.Button.Y);
+
+
 
         // Bind this year's intake / launcher / arm the same way, then delete
         // the two grabber bindings above.

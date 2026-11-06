@@ -431,4 +431,13 @@ public class Sensors extends SubsystemBase {
                     Tunables.VISION_CORRECTIONS_ENABLED ? "taken" : "watched", rejectedCount);
         }
     }
+
+    public String getOurTarget() {
+        if (robot.isRed) {
+            if (robot.drive.getPose().y() < 72) return Constants.RED_AUDIENCE_HIVE;
+            return Constants.RED_SCORING_HIVE;
+        }
+        if (robot.drive.getPose().y() < 72) return Constants.BLUE_AUDIENCE_HIVE;
+        return Constants.BLUE_SCORING_HIVE;
+    }
 }

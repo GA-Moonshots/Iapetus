@@ -15,7 +15,6 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.seattlesolvers.solverslib.hardware.motors.CRServo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -76,7 +75,7 @@ public class Constants {
     //  Or prop the robot on a block, drive forward, and flip whichever lied.
     // ============================================================
 
-    public static final DcMotorSimple.Direction LEFT_FRONT_DIRECTION  = DcMotorSimple.Direction.REVERSE;
+    public static final DcMotorSimple.Direction LEFT_FRONT_DIRECTION  = DcMotorSimple.Direction.FORWARD;
     public static final DcMotorSimple.Direction LEFT_BACK_DIRECTION   = DcMotorSimple.Direction.FORWARD;
     public static final DcMotorSimple.Direction RIGHT_FRONT_DIRECTION = DcMotorSimple.Direction.REVERSE;
     public static final DcMotorSimple.Direction RIGHT_BACK_DIRECTION  = DcMotorSimple.Direction.FORWARD;
@@ -337,8 +336,9 @@ public class Constants {
     public static final double POWER_TO_VELOCITY_RATIO = 30;
     public static final double WHEEL_RADIUS = 2.0;
 
-    public static final double FEED_SERVO_POWER = 0.8;
-    public static final double MAX_INTAKE_POWER = 0.8;
+    public static final double LAUNCHER_FEED_SERVO_POWER = 0.8;
+    public static final int LAUNCHER_FEED_SERVO_DURATION_MS = 500;
+    public static final double INTAKE_MAX_POWER = 0.8;
 
 
 
