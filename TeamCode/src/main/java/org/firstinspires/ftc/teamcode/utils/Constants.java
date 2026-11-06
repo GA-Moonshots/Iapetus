@@ -15,6 +15,7 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.seattlesolvers.solverslib.hardware.motors.CRServo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -83,6 +84,7 @@ public class Constants {
     public static final DcMotorSimple.Direction INTAKE_MOTOR_DIRECTION = DcMotorSimple.Direction.FORWARD;
     public static final DcMotorSimple.Direction LAUNCHER_MOTOR_FRONT_DIRECTION = DcMotorSimple.Direction.FORWARD;
     public static final DcMotorSimple.Direction LAUNCHER_MOTOR_BACK_DIRECTION = DcMotorSimple.Direction.FORWARD;
+    public static final DcMotorSimple.Direction LAUNCHER_FEED_SERVO_DIRECTION = DcMotorSimple.Direction.FORWARD;
 
     /**
      * Driver lets go of the sticks: true = stop dead, false = coast like it's
@@ -335,6 +337,7 @@ public class Constants {
     public static final double POWER_TO_VELOCITY_RATIO = 30;
     public static final double WHEEL_RADIUS = 2.0;
 
+    public static final double FEED_SERVO_POWER = 0.8;
     public static final double MAX_INTAKE_POWER = 0.8;
 
 

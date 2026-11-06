@@ -4,7 +4,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
+import com.seattlesolvers.solverslib.util.Timing;
 
 import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Constants;
@@ -28,9 +30,10 @@ public class Launcher extends SubsystemBase {
     private final DcMotorEx frontMotor;
     private final DcMotorEx backMotor;
     private final CRServo feedServo;
+    private final ElapsedTime feedTimer;
 
     private boolean launching;
-    private double launchPower = 0;
+    private double launchPower;
 
     public Launcher(Iapetus robot) {
         this.robot = robot;
@@ -39,7 +42,8 @@ public class Launcher extends SubsystemBase {
         feedServo = robot.hardwareMap.get(CRServo.class, Constants.LAUNCHER_FEED_SERVO_NAME);
         frontMotor.setDirection(Constants.LAUNCHER_MOTOR_FRONT_DIRECTION);
         backMotor.setDirection(Constants.LAUNCHER_MOTOR_BACK_DIRECTION);
-        this.launching = false;
+        feedServo.setDirection(Constants.LAUNCHER_FEED_SERVO_DIRECTION);
+        feedTimer = new ElapsedTime();
     }
 
     public void toggleLaunch() {
@@ -47,7 +51,8 @@ public class Launcher extends SubsystemBase {
     }
 
     public void feed() {
-
+        feedTimer.reset();
+        feedServo.setPower(Constants.FEED_SERVO_POWER);
     }
 
     /**
