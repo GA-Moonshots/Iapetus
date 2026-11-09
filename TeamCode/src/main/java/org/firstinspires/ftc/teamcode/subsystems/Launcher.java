@@ -39,10 +39,17 @@ public class Launcher extends SubsystemBase {
         this.robot = robot;
         frontMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.LAUNCHER_MOTOR_FRONT_NAME);
         backMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.LAUNCHER_MOTOR_BACK_NAME);
-        feedServo = robot.hardwareMap.get(CRServo.class, Constants.LAUNCHER_FEED_SERVO_NAME);
+        // Feed servo may not be wired yet — a missing servo shouldn't brick the bench test.
+        CRServo servo = null;
+        try {
+            servo = robot.hardwareMap.get(CRServo.class, Constants.LAUNCHER_FEED_SERVO_NAME);
+            servo.setDirection(Constants.LAUNCHER_FEED_SERVO_DIRECTION);
+        } catch (Exception e) {
+            servo = null;
+        }
+        feedServo = servo;
         frontMotor.setDirection(Constants.LAUNCHER_MOTOR_FRONT_DIRECTION);
         backMotor.setDirection(Constants.LAUNCHER_MOTOR_BACK_DIRECTION);
-        feedServo.setDirection(Constants.LAUNCHER_FEED_SERVO_DIRECTION);
         feedTimer = new ElapsedTime();
     }
 
@@ -52,7 +59,7 @@ public class Launcher extends SubsystemBase {
 
     public void feed() {
         feedTimer.reset();
-        feedServo.setPower(Constants.LAUNCHER_FEED_SERVO_POWER);
+        if (feedServo != null) feedServo.setPower(Constants.LAUNCHER_FEED_SERVO_POWER);
 
     }
 
@@ -84,17 +91,18 @@ public class Launcher extends SubsystemBase {
 
     @Override
     public void periodic() {
-        frontMotor.setPower(launchPower);
-        backMotor.setPower(launchPower);
+        double power = launching ? Constants.LAUNCHER_MAX_POWER : launchPower;
+        frontMotor.setPower(power);
+        backMotor.setPower(power);
 
         if (feedTimer.milliseconds() >= Constants.LAUNCHER_FEED_SERVO_DURATION_MS) {
-            feedServo.setPower(0);
+            if (feedServo != null) feedServo.setPower(0);
         }
         // Take the average of the two motors' speeds and report it:
         double currentRpm =  (frontMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI))
                             + backMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI)))
                             / 2;
         robot.sensors.addTelemetry("Current RPM", "%.1f", currentRpm);
-        robot.sensors.addTelemetry("launchPower", "%.2f", launchPower);
+        robot.sensors.addTelemetry("launchPower", "%.2f", power);
     }
 }

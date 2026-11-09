@@ -114,12 +114,10 @@ public class Iapetus extends Robot {
 
         // Sensors first — everything else wants to log to it.
         sensors = new Sensors(this);
-        drive = new PedroDrive(this, startPose);
-        intake = new Intake(this);
-        // launcher = new Launcher(this);
-
-        //*** PUT LAUNCHER AND INTAKE BACK IN HERE IF NOT HERE ALREADY ***
-        register(drive, sensors);
+        // BENCH TEST (launcher-bench-test branch): no drivetrain, no intake.
+        // robot.drive stays null — don't merge this branch to master.
+        launcher = new Launcher(this);
+        register(launcher, sensors);
     }
 
     // ============================================================
@@ -140,85 +138,9 @@ public class Iapetus extends Robot {
     // ============================================================
 
     public void initTeleOp() {
-        // The default command: runs whenever nothing else claims the wheels.
-        drive.setDefaultCommand(new Drive(this));
-
-        /*
-         ██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗      ██╗
-         ██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██╔════╝██╔══██╗    ███║
-         ██████╔╝██║     ███████║ ╚████╔╝ █████╗  ██████╔╝    ╚██║
-         ██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ██╔══╝  ██╔══██╗     ██║
-         ██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║     ██║
-         ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝     ╚═╝
-            DRIVER — moves the robot. Doesn't touch game pieces.
-        */
-
-        // A — "forward is THIS way now." Fixes a drifted field-centric heading.
+        // BENCH TEST: P1 A toggles both launcher motors between stopped and full power.
         new GamepadButton(player1, GamepadKeys.Button.A)
-                .whenPressed(new InstantCommand(() -> drive.resetHeading()));
-
-        // B — toggle field-centric / robot-centric
-        new GamepadButton(player1, GamepadKeys.Button.B)
-                .whenPressed(new InstantCommand(() -> drive.toggleFieldCentric()));
-
-        // X — nudge forward 12". Example of scheduling a real Command from a button.
-        new GamepadButton(player1, GamepadKeys.Button.X);
-
-        // Y — turn by 90 degrees
-        new GamepadButton(player1, GamepadKeys.Button.Y)
-                .whenPressed(new SequentialCommandGroup(
-
-                ));
-
-        // Bumper-free 180: useful when a driver gets turned around.
-        new GamepadButton(player1, GamepadKeys.Button.DPAD_DOWN)
-                .whenPressed(new DriveTurnBy(this, 180, true, 3));
-
-        // DPAD UP — panic button. Drops any path and hands the wheels back.
-        // Requiring `drive` is the trick: it interrupts whatever command owns
-        // the wheels, and the Drive default command picks them straight back up.
-        new GamepadButton(player1, GamepadKeys.Button.DPAD_UP)
-                .whenPressed(new InstantCommand(() -> drive.stop(), drive));
-
-        // LEFT BUMPER — face the nearest thing the camera is tracking.
-        new GamepadButton(player1, GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new DriveFaceTarget(this, 2));
-
-        //DPAD LEFT- Toggle holding current position
-        //new GamepadButton(player2, GamepadKeys.Button.DPAD_LEFT)
-        //        .whenPressed(new InstantCommand(() -> launcher.toggleLaunch()));
-
-        // Right bumper is slow mode — read directly in Drive.execute(), not bound here.
-
-        /*
-         ██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗     ██████╗
-         ██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██╔════╝██╔══██╗    ╚════██╗
-         ██████╔╝██║     ███████║ ╚████╔╝ █████╗  ██████╔╝     █████╔╝
-         ██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ██╔══╝  ██╔══██╗    ██╔═══╝
-         ██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║    ███████╗
-         ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝    ╚══════╝
-            OPERATOR — runs the mechanisms. Never drives.
-        */
-
-        // Run the intake with right trigger
-        intake.setDefaultCommand(new RunCommand(() ->
-                intake.setIntakeSpeed(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
-                                                       * Constants.INTAKE_MAX_POWER), intake));
-
-        launcher.setDefaultCommand(new RunCommand(() ->
-                launcher.setLaunchPower(player2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)
-                                                       * Constants.LAUNCHER_MAX_POWER), launcher));
-
-        // A — Testing command
-        new GamepadButton(player2, GamepadKeys.Button.A)
                 .whenPressed(new InstantCommand(() -> launcher.toggleLaunch()));
-        // Y — a real Command, because this one takes time to finish.
-        new GamepadButton(player2, GamepadKeys.Button.Y);
-
-
-
-        // Bind this year's intake / launcher / arm the same way, then delete
-        // the two grabber bindings above.
     }
 
     // ============================================================
