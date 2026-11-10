@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.commands.DriveToPose;
 import org.firstinspires.ftc.teamcode.commands.DriveToPoseByPoint;
 import org.firstinspires.ftc.teamcode.commands.DriveTurnBy;
 import org.firstinspires.ftc.teamcode.commands.DriveTurnTo;
+import org.firstinspires.ftc.teamcode.commands.LaunchDynamic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.PedroDrive;
@@ -116,10 +117,10 @@ public class Iapetus extends Robot {
         sensors = new Sensors(this);
         drive = new PedroDrive(this, startPose);
         intake = new Intake(this);
-        // launcher = new Launcher(this);
+        launcher = new Launcher(this);
 
         //*** PUT LAUNCHER AND INTAKE BACK IN HERE IF NOT HERE ALREADY ***
-        register(drive, sensors);
+        register(drive, sensors, intake, launcher);
     }
 
     // ============================================================
@@ -131,8 +132,7 @@ public class Iapetus extends Robot {
      * otherwise — no camera, not in view, or seen too long ago. Always check.
      */
     public TagSighting ourScoringHive() {
-
-        return sensors.target(isRed ? Constants.RED_SCORING_HIVE : Constants.BLUE_SCORING_HIVE);
+        return sensors.getOurTarget();
     }
 
     // ============================================================
@@ -161,8 +161,9 @@ public class Iapetus extends Robot {
         new GamepadButton(player1, GamepadKeys.Button.B)
                 .whenPressed(new InstantCommand(() -> drive.toggleFieldCentric()));
 
-        // X — nudge forward 12". Example of scheduling a real Command from a button.
-        new GamepadButton(player1, GamepadKeys.Button.X);
+        // X — Turn to face target.
+        // new GamepadButton(player1, GamepadKeys.Button.X)
+        //       .whenPressed(new DriveTurnBy(this, sensors.getOurTarget().bearing(), 1.5));
 
         // Y — turn by 90 degrees
         new GamepadButton(player1, GamepadKeys.Button.Y)
@@ -213,7 +214,8 @@ public class Iapetus extends Robot {
         new GamepadButton(player2, GamepadKeys.Button.A)
                 .whenPressed(new InstantCommand(() -> launcher.toggleLaunch()));
         // Y — a real Command, because this one takes time to finish.
-        new GamepadButton(player2, GamepadKeys.Button.Y);
+        new GamepadButton(player2, GamepadKeys.Button.Y)
+                .whenPressed(new LaunchDynamic(this));
 
 
 

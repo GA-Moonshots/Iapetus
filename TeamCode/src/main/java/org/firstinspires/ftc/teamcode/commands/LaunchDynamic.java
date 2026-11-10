@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Constants;
+import org.firstinspires.ftc.teamcode.utils.TagSighting;
 
 public class LaunchDynamic extends LaunchAbstract {
 
@@ -16,7 +17,7 @@ public class LaunchDynamic extends LaunchAbstract {
         launchComplete = true;
     }
 
-    private String getTarget() {
+    private TagSighting getTarget() {
         return robot.sensors.getOurTarget();
     }
 
@@ -30,18 +31,13 @@ public class LaunchDynamic extends LaunchAbstract {
         // SAFETY CHECK 1
         // ────────────────────────────────────────────────────────────
 
-        // See if we can actually see our target, and that it is turned upwards.
-        // If not, return a velocity of 0 (do not shoot).
-        if (robot.sensors.target(getTarget()) == null) {
+        // See if we can actually see our target.
+        if (getTarget() == null) {
             robot.sensors.addTelemetry("TARGET WARNING: ", "Target not found");
-            return 0;
-        } else if (robot.sensors.target(getTarget()).up
-                < Constants.HIVE_OPENING_ELEVATION - Constants.HIVE_HEIGHT_TOLERANCE) {
-            robot.sensors.addTelemetry("TARGET WARNING: ", "Target is not upright");
             return 0;
         }
 
-        double xDistance = robot.sensors.target(getTarget()).range() * Constants.INCHES_TO_METERS;
+        double xDistance = getTarget().range() * Constants.INCHES_TO_METERS;
         double yDistance = (Constants.HIVE_OPENING_ELEVATION - Constants.LAUNCHER_ELEVATION)
                 * Constants.INCHES_TO_METERS;
 
@@ -64,7 +60,7 @@ public class LaunchDynamic extends LaunchAbstract {
         // And "outside" holds the rest:
         //   outside = x / cos(θ)
         //
-        // Then v₀ = (outside) √(inside).
+        // Then v₀ = (outside) * √(inside).
 
         double tanTheta = Math.tan(theta);
         double cosTheta = Math.cos(theta);

@@ -75,13 +75,13 @@ public class Constants {
     //  Or prop the robot on a block, drive forward, and flip whichever lied.
     // ============================================================
 
-    public static final DcMotorSimple.Direction LEFT_FRONT_DIRECTION  = DcMotorSimple.Direction.FORWARD;
+    public static final DcMotorSimple.Direction LEFT_FRONT_DIRECTION  = DcMotorSimple.Direction.REVERSE;
     public static final DcMotorSimple.Direction LEFT_BACK_DIRECTION   = DcMotorSimple.Direction.FORWARD;
     public static final DcMotorSimple.Direction RIGHT_FRONT_DIRECTION = DcMotorSimple.Direction.REVERSE;
-    public static final DcMotorSimple.Direction RIGHT_BACK_DIRECTION  = DcMotorSimple.Direction.FORWARD;
+    public static final DcMotorSimple.Direction RIGHT_BACK_DIRECTION  = DcMotorSimple.Direction.REVERSE;
 
     public static final DcMotorSimple.Direction INTAKE_MOTOR_DIRECTION = DcMotorSimple.Direction.FORWARD;
-    public static final DcMotorSimple.Direction LAUNCHER_MOTOR_FRONT_DIRECTION = DcMotorSimple.Direction.FORWARD;
+    public static final DcMotorSimple.Direction LAUNCHER_MOTOR_FRONT_DIRECTION = DcMotorSimple.Direction.REVERSE;
     public static final DcMotorSimple.Direction LAUNCHER_MOTOR_BACK_DIRECTION = DcMotorSimple.Direction.FORWARD;
     public static final DcMotorSimple.Direction LAUNCHER_FEED_SERVO_DIRECTION = DcMotorSimple.Direction.FORWARD;
 
@@ -189,8 +189,8 @@ public class Constants {
         /** ⚙ TUNE: Pinpoint Tuner measures these. xPodOffset is how far LEFT of
          *  centre the forward pod sits; yPodOffset is how far FORWARD the strafe
          *  pod sits. (Pedro 2 called these forwardPodY and strafePodX.) */
-        c.xPodOffset.set(6.650117889164001);
-        c.yPodOffset.set(-4.35309823103777);
+        c.xPodOffset.set(7.00);
+        c.yPodOffset.set(-6.75);
         c.offsetUnits.set(DistanceUnit.INCH);
         c.globalDistanceUnit.set(DistanceUnit.INCH);
 
