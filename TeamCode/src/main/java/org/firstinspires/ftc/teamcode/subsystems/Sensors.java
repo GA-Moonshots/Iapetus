@@ -436,10 +436,10 @@ public class Sensors extends SubsystemBase {
         String targetName;
         if (robot.isRed) {
             if (robot.drive.getPose().y() < 72) targetName =  Constants.RED_AUDIENCE_HIVE;
-           targetName = Constants.RED_SCORING_HIVE;
+           else targetName = Constants.RED_SCORING_HIVE;
         }
-        if (robot.drive.getPose().y() < 72) targetName = Constants.BLUE_AUDIENCE_HIVE;
-        targetName = Constants.BLUE_SCORING_HIVE;
+        else if (robot.drive.getPose().y() < 72) targetName = Constants.BLUE_AUDIENCE_HIVE;
+        else targetName = Constants.BLUE_SCORING_HIVE;
         return target(targetName);
     }
 

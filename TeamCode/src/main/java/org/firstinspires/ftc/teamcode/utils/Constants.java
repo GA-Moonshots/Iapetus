@@ -325,9 +325,7 @@ public class Constants {
     public static final double INCHES_TO_METERS = 0.0254;
     public static final double SHOOTING_ANGLE = Math.toRadians(75);
     public static final double HIVE_OPENING_ELEVATION = 55.0;
-    public static final double HIVE_HEIGHT_TOLERANCE = 1.0;
     public static final double LAUNCHER_ELEVATION = 10.0;
-    public static final double LAUNCHER_MAX_POWER = 1.0;
 
     /**
      * Ratio of the power fed to the launcher to the angular velocity, in rads/s.
@@ -335,12 +333,6 @@ public class Constants {
      */
     public static final double POWER_TO_VELOCITY_RATIO = 30;
     public static final double WHEEL_RADIUS = 2.0;
-
-    public static final double LAUNCHER_FEED_SERVO_POWER = 0.8;
-    public static final int LAUNCHER_FEED_SERVO_DURATION_MS = 500;
-    public static final double INTAKE_MAX_POWER = 0.8;
-
-
 
     // ============================================================
     //                    IMU ORIENTATION

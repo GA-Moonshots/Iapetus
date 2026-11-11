@@ -4,11 +4,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Constants;
+import org.firstinspires.ftc.teamcode.utils.Tunables;
 
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -29,7 +29,6 @@ public class Launcher extends SubsystemBase {
     private final DcMotorEx frontMotor;
     private final DcMotorEx backMotor;
     private final CRServo feedServo;
-    private final ElapsedTime feedTimer;
 
     private boolean launching;
     private boolean feeding;
@@ -40,21 +39,20 @@ public class Launcher extends SubsystemBase {
         frontMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.LAUNCHER_MOTOR_FRONT_NAME);
         backMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.LAUNCHER_MOTOR_BACK_NAME);
         feedServo = robot.hardwareMap.get(CRServo.class, Constants.LAUNCHER_FEED_SERVO_NAME);
+
         frontMotor.setDirection(Constants.LAUNCHER_MOTOR_FRONT_DIRECTION);
         backMotor.setDirection(Constants.LAUNCHER_MOTOR_BACK_DIRECTION);
         feedServo.setDirection(Constants.LAUNCHER_FEED_SERVO_DIRECTION);
-        feedTimer = new ElapsedTime();
     }
 
-    public void toggleLaunch() {
-        launching = !launching;
+    public void beginLaunch() {
+        launching = true;
     }
 
-    public void feed() {
-        feedTimer.reset();
-        feedServo.setPower(Constants.LAUNCHER_FEED_SERVO_POWER);
-
+    public void toggleFeed() {
+        feeding = !feeding;
     }
+
 
     /**
      * Set the launcher to a certain power, from 0 (stopped) to the maximum power
@@ -63,7 +61,7 @@ public class Launcher extends SubsystemBase {
      * @param launchPower The power the motor should drive at.
      */
     public void setLaunchPower(double launchPower) {
-        if (launchPower < 0 || launchPower > Constants.LAUNCHER_MAX_POWER) {
+        if (launchPower < 0 || launchPower > Tunables.LAUNCHER_MAX_POWER) {
             robot.sensors.addTelemetry("Illegal launch power argument: ", "%.2f", launchPower);
             return;
         }
@@ -78,18 +76,18 @@ public class Launcher extends SubsystemBase {
         setLaunchPower((launchSpeed / Constants.WHEEL_RADIUS) / Constants.POWER_TO_VELOCITY_RATIO);
     }
 
-    public void stop() {
-
+    public void stopAll() {
+        launching = false;
+        feeding = false;
     }
 
     @Override
     public void periodic() {
-        frontMotor.setPower(launchPower);
-        backMotor.setPower(launchPower);
-
-        if (feedTimer.milliseconds() >= Constants.LAUNCHER_FEED_SERVO_DURATION_MS) {
-            feedServo.setPower(0);
+        if (launching) {
+            frontMotor.setPower(launchPower);
+            backMotor.setPower(launchPower);
         }
+        feedServo.setPower((feeding) ? Tunables.LAUNCHER_FEED_SERVO_POWER : 0);
         // Take the average of the two motors' speeds and report it:
         double currentRpm =  (frontMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI))
                             + backMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI)))

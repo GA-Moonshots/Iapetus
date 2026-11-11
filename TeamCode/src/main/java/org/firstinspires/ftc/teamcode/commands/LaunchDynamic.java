@@ -3,27 +3,46 @@ package org.firstinspires.ftc.teamcode.commands;
 import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Constants;
 import org.firstinspires.ftc.teamcode.utils.TagSighting;
+import org.firstinspires.ftc.teamcode.utils.Tunables;
+
+
+import java.util.concurrent.TimeUnit;
+import com.seattlesolvers.solverslib.util.Timing;
 
 public class LaunchDynamic extends LaunchAbstract {
 
     boolean launchComplete = false;
 
-    public LaunchDynamic(Iapetus robot) {
-        super(robot);
+    public LaunchDynamic(Iapetus robot, double timeoutSeconds) {
+        super(robot, timeoutSeconds);
     }
 
+    @Override
     public void execute() {
+        Timing.Timer feedDelay = new Timing.Timer(
+                Tunables.LAUNCHER_FEED_SERVO_WAIT_MS, TimeUnit.MILLISECONDS);
+        Timing.Timer feedDuration = new Timing.Timer(
+                Tunables.LAUNCHER_FEED_SERVO_DURATION_MS, TimeUnit.MILLISECONDS);
         launcher.setLaunchSpeed(calculateLaunchVelocity());
-        launchComplete = true;
-    }
-
-    private TagSighting getTarget() {
-        return robot.sensors.getOurTarget();
+        launcher.beginLaunch();
+        feedDelay.start();
+        if (feedDelay.done()) {
+            feedDuration.start();
+            launcher.toggleFeed();
+        }
+        if (feedDuration.done()) {
+            launcher.toggleFeed();
+            launchComplete = true;
+        }
     }
 
     @Override
     public boolean isFinished() {
-        return launchComplete;
+        return launchComplete || patience.done();
+    }
+
+    private TagSighting getTarget() {
+        return robot.sensors.getOurTarget();
     }
 
     private double calculateLaunchVelocity() {

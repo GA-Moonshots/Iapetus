@@ -162,8 +162,10 @@ public class Iapetus extends Robot {
                 .whenPressed(new InstantCommand(() -> drive.toggleFieldCentric()));
 
         // X — Turn to face target.
-        // new GamepadButton(player1, GamepadKeys.Button.X)
-        //       .whenPressed(new DriveTurnBy(this, sensors.getOurTarget().bearing(), 1.5));
+        new GamepadButton(player1, GamepadKeys.Button.X)
+              .whenPressed(new DriveTurnBy(this,
+                      (sensors.getOurTarget() == null) ? 0 : sensors.getOurTarget().bearing(),
+                      1.5));
 
         // Y — turn by 90 degrees
         new GamepadButton(player1, GamepadKeys.Button.Y)
@@ -204,18 +206,18 @@ public class Iapetus extends Robot {
         // Run the intake with right trigger
         intake.setDefaultCommand(new RunCommand(() ->
                 intake.setIntakeSpeed(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
-                                                       * Constants.INTAKE_MAX_POWER), intake));
+                                                       * Tunables.INTAKE_MAX_POWER), intake));
 
         launcher.setDefaultCommand(new RunCommand(() ->
                 launcher.setLaunchPower(player2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)
-                                                       * Constants.LAUNCHER_MAX_POWER), launcher));
+                                                       * Tunables.LAUNCHER_MAX_POWER), launcher));
 
         // A — Testing command
         new GamepadButton(player2, GamepadKeys.Button.A)
-                .whenPressed(new InstantCommand(() -> launcher.toggleLaunch()));
+                .whenPressed(new InstantCommand(() -> launcher.beginLaunch()));
         // Y — a real Command, because this one takes time to finish.
         new GamepadButton(player2, GamepadKeys.Button.Y)
-                .whenPressed(new LaunchDynamic(this));
+                .whenPressed(new InstantCommand(() -> launcher.stopAll()));
 
 
 

@@ -62,6 +62,24 @@ public class Tunables {
     /** How close (degrees) counts as "facing it" for a turn command. */
     public static double HEADING_TOLERANCE_DEG = 1.0;
 
+    // ---- Launcher / Intake ----
+
+    /** Maximum allowed launcher power. */
+    public static double LAUNCHER_MAX_POWER = 0.8;
+
+    /** Maximum allowed feed servo power. */
+    public static double LAUNCHER_FEED_SERVO_POWER = 0.8;
+
+    /** Maximum allowed intake power. */
+    public static double INTAKE_MAX_POWER = 0.8;
+
+    /** Delay between starting launch motors and feeding the launcher. */
+    public static int LAUNCHER_FEED_SERVO_WAIT_MS = 200;
+
+    /** Time the feed servo is powered when it is told to feed. */
+    public static int LAUNCHER_FEED_SERVO_DURATION_MS = 500;
+
+
     // ---- Dashboard drawing ----
 
     /** Draw the coordinate frame markers. Leave on until you trust the frame. */
