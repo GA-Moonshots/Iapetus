@@ -304,6 +304,11 @@ public class Constants {
     public static final Pose BLUE_START_POSE_MIDDLE = new Pose(135.75, 72, Math.toRadians(180));
     public static final Pose RED_PARK = new Pose(8.25, 108, Math.toRadians(0));
     public static final Pose BLUE_PARK = new Pose(135.75, 36, Math.toRadians(180));
+    public static final Pose CENTER = new Pose(72, 72);
+    public static final Pose UP = new Pose(72, 120);
+    public static final Pose LEFT = new Pose(24, 72);
+    public static final Pose DOWN = new Pose(72, 24);
+    public static final Pose RIGHT = new Pose(120, 72);
 
     public static final Pose RED_SHOOT_SCORING = new Pose(60, 120, Math.toRadians(270));
     public static final Pose RED_SHOOT_AUDIENCE = new Pose(60, 24, Math.toRadians(90));;

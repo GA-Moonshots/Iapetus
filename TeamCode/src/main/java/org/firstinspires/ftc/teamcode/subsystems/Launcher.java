@@ -92,6 +92,7 @@ public class Launcher extends SubsystemBase {
         double currentRpm =  (frontMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI))
                             + backMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI)))
                             / 2;
+        robot.sensors.addTelemetry("State:", (launching) ? "LAUNCHING" : "IDLE");
         robot.sensors.addTelemetry("Current RPM", "%.1f", currentRpm);
         robot.sensors.addTelemetry("launchPower", "%.2f", launchPower);
     }

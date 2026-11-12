@@ -167,11 +167,8 @@ public class Iapetus extends Robot {
                       (sensors.getOurTarget() == null) ? 0 : sensors.getOurTarget().bearing(),
                       1.5));
 
-        // Y — turn by 90 degrees
-        new GamepadButton(player1, GamepadKeys.Button.Y)
-                .whenPressed(new SequentialCommandGroup(
-
-                ));
+        // Y
+        new GamepadButton(player1, GamepadKeys.Button.Y);
 
         // Bumper-free 180: useful when a driver gets turned around.
         new GamepadButton(player1, GamepadKeys.Button.DPAD_DOWN)
@@ -205,11 +202,11 @@ public class Iapetus extends Robot {
 
         // Run the intake with right trigger
         intake.setDefaultCommand(new RunCommand(() ->
-                intake.setIntakeSpeed(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
+                intake.setIntakeSpeed(player2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)
                                                        * Tunables.INTAKE_MAX_POWER), intake));
 
         launcher.setDefaultCommand(new RunCommand(() ->
-                launcher.setLaunchPower(player2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)
+                launcher.setLaunchPower(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
                                                        * Tunables.LAUNCHER_MAX_POWER), launcher));
 
         // A — Testing command
@@ -218,6 +215,10 @@ public class Iapetus extends Robot {
         // Y — a real Command, because this one takes time to finish.
         new GamepadButton(player2, GamepadKeys.Button.Y)
                 .whenPressed(new InstantCommand(() -> launcher.stopAll()));
+        new GamepadButton(player2, GamepadKeys.Button.X)
+                .whenPressed(new InstantCommand(() -> launcher.toggleFeed()));
+        new GamepadButton(player2, GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed(new InstantCommand(() -> intake.reverseDirection()));
 
 
 
@@ -243,7 +244,7 @@ public class Iapetus extends Robot {
                 // Red Corner
                 new SequentialCommandGroup(
                         new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 5),
-                        new WaitCommand(2000),
+                        new LaunchDynamic(this, 5),
                         new DriveToPose(this, startPose, 5),
                         new DriveToPoseByPoint(this, Constants.RED_PARK, Constants.RED_PARK_CURVE, 5),
                         new DriveToPoseByPoint(this, startPose, Constants.RED_PARK_CURVE, 5)
@@ -254,8 +255,9 @@ public class Iapetus extends Robot {
                 // Red Middle
                 new SequentialCommandGroup(
                         new DriveToPoseByPoint(this, Constants.RED_SHOOT_AUDIENCE, Constants.RED_MIDDLE_CURVE,5),
-                        new WaitCommand(2000),
-                        new DriveToPoseByPoint(this, startPose, Constants.RED_MIDDLE_CURVE, 5)
+                        new LaunchDynamic(this, 5),
+                        new DriveToPoseByPoint(this, Constants.CENTER, Constants.UP, 5),
+                        new DriveToPoseByPoint(this, Constants.BLUE_PARK, Constants.DOWN, 5)
                 ).schedule();
 
             }
@@ -264,7 +266,7 @@ public class Iapetus extends Robot {
              // Blue Corner
                 new SequentialCommandGroup(
                         new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 5),
-                        new WaitCommand(2000),
+                        new LaunchDynamic(this, 5),
                         new DriveToPose(this, startPose, 5),
                         new DriveToPoseByPoint(this, Constants.BLUE_PARK, Constants.BLUE_PARK_CURVE, 5),
                         new DriveToPoseByPoint(this, startPose, Constants.BLUE_PARK_CURVE, 5)
@@ -274,9 +276,9 @@ public class Iapetus extends Robot {
                 // Blue Middle
                 new SequentialCommandGroup(
                         new DriveToPoseByPoint(this, Constants.BLUE_SHOOT_SCORING, Constants.BLUE_MIDDLE_CURVE,5),
-                        new WaitCommand(2000),
-                        new DriveToPoseByPoint(this, startPose, Constants.BLUE_MIDDLE_CURVE, 5)
-
+                        new LaunchDynamic(this, 5),
+                        new DriveToPoseByPoint(this, Constants.CENTER, Constants.DOWN, 5),
+                        new DriveToPoseByPoint(this, Constants.RED_PARK, Constants.UP, 5)
                 ).schedule();
 
     }

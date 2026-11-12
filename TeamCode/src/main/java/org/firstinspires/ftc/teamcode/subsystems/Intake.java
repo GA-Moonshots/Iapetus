@@ -24,6 +24,8 @@ public class Intake extends SubsystemBase {
 
     private DcMotorEx intakeMotor;
 
+    boolean reversed = false;
+
     public Intake(Iapetus robot) {
         this.robot = robot;
         intakeMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.INTAKE_MOTOR_NAME);
@@ -31,7 +33,13 @@ public class Intake extends SubsystemBase {
     }
 
     public void setIntakeSpeed(double intakeSpeed) {
-        this.intakeMotor.setPower(intakeSpeed);
+        if(reversed){
+            this.intakeMotor.setPower(intakeSpeed * -1);
+        }
+        else this.intakeMotor.setPower(intakeSpeed);
+    }
+    public void reverseDirection() {
+        this.reversed = !this.reversed;
     }
 
     @Override
