@@ -57,8 +57,7 @@ public class LaunchDynamic extends LaunchAbstract {
         }
 
         double xDistance = getTarget().range() * Constants.INCHES_TO_METERS;
-        double yDistance = (Constants.HIVE_OPENING_ELEVATION - Constants.LAUNCHER_ELEVATION)
-                * Constants.INCHES_TO_METERS;
+        double yDistance = (Constants.HIVE_OPENING_ELEVATION - Constants.LAUNCHER_ELEVATION);
 
         // Launch angle in radians (physics functions use radians)
         double theta = Constants.SHOOTING_ANGLE;

@@ -323,21 +323,23 @@ public class Constants {
     // ============================================================
     //                   LAUNCHER CONSTANTS
     // Needed for math calculations for the launcher. May be
-    // measurements from the robot or physical constants. All
+    // measurements from the robot or physical constants. All values
+    // are in METERS.
     // ============================================================
 
     public static final double GRAVITY = 9.81;
     public static final double INCHES_TO_METERS = 0.0254;
     public static final double SHOOTING_ANGLE = Math.toRadians(75);
-    public static final double HIVE_OPENING_ELEVATION = 55.0;
-    public static final double LAUNCHER_ELEVATION = 10.0;
+    public static final double HIVE_OPENING_ELEVATION = 55.0 * INCHES_TO_METERS;
+    public static final double LAUNCHER_ELEVATION = 27.0;
 
     /**
-     * Ratio of the power fed to the launcher to the angular velocity, in rads/s.
+     * Ratio of the angular velocity, in rad/s, to the power fed to the launcher.
      * The graph we measured says velocity = 30.19 * power - 1.64.
      */
-    public static final double POWER_TO_VELOCITY_RATIO = 30;
-    public static final double WHEEL_RADIUS = 2.0;
+    public static final double VELOCITY_TO_POWER_RATIO = 30;
+    public static final double FRONT_WHEEL_RADIUS = 0.05;
+    public static final double BACK_WHEEL_RADIUS = 0.07;
 
     // ============================================================
     //                    IMU ORIENTATION

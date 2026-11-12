@@ -33,6 +33,7 @@ public class Launcher extends SubsystemBase {
     private boolean launching;
     private boolean feeding;
     private double launchPower;
+    private double launchSpeed;
 
     public Launcher(Iapetus robot) {
         this.robot = robot;
@@ -65,7 +66,7 @@ public class Launcher extends SubsystemBase {
             robot.sensors.addTelemetry("Illegal launch power argument: ", "%.2f", launchPower);
             return;
         }
-        this.launchPower = launchPower;
+        this.launchSpeed = launchPower * Constants.VELOCITY_TO_POWER_RATIO;
     }
 
     /**
@@ -73,7 +74,7 @@ public class Launcher extends SubsystemBase {
      * @param launchSpeed The speed, in meters/second.
      */
     public void setLaunchSpeed(double launchSpeed) {
-        setLaunchPower((launchSpeed / Constants.WHEEL_RADIUS) / Constants.POWER_TO_VELOCITY_RATIO);
+        this.launchSpeed = launchSpeed;
     }
 
     public void stopAll() {
@@ -84,8 +85,8 @@ public class Launcher extends SubsystemBase {
     @Override
     public void periodic() {
         if (launching) {
-            frontMotor.setPower(launchPower);
-            backMotor.setPower(launchPower);
+            frontMotor.setVelocity(launchSpeed / Constants.FRONT_WHEEL_RADIUS, AngleUnit.RADIANS);
+            backMotor.setVelocity(launchSpeed / Constants.BACK_WHEEL_RADIUS, AngleUnit.RADIANS);
         }
         feedServo.setPower((feeding) ? Tunables.LAUNCHER_FEED_SERVO_POWER : 0);
         // Take the average of the two motors' speeds and report it:
