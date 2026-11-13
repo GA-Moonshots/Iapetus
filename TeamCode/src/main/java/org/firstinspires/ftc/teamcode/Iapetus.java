@@ -202,8 +202,7 @@ public class Iapetus extends Robot {
 
         // Run the intake with right trigger
         intake.setDefaultCommand(new RunCommand(() ->
-                intake.setIntakeSpeed(player2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)
-                                                       * Tunables.INTAKE_MAX_POWER), intake));
+                intake.setIntakeSpeed(player2.getLeftY() * Tunables.INTAKE_MAX_POWER), intake));
 
         launcher.setDefaultCommand(new RunCommand(() ->
                 launcher.setLaunchPower(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
@@ -217,8 +216,6 @@ public class Iapetus extends Robot {
                 .whenPressed(new InstantCommand(() -> launcher.stopAll()));
         new GamepadButton(player2, GamepadKeys.Button.X)
                 .whenPressed(new InstantCommand(() -> launcher.toggleFeed()));
-        new GamepadButton(player2, GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new InstantCommand(() -> intake.reverseDirection()));
 
 
 
@@ -246,8 +243,7 @@ public class Iapetus extends Robot {
                         new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 5),
                         new LaunchDynamic(this, 5),
                         new DriveToPose(this, startPose, 5),
-                        new DriveToPoseByPoint(this, Constants.RED_PARK, Constants.RED_PARK_CURVE, 5),
-                        new DriveToPoseByPoint(this, startPose, Constants.RED_PARK_CURVE, 5)
+                        new DriveToPoseByPoint(this, Constants.RED_PARK, Constants.LEFT, 5)
                         // ...then the rest of this year's plan.
                 ).schedule();
             }
@@ -268,8 +264,7 @@ public class Iapetus extends Robot {
                         new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 5),
                         new LaunchDynamic(this, 5),
                         new DriveToPose(this, startPose, 5),
-                        new DriveToPoseByPoint(this, Constants.BLUE_PARK, Constants.BLUE_PARK_CURVE, 5),
-                        new DriveToPoseByPoint(this, startPose, Constants.BLUE_PARK_CURVE, 5)
+                        new DriveToPoseByPoint(this, Constants.BLUE_PARK, Constants.RIGHT, 5)
                         // ...then the rest of this year's plan.
             ).schedule();
         }

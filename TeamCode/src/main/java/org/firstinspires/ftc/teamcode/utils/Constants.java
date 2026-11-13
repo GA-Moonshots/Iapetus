@@ -189,8 +189,8 @@ public class Constants {
         /** ⚙ TUNE: Pinpoint Tuner measures these. xPodOffset is how far LEFT of
          *  centre the forward pod sits; yPodOffset is how far FORWARD the strafe
          *  pod sits. (Pedro 2 called these forwardPodY and strafePodX.) */
-        c.xPodOffset.set(7.00);
-        c.yPodOffset.set(-6.75);
+        c.xPodOffset.set(6.75);
+        c.yPodOffset.set(-6.504940243217889);
         c.offsetUnits.set(DistanceUnit.INCH);
         c.globalDistanceUnit.set(DistanceUnit.INCH);
 
@@ -305,19 +305,17 @@ public class Constants {
     public static final Pose RED_PARK = new Pose(8.25, 108, Math.toRadians(0));
     public static final Pose BLUE_PARK = new Pose(135.75, 36, Math.toRadians(180));
     public static final Pose CENTER = new Pose(72, 72);
-    public static final Pose UP = new Pose(72, 120);
-    public static final Pose LEFT = new Pose(24, 72);
-    public static final Pose DOWN = new Pose(72, 24);
-    public static final Pose RIGHT = new Pose(120, 72);
+    public static final Pose UP = new Pose(72, 114);
+    public static final Pose LEFT = new Pose(30, 72);
+    public static final Pose DOWN = new Pose(72, 30);
+    public static final Pose RIGHT = new Pose(114, 72);
 
     public static final Pose RED_SHOOT_SCORING = new Pose(60, 120, Math.toRadians(270));
     public static final Pose RED_SHOOT_AUDIENCE = new Pose(60, 24, Math.toRadians(90));;
     public static final Pose RED_MIDDLE_CURVE = new Pose(34, 41);
-    public static final Pose RED_PARK_CURVE = new Pose(30, 72);
     public static final Pose BLUE_SHOOT_AUDIENCE = new Pose(84, 24, Math.toRadians(90));;
     public static final Pose BLUE_SHOOT_SCORING = new Pose(84, 120, Math.toRadians(270));;
     public static final Pose BLUE_MIDDLE_CURVE = new Pose(110, 103);
-    public static final Pose BLUE_PARK_CURVE = new Pose(114, 72);
 
 
     // ============================================================

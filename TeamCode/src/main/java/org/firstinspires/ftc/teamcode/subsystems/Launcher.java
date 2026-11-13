@@ -32,7 +32,6 @@ public class Launcher extends SubsystemBase {
 
     private boolean launching;
     private boolean feeding;
-    private double launchPower;
     private double launchSpeed;
 
     public Launcher(Iapetus robot) {
@@ -95,6 +94,5 @@ public class Launcher extends SubsystemBase {
                             / 2;
         robot.sensors.addTelemetry("State:", (launching) ? "LAUNCHING" : "IDLE");
         robot.sensors.addTelemetry("Current RPM", "%.1f", currentRpm);
-        robot.sensors.addTelemetry("launchPower", "%.2f", launchPower);
     }
 }
