@@ -286,10 +286,14 @@ public class PedroDrive extends SubsystemBase {
                 && Math.abs(target.y() - current.y()) <= inches;
     }
 
-    /** "Forward is that way now." Resets heading, keeps position. */
+    /**
+     * "Forward is that way now": call with the robot facing away from the
+     * driver. Red drivers face +X (0), blue drivers face −X (π) — using 0 for
+     * blue would invert field-centric drive. Keeps position.
+     */
     public void resetHeading() {
         imu.resetYaw();
-        setPose(getPose().withHeading(0));
+        setPose(getPose().withHeading(robot.isRed ? 0 : Math.PI));
     }
 
     /** Straight-line inches to our alliance's scoring target. */

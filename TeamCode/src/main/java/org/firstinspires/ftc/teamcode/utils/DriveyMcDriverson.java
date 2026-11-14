@@ -27,7 +27,18 @@ public class DriveyMcDriverson extends CommandOpMode {
     public void initialize() {
         robot = new Iapetus(this);
         robot.initTeleOp();
+    }
 
+    /** Between INIT and START: confirm the alliance, or field-centric drive is backwards. */
+    @Override
+    public void initialize_loop() {
+        if (gamepad1.x) robot.setAlliance(false);
+        if (gamepad1.b) robot.setAlliance(true);
+
+        telemetry.addData("Alliance", "%s   (X = BLUE, B = RED)", robot.isRed ? "RED" : "BLUE");
+        telemetry.addData("Pose", robot.poseFromAuto
+                ? "from autonomous"
+                : "NO AUTO HANDOFF — face robot away from drivers, press A after START");
         telemetry.addData("Status", "Ready. Try not to hit the wall.");
         telemetry.update();
     }

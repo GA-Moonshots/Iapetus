@@ -32,8 +32,12 @@ public class PersistentPoseManager {
     /** A pose older than this is from a previous match. Don't trust it. */
     private static final long MAX_AGE_MS = 10 * 60 * 1000;  // 10 minutes
 
-    private static final Pose DEFAULT_POSE = Constants.RED_START_POSE_CORNER;
     private static final boolean DEFAULT_IS_RED = true;
+
+    /** Best guess with no handoff: that alliance's corner start, facing away from its drivers. */
+    public static Pose defaultPose(boolean isRed) {
+        return isRed ? Constants.RED_START_POSE_CORNER : Constants.BLUE_START_POSE_CORNER;
+    }
 
     /** What auto left behind, already checked for staleness. */
     public static class Handoff {
@@ -87,6 +91,6 @@ public class PersistentPoseManager {
     }
 
     private static Handoff fallback() {
-        return new Handoff(DEFAULT_POSE, DEFAULT_IS_RED, false);
+        return new Handoff(defaultPose(DEFAULT_IS_RED), DEFAULT_IS_RED, false);
     }
 }

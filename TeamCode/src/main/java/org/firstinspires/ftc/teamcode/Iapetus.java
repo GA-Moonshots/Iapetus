@@ -7,21 +7,17 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.Robot;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
+import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
-import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
-import com.seattlesolvers.solverslib.command.RunCommand;
-
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.Drive;
 import org.firstinspires.ftc.teamcode.commands.DriveFaceTarget;
-import org.firstinspires.ftc.teamcode.commands.DriveFwdByDist;
 import org.firstinspires.ftc.teamcode.commands.DriveToPose;
 import org.firstinspires.ftc.teamcode.commands.DriveToPoseByPoint;
 import org.firstinspires.ftc.teamcode.commands.DriveTurnBy;
-import org.firstinspires.ftc.teamcode.commands.DriveTurnTo;
 import org.firstinspires.ftc.teamcode.commands.LaunchDynamic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
@@ -41,7 +37,7 @@ import org.firstinspires.ftc.teamcode.utils.Tunables;
  * ║  nothing but build one of these and get out of the way.                   ║
  * ║                                                                           ║
  * ║  Two constructors:                                                        ║
- * ║    • TeleOp  — doesn't care about alliance, just drives                   ║
+ * ║    • TeleOp  — alliance + pose handed over by auto                        ║
  * ║    • Auto    — needs to know alliance + start position                    ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  *
@@ -69,6 +65,9 @@ public class Iapetus extends Robot {
 
     public Pose startPose;
 
+    /** TeleOp only: true if the pose came from auto, false if it's a default guess. */
+    public boolean poseFromAuto = false;
+
     // ============================================================
     //                    TELEOP CONSTRUCTOR
     // ============================================================
@@ -86,8 +85,18 @@ public class Iapetus extends Robot {
     /** Reads the handoff exactly once, then hands it to the real constructor. */
     private Iapetus(LinearOpMode opMode, PersistentPoseManager.Handoff handoff) {
         this(opMode, handoff.isRed, true, handoff.pose);
-        sensors.addTelemetry("Pose handoff",
-                handoff.wasFound ? "loaded from autonomous" : "NONE — using defaults");
+        poseFromAuto = handoff.wasFound;
+    }
+
+    /**
+     * TeleOp INIT: the drive team confirms the alliance. Field-centric drive
+     * flips for blue, so getting this wrong inverts the sticks. Without an
+     * auto handoff, also moves the guessed pose to that alliance's default.
+     */
+    public void setAlliance(boolean red) {
+        if (red == isRed) return;
+        isRed = red;
+        if (!poseFromAuto) drive.setPose(PersistentPoseManager.defaultPose(red));
     }
 
     // ============================================================
@@ -160,15 +169,11 @@ public class Iapetus extends Robot {
         new GamepadButton(player1, GamepadKeys.Button.B)
                 .whenPressed(new InstantCommand(() -> drive.toggleFieldCentric()));
 
-        // X — turn to face OUR scoring Hive. The target is looked up when the
-        // button is pressed, not when the binding is made (it's null at init).
+        // X — turn to face OUR scoring Hive (looked up on press).
         new GamepadButton(player1, GamepadKeys.Button.X)
-              .whenPressed(new DriveFaceTarget(this, 1.5, true));
+                .whenPressed(new DriveFaceTarget(this, 1.5, true));
 
-        // Y
-        new GamepadButton(player1, GamepadKeys.Button.Y);
-
-        // Bumper-free 180: useful when a driver gets turned around.
+        // DPAD DOWN — 180° turn, for when a driver gets turned around.
         new GamepadButton(player1, GamepadKeys.Button.DPAD_DOWN)
                 .whenPressed(new DriveTurnBy(this, 180, true, 3));
 
@@ -182,10 +187,6 @@ public class Iapetus extends Robot {
         new GamepadButton(player1, GamepadKeys.Button.LEFT_BUMPER)
                 .whenPressed(new DriveFaceTarget(this, 2));
 
-        //DPAD LEFT- Toggle holding current position
-        //new GamepadButton(player2, GamepadKeys.Button.DPAD_LEFT)
-        //        .whenPressed(new InstantCommand(() -> launcher.toggleLaunch()));
-
         // Right bumper is slow mode — read directly in Drive.execute(), not bound here.
 
         /*
@@ -198,25 +199,22 @@ public class Iapetus extends Robot {
             OPERATOR — runs the mechanisms. Never drives.
         */
 
-        // Run the intake with right trigger
+        // LEFT STICK Y — intake, either direction (reverse to clear a jam).
         intake.setDefaultCommand(new RunCommand(() ->
                 intake.setIntakeSpeed(player2.getLeftY() * Tunables.INTAKE_MAX_POWER), intake));
 
+        // RIGHT TRIGGER — flywheel speed. Telemetry "Launcher ready" says when to feed.
         launcher.setDefaultCommand(new RunCommand(() ->
                 launcher.setLaunchPower(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
-                                                       * Tunables.LAUNCHER_MAX_POWER), launcher));
+                        * Tunables.LAUNCHER_MAX_POWER), launcher));
 
-
-        // Y — a real Command, because this one takes time to finish.
-        new GamepadButton(player2, GamepadKeys.Button.Y)
-                .whenPressed(new InstantCommand(() -> launcher.stopAll()));
+        // X — feed on/off.
         new GamepadButton(player2, GamepadKeys.Button.X)
                 .whenPressed(new InstantCommand(() -> launcher.toggleFeed()));
 
-
-
-        // Bind this year's intake / launcher / arm the same way, then delete
-        // the two grabber bindings above.
+        // Y — stop the launcher. Stays stopped until the trigger is released.
+        new GamepadButton(player2, GamepadKeys.Button.Y)
+                .whenPressed(new InstantCommand(() -> launcher.stopAll()));
     }
 
     // ============================================================
@@ -224,7 +222,19 @@ public class Iapetus extends Robot {
     // ============================================================
 
     /**
-     * This year's autonomous routine. Replace the placeholder with real paths.
+     * Auto INIT: the robot is built before the drive team picks a start, so
+     * hardware problems show up during INIT, not after the match starts.
+     * Call once at START with the final choice.
+     */
+    public void setStart(boolean isRed, boolean isCorner, Pose startPose) {
+        this.isRed = isRed;
+        this.isCorner = isCorner;
+        this.startPose = startPose;
+        drive.setPose(startPose);
+    }
+
+    /**
+     * Schedules the routine for the chosen alliance + start position.
      *
      * Sequential = one after another. Parallel = all at once. Nest them freely;
      * that's how a whole autonomous becomes one schedulable object.

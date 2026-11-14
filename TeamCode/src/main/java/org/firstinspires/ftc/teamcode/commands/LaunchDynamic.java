@@ -10,9 +10,8 @@ import org.firstinspires.ftc.teamcode.utils.Tunables;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * Aim → spin up → feed → done. One step per phase, timed with a single timer
- * that lives across loops (execute() runs every loop, so anything created
- * inside it starts over every loop).
+ * Aim → spin up → feed → done. The phase timer is a field because execute()
+ * runs every loop; a timer created inside it would restart every loop.
  *
  * Won't feed until the camera has given us a real distance — no target means
  * no shot, and the patience timeout moves auto along.
@@ -50,7 +49,10 @@ public class LaunchDynamic extends LaunchAbstract {
                 }
                 break;
             case SPINNING_UP:
-                if (phaseTimer.milliseconds() >= Tunables.LAUNCHER_FEED_SERVO_WAIT_MS) {
+                // Feed once the wheels are at speed, or after SPINUP_MAX_MS regardless.
+                double ms = phaseTimer.milliseconds();
+                if (ms >= Tunables.LAUNCHER_FEED_SERVO_WAIT_MS
+                        && (launcher.isAtSpeed() || ms >= Tunables.LAUNCHER_SPINUP_MAX_MS)) {
                     launcher.setFeeding(true);
                     phase = Phase.FEEDING;
                     phaseTimer.reset();

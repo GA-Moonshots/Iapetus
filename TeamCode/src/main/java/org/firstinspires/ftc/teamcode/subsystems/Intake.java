@@ -10,37 +10,20 @@ import org.firstinspires.ftc.teamcode.utils.Constants;
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║                          INTAKE SUBSYSTEM                                 ║
  * ║                                                                           ║
- * ║  Pulls game pieces into the robot. Blank for now — nothing to eat yet.    ║
+ * ║  One motor pulls game pieces in. Negative power runs it backwards.        ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
- *
- * Copy the shape of Ganymede's subsystems (Intake, Launcher, Turret):
- * github.com/GA-Moonshots/Ganymede → TeamCode/.../teamcode/subsystems
- * Hardware lookups in the constructor, hardware names from Constants,
- * small methods that each do one thing.
  */
 public class Intake extends SubsystemBase {
 
-    private final Iapetus robot;
-
-    private DcMotorEx intakeMotor;
-
-    boolean reversed = false;
+    private final DcMotorEx intakeMotor;
 
     public Intake(Iapetus robot) {
-        this.robot = robot;
         intakeMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.INTAKE_MOTOR_NAME);
         intakeMotor.setDirection(Constants.INTAKE_MOTOR_DIRECTION);
     }
 
+    /** -1 to 1. Negative reverses, e.g. to clear a jam. */
     public void setIntakeSpeed(double intakePower) {
-        intakeMotor.setPower((reversed) ? -intakePower : intakePower);
-    }
-    public void reverseDirection() {
-        this.reversed = !this.reversed;
-    }
-
-    @Override
-    public void periodic() {
-
+        intakeMotor.setPower(intakePower);
     }
 }

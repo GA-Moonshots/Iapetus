@@ -70,11 +70,17 @@ public class Tunables {
     /** Maximum allowed intake power. */
     public static double INTAKE_MAX_POWER = 0.8;
 
-    /** Delay between starting launch motors and feeding the launcher. */
+    /** Auto: minimum spin-up before feeding, even if the wheels report ready. */
     public static int LAUNCHER_FEED_SERVO_WAIT_MS = 200;
 
-    /** Time the feed servo is powered when it is told to feed. */
+    /** Auto: feed anyway after this long, in case the wheels never quite reach target. */
+    public static int LAUNCHER_SPINUP_MAX_MS = 1500;
+
+    /** Auto: how long the feed servos run. Must be long enough to empty every preload. */
     public static int LAUNCHER_FEED_SERVO_DURATION_MS = 500;
+
+    /** "At speed" = each wheel within this fraction of its target (0.10 = 10%). */
+    public static double LAUNCHER_SPEED_TOLERANCE = 0.10;
 
 
     // ---- Dashboard drawing ----

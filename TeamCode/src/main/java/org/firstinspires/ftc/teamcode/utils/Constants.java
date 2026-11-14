@@ -336,8 +336,8 @@ public class Constants {
     public static final double LAUNCHER_ELEVATION = 27.0 * INCHES_TO_METERS;
 
     /**
-     * Ratio of the angular velocity, in rad/s, to the power fed to the launcher.
-     * The graph we measured says velocity = 30.19 * power - 1.64.
+     * Teleop trigger power → wheel surface speed (m/s), the unit Launcher uses.
+     * Measured: speed = 30.19 * power - 1.64.
      */
     public static final double VELOCITY_TO_POWER_RATIO = 30;
     public static final double FRONT_WHEEL_RADIUS = 0.05;

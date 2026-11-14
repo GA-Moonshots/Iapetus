@@ -15,13 +15,14 @@ import org.firstinspires.ftc.teamcode.utils.Tunables;
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║                         LAUNCHER SUBSYSTEM                                ║
  * ║                                                                           ║
- * ║  Sends game pieces toward the goal. Blank for now — no liftoff yet.       ║
+ * ║  Two flywheels launch; four continuous servos feed them.                  ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  *
- * Copy the shape of Ganymede's subsystems (Intake, Launcher, Turret):
- * github.com/GA-Moonshots/Ganymede → TeamCode/.../teamcode/subsystems
- * Hardware lookups in the constructor, hardware names from Constants,
- * small methods that each do one thing.
+ * Speeds are wheel surface speed in m/s, so teleop's trigger and auto's
+ * physics share one unit. Modes:
+ *   MANUAL — follows player 2's trigger (teleop's default command)
+ *   AUTO   — a command such as LaunchDynamic owns the speed
+ *   IDLE   — wheels stopped; back to MANUAL once the trigger is released
  */
 public class Launcher extends SubsystemBase {
     private final Iapetus robot;
@@ -37,7 +38,7 @@ public class Launcher extends SubsystemBase {
     private boolean feeding;
     private double launchSpeed;
 
-    public static enum Mode {IDLE, MANUAL, AUTO};
+    public enum Mode { IDLE, MANUAL, AUTO }
 
     public Launcher(Iapetus robot) {
         this.robot = robot;
@@ -65,25 +66,19 @@ public class Launcher extends SubsystemBase {
         this.feeding = feeding;
     }
 
-
     /**
-     * Set the launcher to a certain power, from 0 (stopped) to the maximum power
-     * allowed in Constants. The method will refuse values outside this range,
-     * but will not throw an exception, just let you know in telemetry.
-     * @param launchPower The power the motor should drive at.
+     * Teleop: 0 (stopped) to Tunables.LAUNCHER_MAX_POWER. Out-of-range values
+     * are ignored and reported on telemetry rather than thrown.
      */
     public void setLaunchPower(double launchPower) {
         if (launchPower < 0 || launchPower > Tunables.LAUNCHER_MAX_POWER) {
-            robot.sensors.addTelemetry("Illegal launch power argument: ", "%.2f", launchPower);
+            robot.sensors.addTelemetry("Illegal launch power", "%.2f", launchPower);
             return;
         }
         this.launchSpeed = launchPower * Constants.VELOCITY_TO_POWER_RATIO;
     }
 
-    /**
-     * Set the launcher to fire a game object at a certain speed.
-     * @param launchSpeed The speed, in meters/second.
-     */
+    /** Auto: wheel surface speed, m/s. */
     public void setLaunchSpeed(double launchSpeed) {
         this.launchSpeed = launchSpeed;
     }
@@ -97,6 +92,18 @@ public class Launcher extends SubsystemBase {
         this.mode = Mode.IDLE;
         feeding = false;
         launchSpeed = 0;   // otherwise MANUAL resumes at the last speed (auto has no trigger to reset it)
+    }
+
+    /** Both wheels within Tunables.LAUNCHER_SPEED_TOLERANCE of target. False when stopped. */
+    public boolean isAtSpeed() {
+        if (mode == Mode.IDLE || launchSpeed <= 0) return false;
+        return nearTarget(frontMotor, launchSpeed / Constants.FRONT_WHEEL_RADIUS)
+                && nearTarget(backMotor, launchSpeed / Constants.BACK_WHEEL_RADIUS);
+    }
+
+    private static boolean nearTarget(DcMotorEx motor, double targetRadPerSec) {
+        double actual = motor.getVelocity(AngleUnit.RADIANS);
+        return Math.abs(actual - targetRadPerSec) <= Tunables.LAUNCHER_SPEED_TOLERANCE * targetRadPerSec;
     }
 
     @Override
@@ -124,11 +131,17 @@ public class Launcher extends SubsystemBase {
         feedLowerLeft.setPower(feedPower);
         feedUpperRight.setPower(-feedPower);
         feedLowerRight.setPower(-feedPower);
-        // Take the average of the two motors' speeds and report it:
-        double currentRpm =  (frontMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI))
-                            + backMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI)))
-                            / 2;
-        robot.sensors.addTelemetry("Launcher Control:", mode.toString());
-        robot.sensors.addTelemetry("Current RPM", "%.1f", currentRpm);
+
+        // Wheels differ in size, so report each rather than an average.
+        robot.sensors.addTelemetry("═══ Launcher ═══", "");
+        robot.sensors.addTelemetry("Launcher mode", "%s%s", mode, feeding ? " + FEEDING" : "");
+        robot.sensors.addTelemetry("Launcher RPM", "front %.0f / back %.0f",
+                toRpm(frontMotor.getVelocity(AngleUnit.RADIANS)),
+                toRpm(backMotor.getVelocity(AngleUnit.RADIANS)));
+        robot.sensors.addTelemetry("Launcher ready", isAtSpeed() ? "YES" : "no");
+    }
+
+    private static double toRpm(double radPerSec) {
+        return radPerSec * 60 / (2 * Math.PI);
     }
 }

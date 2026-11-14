@@ -24,6 +24,7 @@ import org.firstinspires.ftc.teamcode.Iapetus;
 public class AutoMcAutty extends CommandOpMode {
 
     private Iapetus robot;
+    private boolean started = false;
 
     // Chosen during init, before the match clock starts.
     private boolean isRed = true;
@@ -31,11 +32,10 @@ public class AutoMcAutty extends CommandOpMode {
 
     @Override
     public void initialize() {
-        // Nothing built yet — we don't know the alliance until the drive team
-        // tells us below.
-        telemetry.addData("Alliance", "X = BLUE, B = RED");
-        telemetry.addData("Position", "DPAD UP = CORNER, DPAD DOWN = MIDDLE");
-        telemetry.update();
+        // Build now, not after START: a missing device or bad config fails
+        // here, where you can see it, and the camera gets time to warm up.
+        // The real alliance and start pose are applied at START.
+        robot = new Iapetus(this, isRed, isCorner, startingPose());
     }
 
     /** Runs repeatedly between INIT and START. Where the drive team answers. */
@@ -57,10 +57,11 @@ public class AutoMcAutty extends CommandOpMode {
 
     @Override
     public void run() {
-        // Build on the first loop after START, once the choices above are final.
-        if (robot == null) {
-            robot = new Iapetus(this, isRed, isCorner, startingPose());
+        // First loop after START: the choices above are final now.
+        if (!started) {
+            robot.setStart(isRed, isCorner, startingPose());
             robot.initAuto();
+            started = true;
         }
         super.run();
     }
@@ -69,10 +70,11 @@ public class AutoMcAutty extends CommandOpMode {
      * Runs when autonomous stops, however it stops. Leaves a note for teleop
      * saying where we ended up and which alliance we're on — otherwise
      * field-centric drive starts from a guess. See PersistentPoseManager.
+     * Skipped if auto never started: there's nothing true to hand over.
      */
     @Override
     public void end() {
-        if (robot != null) {
+        if (started) {
             PersistentPoseManager.save(robot.drive.getPose(), robot.isRed);
         }
     }
