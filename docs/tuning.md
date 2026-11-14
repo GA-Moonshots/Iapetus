@@ -57,8 +57,10 @@ while spinning? The pod offsets are off, so rerun the Pinpoint Tuner.
 
 **Launcher (~15 min).** Run the **Launcher Tuner** OpMode. Its header has the controls.
 
-1. Measure the launcher's height off the floor → `Constants.LAUNCHER_ELEVATION`.
-2. Park where auto shoots. Adjust speed until it scores 3 in a row → `Tunables.AUTO_LAUNCH_SPEED`.
+1. Park where auto shoots. The tuner starts at the current `AUTO_LAUNCH_SPEED` (an estimate until
+   tuned). Adjust until it scores 3 in a row → `Tunables.AUTO_LAUNCH_SPEED`.
+2. Measure the launcher's height off the floor, in metres → `Constants.LAUNCHER_ELEVATION`.
+   Only camera shots (`AUTO_SHOT_USE_CAMERA`) use it.
 3. Hold feed until the robot is empty. "Last feed" + ~100 ms → `Tunables.LAUNCHER_FEED_SERVO_DURATION_MS`.
 
 Panels edits reset on restart. Type the keepers into `Tunables.java` and redeploy.

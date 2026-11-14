@@ -83,13 +83,20 @@ public class Tunables {
     public static double LAUNCHER_SPEED_TOLERANCE = 0.10;
 
     /**
-     * Auto shot speed, m/s. Above 0 = always use this; no camera needed, since
-     * auto shoots from the same spots every time. 0 = camera range + physics.
-     * Find it with the Launcher Tuner OpMode.
+     * Auto shot speed, m/s. Auto shoots from the same spots every time, so one
+     * tuned number is the reliable choice. Starting estimate: ~80% of teleop's
+     * full trigger (0.65 × 30 = 19.5 m/s). Tune with the Launcher Tuner OpMode.
      */
-    public static double AUTO_LAUNCH_SPEED = 0;
+    public static double AUTO_LAUNCH_SPEED = 15.5;
 
-    /** Physics correction (real ÷ predicted). Only used when AUTO_LAUNCH_SPEED is 0. */
+    /**
+     * Aim auto shots with camera range + physics instead, when the Hive is in
+     * view (falls back to AUTO_LAUNCH_SPEED when it isn't). Tune
+     * LAUNCH_SPEED_SCALE before turning this on.
+     */
+    public static boolean AUTO_SHOT_USE_CAMERA = false;
+
+    /** Physics correction (real ÷ predicted), from the Launcher Tuner. */
     public static double LAUNCH_SPEED_SCALE = 1.0;
 
 

@@ -29,15 +29,15 @@ import org.firstinspires.ftc.teamcode.subsystems.Launcher;
  * row, then type the AUTO_LAUNCH_SPEED line into Tunables.java. Hold A until
  * the robot is empty: "Last feed" is LAUNCHER_FEED_SERVO_DURATION_MS (add ~100).
  *
- * PHYSICS SCALE (optional): with the Hive in view, the LAUNCH_SPEED_SCALE line
- * corrects the physics so camera shots work from other distances. Check it
- * at a second distance before trusting it.
+ * CAMERA SHOTS (optional): with the Hive in view, the LAUNCH_SPEED_SCALE line
+ * corrects the physics so shots work from other distances. Check it at a
+ * second distance before setting AUTO_SHOT_USE_CAMERA.
  */
 @TeleOp(name = "Launcher Tuner", group = "Tuning")
 public class LauncherTuner extends CommandOpMode {
 
     private Iapetus robot;
-    private double speed = 10.0;   // m/s, a starting guess
+    private double speed = Tunables.AUTO_LAUNCH_SPEED;   // m/s; start from what auto uses now
     private boolean spinning = false;
 
     private final ElapsedTime feedTimer = new ElapsedTime();

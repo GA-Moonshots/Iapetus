@@ -13,9 +13,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Aim → spin up → feed → done. The phase timer is a field because execute()
  * runs every loop; a timer created inside it would restart every loop.
  *
- * Speed: Tunables.AUTO_LAUNCH_SPEED if set (found with the Launcher Tuner).
- * Otherwise camera range + physics — and with no Hive in view, no shot; the
- * patience timeout moves auto along.
+ * Speed: Tunables.AUTO_LAUNCH_SPEED (found with the Launcher Tuner). With
+ * AUTO_SHOT_USE_CAMERA on, camera range + physics when the Hive is in view.
+ * Either way it always takes the shot.
  */
 public class LaunchDynamic extends LaunchAbstract {
 
@@ -82,18 +82,20 @@ public class LaunchDynamic extends LaunchAbstract {
                 interrupted ? "INTERRUPTED" : (phase == Phase.DONE ? "Done" : "TIMED OUT in " + phase));
     }
 
-    /** m/s to launch at, or 0 for "can't shoot". */
+    /** m/s to launch at. Physics only if enabled and it has an answer; otherwise the tuned speed. */
     private double chooseSpeed() {
-        if (Tunables.AUTO_LAUNCH_SPEED > 0) return Tunables.AUTO_LAUNCH_SPEED;
-
-        TagSighting hive = robot.sensors.getOurTarget();
-        if (hive == null) {
-            robot.sensors.addTelemetry("Launch target", "Hive not in view");
-            return 0;
+        if (Tunables.AUTO_SHOT_USE_CAMERA) {
+            TagSighting hive = robot.sensors.getOurTarget();
+            if (hive != null) {
+                double speed = physicsSpeed(hive.range()) * Tunables.LAUNCH_SPEED_SCALE;
+                if (speed > 0) {
+                    robot.sensors.addTelemetry("Launch physics", "%.0f\" → %.2f m/s", hive.range(), speed);
+                    return speed;
+                }
+            }
+            robot.sensors.addTelemetry("Launch physics", "no answer — using AUTO_LAUNCH_SPEED");
         }
-        double speed = physicsSpeed(hive.range()) * Tunables.LAUNCH_SPEED_SCALE;
-        robot.sensors.addTelemetry("Launch physics", "%.0f\" → %.2f m/s", hive.range(), speed);
-        return speed;
+        return Tunables.AUTO_LAUNCH_SPEED;
     }
 
     /**

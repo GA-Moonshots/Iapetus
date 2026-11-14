@@ -332,8 +332,11 @@ public class Constants {
     public static final double INCHES_TO_METERS = 0.0254;
     public static final double SHOOTING_ANGLE = Math.toRadians(75);
     public static final double HIVE_OPENING_ELEVATION = 55.0 * INCHES_TO_METERS;
-    /** ⚙ MEASURE: floor to where the ball leaves the launcher. Inches → metres. */
-    public static final double LAUNCHER_ELEVATION = 27.0 * INCHES_TO_METERS;
+    /**
+     * ⚙ MEASURE: floor to where the ball leaves the launcher, in metres.
+     * 27 cm — the old value was 10", so the 27 was centimetres.
+     */
+    public static final double LAUNCHER_ELEVATION = 0.27;
 
     /**
      * Teleop trigger power → wheel surface speed (m/s), the unit Launcher uses.
