@@ -121,8 +121,8 @@ public class Launcher extends SubsystemBase {
         // last power they were given, so "stop" has to be said out loud.
         double feedPower = feeding ? 1 : 0;
         feedUpperLeft.setPower(feedPower);
-        feedUpperRight.setPower(feedPower);
-        feedLowerLeft.setPower(-feedPower);
+        feedLowerLeft.setPower(feedPower);
+        feedUpperRight.setPower(-feedPower);
         feedLowerRight.setPower(-feedPower);
         // Take the average of the two motors' speeds and report it:
         double currentRpm =  (frontMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI))
