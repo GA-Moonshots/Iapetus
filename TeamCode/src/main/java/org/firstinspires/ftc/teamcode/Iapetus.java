@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+
+
 import com.pedropathing.math.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -56,6 +58,8 @@ public class Iapetus extends Robot {
     // Match configuration
     public boolean isRed;
     public boolean isCorner;
+    public static enum Mode { TELEOP, AUTONOMOUS }
+    public Mode mode;
 
     // Subsystems
     public PedroDrive drive;
@@ -148,6 +152,8 @@ public class Iapetus extends Robot {
     // ============================================================
 
     public void initTeleOp() {
+        this.mode = Mode.TELEOP;
+
         // The default command: runs whenever nothing else claims the wheels.
         drive.setDefaultCommand(new Drive(this));
 
@@ -240,6 +246,7 @@ public class Iapetus extends Robot {
      * that's how a whole autonomous becomes one schedulable object.
      */
     public void initAuto() {
+        this.mode = Mode.AUTONOMOUS;
         drive.follower.update();  // know where we are before we move
 
         // Exactly ONE routine gets scheduled. Every routine requires the drive,

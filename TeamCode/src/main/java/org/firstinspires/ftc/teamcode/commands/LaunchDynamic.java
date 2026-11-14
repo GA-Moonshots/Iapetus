@@ -21,7 +21,7 @@ public class LaunchDynamic extends LaunchAbstract {
 
     private enum Phase { AIMING, SPINNING_UP, FEEDING, DONE }
 
-    private Phase phase = Phase.AIMING;
+    private Phase phase;
     private final ElapsedTime phaseTimer = new ElapsedTime();
 
     public LaunchDynamic(Iapetus robot, double timeoutSeconds) {
@@ -84,17 +84,18 @@ public class LaunchDynamic extends LaunchAbstract {
 
     /** m/s to launch at. Physics only if enabled and it has an answer; otherwise the tuned speed. */
     private double chooseSpeed() {
-        if (Tunables.AUTO_SHOT_USE_CAMERA) {
-            TagSighting hive = robot.sensors.getOurTarget();
-            if (hive != null) {
-                double speed = physicsSpeed(hive.range()) * Tunables.LAUNCH_SPEED_SCALE;
-                if (speed > 0) {
-                    robot.sensors.addTelemetry("Launch physics", "%.0f\" → %.2f m/s", hive.range(), speed);
-                    return speed;
-                }
-            }
-            robot.sensors.addTelemetry("Launch physics", "no answer — using AUTO_LAUNCH_SPEED");
+        if ((robot.mode == Iapetus.Mode.AUTONOMOUS) && !Tunables.AUTO_SHOT_USE_CAMERA) {
+            return Tunables.AUTO_LAUNCH_SPEED;
         }
+        TagSighting hive = robot.sensors.getOurTarget();
+        if (hive != null) {
+            double speed = physicsSpeed(hive.range()) * Tunables.LAUNCH_SPEED_SCALE;
+            if (speed > 0) {
+                robot.sensors.addTelemetry("Launch physics", "%.0f\" → %.2f m/s", hive.range(), speed);
+                return speed;
+            }
+        }
+        robot.sensors.addTelemetry("Launch physics", "no answer — using AUTO_LAUNCH_SPEED");
         return Tunables.AUTO_LAUNCH_SPEED;
     }
 

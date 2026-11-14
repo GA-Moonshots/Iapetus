@@ -143,7 +143,7 @@ public class Launcher extends SubsystemBase {
         robot.sensors.addTelemetry("Launcher RPM", "front %.0f / back %.0f",
                 toRpm(frontMotor.getVelocity(AngleUnit.RADIANS)),
                 toRpm(backMotor.getVelocity(AngleUnit.RADIANS)));
-        robot.sensors.addTelemetry("Launcher ready", isAtSpeed() ? "YES" : "no");
+        robot.sensors.addTelemetry("Launcher ready", isAtSpeed() ? "YES" : "NO");
     }
 
     private static double toRpm(double radPerSec) {

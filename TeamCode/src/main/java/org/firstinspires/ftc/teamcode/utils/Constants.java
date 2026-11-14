@@ -344,7 +344,7 @@ public class Constants {
      */
     public static final double VELOCITY_TO_POWER_RATIO = 30;
     public static final double FRONT_WHEEL_RADIUS = 0.05;
-    public static final double BACK_WHEEL_RADIUS = 0.07;
+    public static final double BACK_WHEEL_RADIUS = 0.05;
 
     // ============================================================
     //                    IMU ORIENTATION
