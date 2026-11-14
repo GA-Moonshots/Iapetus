@@ -13,8 +13,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Aim → spin up → feed → done. The phase timer is a field because execute()
  * runs every loop; a timer created inside it would restart every loop.
  *
- * Won't feed until the camera has given us a real distance — no target means
- * no shot, and the patience timeout moves auto along.
+ * Speed: Tunables.AUTO_LAUNCH_SPEED if set (found with the Launcher Tuner).
+ * Otherwise camera range + physics — and with no Hive in view, no shot; the
+ * patience timeout moves auto along.
  */
 public class LaunchDynamic extends LaunchAbstract {
 
@@ -41,7 +42,7 @@ public class LaunchDynamic extends LaunchAbstract {
         switch (phase) {
             case AIMING:
                 // Lock the speed in once; the robot isn't moving while it shoots.
-                double velocity = calculateLaunchVelocity();
+                double velocity = chooseSpeed();
                 if (velocity > 0 && !Double.isInfinite(velocity)) {
                     launcher.setLaunchSpeed(velocity);
                     phase = Phase.SPINNING_UP;
@@ -81,22 +82,27 @@ public class LaunchDynamic extends LaunchAbstract {
                 interrupted ? "INTERRUPTED" : (phase == Phase.DONE ? "Done" : "TIMED OUT in " + phase));
     }
 
-    private TagSighting getTarget() {
-        return robot.sensors.getOurTarget();
-    }
+    /** m/s to launch at, or 0 for "can't shoot". */
+    private double chooseSpeed() {
+        if (Tunables.AUTO_LAUNCH_SPEED > 0) return Tunables.AUTO_LAUNCH_SPEED;
 
-    private double calculateLaunchVelocity() {
-        // ────────────────────────────────────────────────────────────
-        // SAFETY CHECK 1
-        // ────────────────────────────────────────────────────────────
-
-        // See if we can actually see our target.
-        if (getTarget() == null) {
-            robot.sensors.addTelemetry("TARGET WARNING: ", "Target not found");
+        TagSighting hive = robot.sensors.getOurTarget();
+        if (hive == null) {
+            robot.sensors.addTelemetry("Launch target", "Hive not in view");
             return 0;
         }
+        double speed = physicsSpeed(hive.range()) * Tunables.LAUNCH_SPEED_SCALE;
+        robot.sensors.addTelemetry("Launch physics", "%.0f\" → %.2f m/s", hive.range(), speed);
+        return speed;
+    }
 
-        double xDistance = getTarget().range() * Constants.INCHES_TO_METERS;
+    /**
+     * Launch speed (m/s) the projectile maths says reaches the Hive opening
+     * from {@code rangeInches} away, or 0 if no speed can at this angle.
+     * Uncorrected: multiply by Tunables.LAUNCH_SPEED_SCALE for the real wheel speed.
+     */
+    public static double physicsSpeed(double rangeInches) {
+        double xDistance = rangeInches * Constants.INCHES_TO_METERS;
         double yDistance = (Constants.HIVE_OPENING_ELEVATION - Constants.LAUNCHER_ELEVATION);
 
         // Launch angle in radians (physics functions use radians)
@@ -133,26 +139,14 @@ public class LaunchDynamic extends LaunchAbstract {
         double outside = xDistance / cosTheta;
 
         // ────────────────────────────────────────────────────────────
-        // SAFETY CHECK 2
+        // SAFETY CHECK
         // ────────────────────────────────────────────────────────────
 
-        // If 'inside' is negative, the target is unreachable at this distance
-        // (would require imaginary velocity). Return 0: no shot.
-        if (inside < 0) {
-            robot.sensors.addTelemetry("KINEMATICS WARNING: ", "Unreachable target");
-            return 0;
-        }
-        // ────────────────────────────────────────────────────────────
-        // FINAL CALCULATION
-        // ────────────────────────────────────────────────────────────
+        // If 'inside' is negative (or infinite), the target is unreachable at
+        // this distance — it would take an imaginary velocity. 0 = no shot.
+        if (inside < 0 || Double.isInfinite(inside)) return 0;
 
-        // v₀ = √(inside)  [this is the required initial velocity in m/s]
-        double velocity = outside * Math.sqrt(inside);
-
-        // Debug telemetry for tuning
-        robot.sensors.addTelemetry("Kinematics Debug", "r=%.2fm, y=%.2fm, v₀=%.2fm/s",
-                xDistance, yDistance, velocity);
-
-        return velocity;
+        // v₀ = outside · √(inside), in m/s
+        return outside * Math.sqrt(inside);
     }
 }

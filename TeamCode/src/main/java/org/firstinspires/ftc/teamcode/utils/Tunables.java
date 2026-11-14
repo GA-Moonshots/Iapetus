@@ -82,6 +82,16 @@ public class Tunables {
     /** "At speed" = each wheel within this fraction of its target (0.10 = 10%). */
     public static double LAUNCHER_SPEED_TOLERANCE = 0.10;
 
+    /**
+     * Auto shot speed, m/s. Above 0 = always use this; no camera needed, since
+     * auto shoots from the same spots every time. 0 = camera range + physics.
+     * Find it with the Launcher Tuner OpMode.
+     */
+    public static double AUTO_LAUNCH_SPEED = 0;
+
+    /** Physics correction (real ÷ predicted). Only used when AUTO_LAUNCH_SPEED is 0. */
+    public static double LAUNCH_SPEED_SCALE = 1.0;
+
 
     // ---- Dashboard drawing ----
 

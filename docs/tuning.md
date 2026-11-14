@@ -46,6 +46,23 @@ while spinning? The pod offsets are off, so rerun the Pinpoint Tuner.
 
 **Do not start step 3 until these pass.** Foresight tuned on bad localization is tuned against noise.
 
+## Short on time? (competition day, ~30 min total)
+
+**Drive (~15 min).** Our drive tune predates the intake and launcher, so check it rather than redo it.
+
+1. Run the four hand tests above. If one fails, fix that one thing first.
+2. AutoTune → **Tests** (hold, line, curve). Looks OK? Stop. You're done.
+3. Overshoots or weaves, and no time to rerun the Foresight Tuner? Raise `Tunables.POSE_TOLERANCE`
+   to 2–3" from Panels, so each auto step finishes instead of waiting out its timeout.
+
+**Launcher (~15 min).** Run the **Launcher Tuner** OpMode. Its header has the controls.
+
+1. Measure the launcher's height off the floor → `Constants.LAUNCHER_ELEVATION`.
+2. Park where auto shoots. Adjust speed until it scores 3 in a row → `Tunables.AUTO_LAUNCH_SPEED`.
+3. Hold feed until the robot is empty. "Last feed" + ~100 ms → `Tunables.LAUNCHER_FEED_SERVO_DURATION_MS`.
+
+Panels edits reset on restart. Type the keepers into `Tunables.java` and redeploy.
+
 ## What changed from Pedro 2
 
 Pedro 2 had 17 separate tuners and a pile of PIDF coefficients: `translationalPIDF`, `drivePIDF`,

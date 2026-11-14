@@ -78,9 +78,14 @@ public class Launcher extends SubsystemBase {
         this.launchSpeed = launchPower * Constants.VELOCITY_TO_POWER_RATIO;
     }
 
-    /** Auto: wheel surface speed, m/s. */
+    /** Auto: wheel surface speed, m/s. Clamped to 0..maxLaunchSpeed(). */
     public void setLaunchSpeed(double launchSpeed) {
-        this.launchSpeed = launchSpeed;
+        this.launchSpeed = Math.max(0, Math.min(launchSpeed, maxLaunchSpeed()));
+    }
+
+    /** The same ceiling teleop's trigger has, so auto can't spin faster than a driver can. */
+    public static double maxLaunchSpeed() {
+        return Tunables.LAUNCHER_MAX_POWER * Constants.VELOCITY_TO_POWER_RATIO;
     }
 
     public void setMode(Mode mode) {
