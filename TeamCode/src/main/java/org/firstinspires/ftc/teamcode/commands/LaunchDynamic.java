@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 import org.firstinspires.ftc.teamcode.Iapetus;
+import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.utils.Constants;
 import org.firstinspires.ftc.teamcode.utils.TagSighting;
 import org.firstinspires.ftc.teamcode.utils.Tunables;
@@ -24,7 +25,7 @@ public class LaunchDynamic extends LaunchAbstract {
         Timing.Timer feedDuration = new Timing.Timer(
                 Tunables.LAUNCHER_FEED_SERVO_DURATION_MS, TimeUnit.MILLISECONDS);
         launcher.setLaunchSpeed(calculateLaunchVelocity());
-        launcher.beginLaunch();
+        launcher.setMode(Launcher.Mode.AUTO);
         feedDelay.start();
         if (feedDelay.done()) {
             feedDuration.start();
@@ -32,6 +33,7 @@ public class LaunchDynamic extends LaunchAbstract {
         }
         if (feedDuration.done()) {
             launcher.toggleFeed();
+            launcher.stopAll();
             launchComplete = true;
         }
     }

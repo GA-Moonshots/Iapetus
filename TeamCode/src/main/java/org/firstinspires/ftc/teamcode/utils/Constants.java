@@ -57,7 +57,10 @@ public class Constants {
     public static final String INTAKE_MOTOR_NAME = "intake";
     public static final String LAUNCHER_MOTOR_FRONT_NAME = "launcherFront";
     public static final String LAUNCHER_MOTOR_BACK_NAME = "launcherBack";
-    public static final String LAUNCHER_FEED_SERVO_NAME = "launcherFeed";
+    public static final String LAUNCHER_FEED_UPPER_LEFT_NAME = "upperLeft";
+    public static final String LAUNCHER_FEED_UPPER_RIGHT_NAME = "upperRight";
+    public static final String LAUNCHER_FEED_LOWER_LEFT_NAME = "lowerLeft";
+    public static final String LAUNCHER_FEED_LOWER_RIGHT_NAME = "lowerRight";
 
     /**
      * The odometry computer's name in the Driver Station config.

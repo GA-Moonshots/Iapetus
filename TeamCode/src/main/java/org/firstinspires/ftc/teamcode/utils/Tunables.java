@@ -67,9 +67,6 @@ public class Tunables {
     /** Maximum allowed launcher power. */
     public static double LAUNCHER_MAX_POWER = 0.65;
 
-    /** Maximum allowed feed servo power. */
-    public static double LAUNCHER_FEED_SERVO_POWER = 0.8;
-
     /** Maximum allowed intake power. */
     public static double INTAKE_MAX_POWER = 0.8;
 

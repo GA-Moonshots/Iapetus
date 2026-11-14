@@ -32,11 +32,8 @@ public class Intake extends SubsystemBase {
         intakeMotor.setDirection(Constants.INTAKE_MOTOR_DIRECTION);
     }
 
-    public void setIntakeSpeed(double intakeSpeed) {
-        if(reversed){
-            this.intakeMotor.setPower(intakeSpeed * -1);
-        }
-        else this.intakeMotor.setPower(intakeSpeed);
+    public void setIntakeSpeed(double intakePower) {
+        intakeMotor.setPower((reversed) ? -intakePower : intakePower);
     }
     public void reverseDirection() {
         this.reversed = !this.reversed;

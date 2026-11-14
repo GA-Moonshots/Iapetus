@@ -208,9 +208,7 @@ public class Iapetus extends Robot {
                 launcher.setLaunchPower(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
                                                        * Tunables.LAUNCHER_MAX_POWER), launcher));
 
-        // A — Testing command
-        new GamepadButton(player2, GamepadKeys.Button.A)
-                .whenPressed(new InstantCommand(() -> launcher.beginLaunch()));
+
         // Y — a real Command, because this one takes time to finish.
         new GamepadButton(player2, GamepadKeys.Button.Y)
                 .whenPressed(new InstantCommand(() -> launcher.stopAll()));

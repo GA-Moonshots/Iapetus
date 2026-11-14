@@ -5,6 +5,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
+import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Constants;
@@ -23,30 +24,37 @@ import org.firstinspires.ftc.teamcode.utils.Tunables;
  * small methods that each do one thing.
  */
 public class Launcher extends SubsystemBase {
-
     private final Iapetus robot;
 
     private final DcMotorEx frontMotor;
     private final DcMotorEx backMotor;
-    private final CRServo feedServo;
+    private final CRServo feedUpperLeft;
+    private final CRServo feedUpperRight;
+    private final CRServo feedLowerLeft;
+    private final CRServo feedLowerRight;
 
-    private boolean launching;
+    private Mode mode;
     private boolean feeding;
     private double launchSpeed;
 
+    public static enum Mode {IDLE, MANUAL, AUTO};
+
     public Launcher(Iapetus robot) {
         this.robot = robot;
+        this.mode = Mode.IDLE;
         frontMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.LAUNCHER_MOTOR_FRONT_NAME);
         backMotor = robot.hardwareMap.get(DcMotorEx.class, Constants.LAUNCHER_MOTOR_BACK_NAME);
-        feedServo = robot.hardwareMap.get(CRServo.class, Constants.LAUNCHER_FEED_SERVO_NAME);
+        feedUpperLeft = robot.hardwareMap.get(CRServo.class, Constants.LAUNCHER_FEED_UPPER_LEFT_NAME);
+        feedUpperRight = robot.hardwareMap.get(CRServo.class, Constants.LAUNCHER_FEED_UPPER_RIGHT_NAME);
+        feedLowerLeft = robot.hardwareMap.get(CRServo.class, Constants.LAUNCHER_FEED_LOWER_LEFT_NAME);
+        feedLowerRight = robot.hardwareMap.get(CRServo.class, Constants.LAUNCHER_FEED_LOWER_RIGHT_NAME);
 
         frontMotor.setDirection(Constants.LAUNCHER_MOTOR_FRONT_DIRECTION);
         backMotor.setDirection(Constants.LAUNCHER_MOTOR_BACK_DIRECTION);
-        feedServo.setDirection(Constants.LAUNCHER_FEED_SERVO_DIRECTION);
-    }
-
-    public void beginLaunch() {
-        launching = true;
+        feedUpperLeft.setDirection(Constants.LAUNCHER_FEED_SERVO_DIRECTION);
+        feedUpperRight.setDirection(Constants.LAUNCHER_FEED_SERVO_DIRECTION);
+        feedLowerLeft.setDirection(Constants.LAUNCHER_FEED_SERVO_DIRECTION);
+        feedLowerRight.setDirection(Constants.LAUNCHER_FEED_SERVO_DIRECTION);
     }
 
     public void toggleFeed() {
@@ -76,23 +84,36 @@ public class Launcher extends SubsystemBase {
         this.launchSpeed = launchSpeed;
     }
 
+    public void setMode(Mode mode) {
+        this.mode = mode;
+    }
+
     public void stopAll() {
-        launching = false;
+        this.mode = Mode.IDLE;
         feeding = false;
     }
 
     @Override
     public void periodic() {
-        if (launching) {
+        if (this.mode != Mode.IDLE) {
             frontMotor.setVelocity(launchSpeed / Constants.FRONT_WHEEL_RADIUS, AngleUnit.RADIANS);
             backMotor.setVelocity(launchSpeed / Constants.BACK_WHEEL_RADIUS, AngleUnit.RADIANS);
+        } else if (Math.abs(robot.player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER))
+                 < Tunables.INPUT_THRESHOLD) {
+            stopAll();
+            this.mode = Mode.MANUAL;
         }
-        feedServo.setPower((feeding) ? Tunables.LAUNCHER_FEED_SERVO_POWER : 0);
+        if (feeding) {
+            feedUpperLeft.setPower(1);
+            feedUpperRight.setPower(1);
+            feedLowerLeft.setPower(-1);
+            feedLowerRight.setPower(-1);
+        }
         // Take the average of the two motors' speeds and report it:
         double currentRpm =  (frontMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI))
                             + backMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI)))
                             / 2;
-        robot.sensors.addTelemetry("State:", (launching) ? "LAUNCHING" : "IDLE");
+        robot.sensors.addTelemetry("Launcher Control:", mode.toString());
         robot.sensors.addTelemetry("Current RPM", "%.1f", currentRpm);
     }
 }
