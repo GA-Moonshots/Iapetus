@@ -29,18 +29,26 @@ public class DriveFaceTarget extends DriveAbstract {
     /** Don't restart the turn for wobble smaller than this. Restarting resets the controller. */
     private static final double REAIM_DEGREES = 3.0;
 
+    private final boolean ourHiveOnly;
     private String lockedOn = null;
     private double headingRad = 0;
 
+    /** Faces the nearest target the camera is tracking. */
     public DriveFaceTarget(Iapetus robot, double timeoutSeconds) {
+        this(robot, timeoutSeconds, false);
+    }
+
+    /** @param ourHiveOnly true = only our alliance's scoring Hive, ignore everything else */
+    public DriveFaceTarget(Iapetus robot, double timeoutSeconds, boolean ourHiveOnly) {
         super(robot, timeoutSeconds);
+        this.ourHiveOnly = ourHiveOnly;
     }
 
     @Override
     public void initialize() {
         lockedOn = null;   // the bumper reuses this object; forget the last press's target
         patience.start();
-        TagSighting target = robot.sensors.nearestTarget();
+        TagSighting target = ourHiveOnly ? robot.sensors.getOurTarget() : robot.sensors.nearestTarget();
         if (target == null) {
             robot.sensors.addTelemetry("FaceTarget", "nothing in view");
             return;

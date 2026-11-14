@@ -332,7 +332,8 @@ public class Constants {
     public static final double INCHES_TO_METERS = 0.0254;
     public static final double SHOOTING_ANGLE = Math.toRadians(75);
     public static final double HIVE_OPENING_ELEVATION = 55.0 * INCHES_TO_METERS;
-    public static final double LAUNCHER_ELEVATION = 27.0;
+    /** ⚙ MEASURE: floor to where the ball leaves the launcher. Inches → metres. */
+    public static final double LAUNCHER_ELEVATION = 27.0 * INCHES_TO_METERS;
 
     /**
      * Ratio of the angular velocity, in rad/s, to the power fed to the launcher.

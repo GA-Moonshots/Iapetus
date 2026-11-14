@@ -18,5 +18,9 @@ public class LaunchAbstract extends CommandBase {
         this.robot = robot;
         this.launcher = robot.launcher;
         this.patience = new Timing.Timer((long) (timeoutSeconds * 1000), TimeUnit.MILLISECONDS);
+
+        // Claim the launcher, so teleop's trigger default command can't
+        // overwrite our speed while we're shooting.
+        addRequirements(launcher);
     }
 }

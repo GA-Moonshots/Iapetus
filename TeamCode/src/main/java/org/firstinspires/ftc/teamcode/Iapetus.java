@@ -119,7 +119,6 @@ public class Iapetus extends Robot {
         intake = new Intake(this);
         launcher = new Launcher(this);
 
-        //*** PUT LAUNCHER AND INTAKE BACK IN HERE IF NOT HERE ALREADY ***
         register(drive, sensors, intake, launcher);
     }
 
@@ -161,11 +160,10 @@ public class Iapetus extends Robot {
         new GamepadButton(player1, GamepadKeys.Button.B)
                 .whenPressed(new InstantCommand(() -> drive.toggleFieldCentric()));
 
-        // X — Turn to face target.
+        // X — turn to face OUR scoring Hive. The target is looked up when the
+        // button is pressed, not when the binding is made (it's null at init).
         new GamepadButton(player1, GamepadKeys.Button.X)
-              .whenPressed(new DriveTurnBy(this,
-                      (sensors.getOurTarget() == null) ? 0 : sensors.getOurTarget().bearing(),
-                      1.5));
+              .whenPressed(new DriveFaceTarget(this, 1.5, true));
 
         // Y
         new GamepadButton(player1, GamepadKeys.Button.Y);
@@ -234,45 +232,40 @@ public class Iapetus extends Robot {
     public void initAuto() {
         drive.follower.update();  // know where we are before we move
 
-        if (isRed) {
-            if (isCorner) {
-                // Red Corner
-                new SequentialCommandGroup(
-                        new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 5),
-                        new LaunchDynamic(this, 5),
-                        new DriveToPose(this, startPose, 5),
-                        new DriveToPoseByPoint(this, Constants.RED_PARK, Constants.LEFT, 5)
-                        // ...then the rest of this year's plan.
-                ).schedule();
-            }
-            else {
-                // Red Middle
-                new SequentialCommandGroup(
-                        new DriveToPoseByPoint(this, Constants.RED_SHOOT_AUDIENCE, Constants.RED_MIDDLE_CURVE,5),
-                        new LaunchDynamic(this, 5),
-                        new DriveToPoseByPoint(this, Constants.CENTER, Constants.UP, 5),
-                        new DriveToPoseByPoint(this, Constants.BLUE_PARK, Constants.DOWN, 5)
-                ).schedule();
-
-            }
-        }
-        if (isCorner) {
-             // Blue Corner
-                new SequentialCommandGroup(
-                        new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 5),
-                        new LaunchDynamic(this, 5),
-                        new DriveToPose(this, startPose, 5),
-                        new DriveToPoseByPoint(this, Constants.BLUE_PARK, Constants.RIGHT, 5)
-                        // ...then the rest of this year's plan.
+        // Exactly ONE routine gets scheduled. Every routine requires the drive,
+        // so scheduling two means the second silently cancels the first.
+        if (isRed && isCorner) {
+            // Red Corner
+            new SequentialCommandGroup(
+                    new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 5),
+                    new LaunchDynamic(this, 5),
+                    new DriveToPose(this, startPose, 5),
+                    new DriveToPoseByPoint(this, Constants.RED_PARK, Constants.LEFT, 5)
+            ).schedule();
+        } else if (isRed) {
+            // Red Middle
+            new SequentialCommandGroup(
+                    new DriveToPoseByPoint(this, Constants.RED_SHOOT_AUDIENCE, Constants.RED_MIDDLE_CURVE, 5),
+                    new LaunchDynamic(this, 5),
+                    new DriveToPoseByPoint(this, Constants.CENTER, Constants.UP, 5),
+                    new DriveToPoseByPoint(this, Constants.BLUE_PARK, Constants.DOWN, 5)
+            ).schedule();
+        } else if (isCorner) {
+            // Blue Corner
+            new SequentialCommandGroup(
+                    new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 5),
+                    new LaunchDynamic(this, 5),
+                    new DriveToPose(this, startPose, 5),
+                    new DriveToPoseByPoint(this, Constants.BLUE_PARK, Constants.RIGHT, 5)
+            ).schedule();
+        } else {
+            // Blue Middle
+            new SequentialCommandGroup(
+                    new DriveToPoseByPoint(this, Constants.BLUE_SHOOT_SCORING, Constants.BLUE_MIDDLE_CURVE, 5),
+                    new LaunchDynamic(this, 5),
+                    new DriveToPoseByPoint(this, Constants.CENTER, Constants.DOWN, 5),
+                    new DriveToPoseByPoint(this, Constants.RED_PARK, Constants.UP, 5)
             ).schedule();
         }
-                // Blue Middle
-                new SequentialCommandGroup(
-                        new DriveToPoseByPoint(this, Constants.BLUE_SHOOT_SCORING, Constants.BLUE_MIDDLE_CURVE,5),
-                        new LaunchDynamic(this, 5),
-                        new DriveToPoseByPoint(this, Constants.CENTER, Constants.DOWN, 5),
-                        new DriveToPoseByPoint(this, Constants.RED_PARK, Constants.UP, 5)
-                ).schedule();
-
     }
 }

@@ -61,6 +61,10 @@ public class Launcher extends SubsystemBase {
         feeding = !feeding;
     }
 
+    public void setFeeding(boolean feeding) {
+        this.feeding = feeding;
+    }
+
 
     /**
      * Set the launcher to a certain power, from 0 (stopped) to the maximum power
@@ -88,27 +92,38 @@ public class Launcher extends SubsystemBase {
         this.mode = mode;
     }
 
+    /** Wheels and feed off. Wheels stay off until the trigger is released. */
     public void stopAll() {
         this.mode = Mode.IDLE;
         feeding = false;
+        launchSpeed = 0;   // otherwise MANUAL resumes at the last speed (auto has no trigger to reset it)
     }
 
     @Override
     public void periodic() {
-        if (this.mode != Mode.IDLE) {
+        if (this.mode == Mode.IDLE) {
+            // Actively stop. Skipping the write would leave the motors spinning
+            // at whatever velocity they were last told.
+            frontMotor.setVelocity(0, AngleUnit.RADIANS);
+            backMotor.setVelocity(0, AngleUnit.RADIANS);
+            // Hand control back to the trigger only once it's been let go, so a
+            // held trigger can't spin the wheels straight back up after Y.
+            if (Math.abs(robot.player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER))
+                    < Tunables.INPUT_THRESHOLD) {
+                this.mode = Mode.MANUAL;
+            }
+        } else {
             frontMotor.setVelocity(launchSpeed / Constants.FRONT_WHEEL_RADIUS, AngleUnit.RADIANS);
             backMotor.setVelocity(launchSpeed / Constants.BACK_WHEEL_RADIUS, AngleUnit.RADIANS);
-        } else if (Math.abs(robot.player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER))
-                 < Tunables.INPUT_THRESHOLD) {
-            stopAll();
-            this.mode = Mode.MANUAL;
         }
-        if (feeding) {
-            feedUpperLeft.setPower(1);
-            feedUpperRight.setPower(1);
-            feedLowerLeft.setPower(-1);
-            feedLowerRight.setPower(-1);
-        }
+
+        // Always write the feed servos — continuous servos keep turning at the
+        // last power they were given, so "stop" has to be said out loud.
+        double feedPower = feeding ? 1 : 0;
+        feedUpperLeft.setPower(feedPower);
+        feedUpperRight.setPower(feedPower);
+        feedLowerLeft.setPower(-feedPower);
+        feedLowerRight.setPower(-feedPower);
         // Take the average of the two motors' speeds and report it:
         double currentRpm =  (frontMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI))
                             + backMotor.getVelocity(AngleUnit.RADIANS) * (60 / (2 * Math.PI)))

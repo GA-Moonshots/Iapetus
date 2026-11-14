@@ -7,40 +7,76 @@ import org.firstinspires.ftc.teamcode.utils.TagSighting;
 import org.firstinspires.ftc.teamcode.utils.Tunables;
 
 
-import java.util.concurrent.TimeUnit;
-import com.seattlesolvers.solverslib.util.Timing;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+/**
+ * Aim → spin up → feed → done. One step per phase, timed with a single timer
+ * that lives across loops (execute() runs every loop, so anything created
+ * inside it starts over every loop).
+ *
+ * Won't feed until the camera has given us a real distance — no target means
+ * no shot, and the patience timeout moves auto along.
+ */
 public class LaunchDynamic extends LaunchAbstract {
 
-    boolean launchComplete = false;
+    private enum Phase { AIMING, SPINNING_UP, FEEDING, DONE }
+
+    private Phase phase = Phase.AIMING;
+    private final ElapsedTime phaseTimer = new ElapsedTime();
 
     public LaunchDynamic(Iapetus robot, double timeoutSeconds) {
         super(robot, timeoutSeconds);
     }
 
     @Override
-    public void execute() {
-        Timing.Timer feedDelay = new Timing.Timer(
-                Tunables.LAUNCHER_FEED_SERVO_WAIT_MS, TimeUnit.MILLISECONDS);
-        Timing.Timer feedDuration = new Timing.Timer(
-                Tunables.LAUNCHER_FEED_SERVO_DURATION_MS, TimeUnit.MILLISECONDS);
-        launcher.setLaunchSpeed(calculateLaunchVelocity());
+    public void initialize() {
+        patience.start();   // Timing.Timer starts paused: without this it never times out
+        phase = Phase.AIMING;
+        launcher.setFeeding(false);
+        launcher.setLaunchSpeed(0);
         launcher.setMode(Launcher.Mode.AUTO);
-        feedDelay.start();
-        if (feedDelay.done()) {
-            feedDuration.start();
-            launcher.toggleFeed();
+    }
+
+    @Override
+    public void execute() {
+        switch (phase) {
+            case AIMING:
+                // Lock the speed in once; the robot isn't moving while it shoots.
+                double velocity = calculateLaunchVelocity();
+                if (velocity > 0 && !Double.isInfinite(velocity)) {
+                    launcher.setLaunchSpeed(velocity);
+                    phase = Phase.SPINNING_UP;
+                    phaseTimer.reset();
+                }
+                break;
+            case SPINNING_UP:
+                if (phaseTimer.milliseconds() >= Tunables.LAUNCHER_FEED_SERVO_WAIT_MS) {
+                    launcher.setFeeding(true);
+                    phase = Phase.FEEDING;
+                    phaseTimer.reset();
+                }
+                break;
+            case FEEDING:
+                if (phaseTimer.milliseconds() >= Tunables.LAUNCHER_FEED_SERVO_DURATION_MS) {
+                    phase = Phase.DONE;
+                }
+                break;
+            default:
+                break;
         }
-        if (feedDuration.done()) {
-            launcher.toggleFeed();
-            launcher.stopAll();
-            launchComplete = true;
-        }
+        robot.sensors.addTelemetry("Launch", phase.toString());
     }
 
     @Override
     public boolean isFinished() {
-        return launchComplete || patience.done();
+        return phase == Phase.DONE || patience.done();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        launcher.stopAll();
+        robot.sensors.addTelemetry("Launch",
+                interrupted ? "INTERRUPTED" : (phase == Phase.DONE ? "Done" : "TIMED OUT in " + phase));
     }
 
     private TagSighting getTarget() {
@@ -99,7 +135,7 @@ public class LaunchDynamic extends LaunchAbstract {
         // ────────────────────────────────────────────────────────────
 
         // If 'inside' is negative, the target is unreachable at this distance
-        // (would require imaginary velocity). Return max power as fallback.
+        // (would require imaginary velocity). Return 0: no shot.
         if (inside < 0) {
             robot.sensors.addTelemetry("KINEMATICS WARNING: ", "Unreachable target");
             return 0;

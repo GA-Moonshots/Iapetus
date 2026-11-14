@@ -34,18 +34,23 @@ public class AutoMcAutty extends CommandOpMode {
         // Nothing built yet — we don't know the alliance until the drive team
         // tells us below.
         telemetry.addData("Alliance", "X = BLUE, B = RED");
-        telemetry.addData("Position", "DPAD UP = near goal, DOWN = far");
+        telemetry.addData("Position", "DPAD UP = CORNER, DPAD DOWN = MIDDLE");
         telemetry.update();
     }
 
     /** Runs repeatedly between INIT and START. Where the drive team answers. */
     @Override
     public void initialize_loop() {
-        if (gamepad1.x) isRed = !isRed;
-        if (gamepad1.b) isCorner = !isCorner;
+        // SET, never toggle. This runs hundreds of times a second, so a toggle
+        // flips on every loop the button is held and lands wherever it lands.
+        if (gamepad1.x) isRed = false;
+        if (gamepad1.b) isRed = true;
+        if (gamepad1.dpad_up)   isCorner = true;
+        if (gamepad1.dpad_down) isCorner = false;
 
         telemetry.addData("Alliance", isRed ? "RED" : "BLUE");
         telemetry.addData("Position", isCorner ? "CORNER" : "MIDDLE");
+        telemetry.addData("Controls", "X = BLUE, B = RED, DPAD UP = CORNER, DPAD DOWN = MIDDLE");
         telemetry.addData("Ready?", "Press START when this looks right");
         telemetry.update();
     }
