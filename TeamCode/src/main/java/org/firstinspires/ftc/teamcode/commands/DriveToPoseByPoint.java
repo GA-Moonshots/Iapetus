@@ -42,7 +42,7 @@ public class DriveToPoseByPoint extends DriveAbstract {
         follower.follow(Paths.through(drive.getPose(), viaPose, targetPose).constant(targetPose));
         drive.setTargetPose(targetPose);   // so the dashboard shows intent vs. reality
 
-        robot.sensors.addTelemetry("DriveToPoseByCurve", "→ (%.1f, %.1f) via (%.1f, %.1f)",
+        robot.sensors.addTelemetry("DriveToPoseByPoint", "→ (%.1f, %.1f) via (%.1f, %.1f)",
                 targetPose.x(), targetPose.y(), viaPose.x(), viaPose.y());
     }
 
@@ -66,7 +66,7 @@ public class DriveToPoseByPoint extends DriveAbstract {
     public void end(boolean interrupted) {
         standardCleanup();
         drive.clearTargetPose();
-        robot.sensors.addTelemetry("DriveToPoseByCurve",
+        robot.sensors.addTelemetry("DriveToPoseByPoint",
                 interrupted ? "INTERRUPTED" : (arrived ? "Arrived" : "TIMED OUT"));
     }
 }

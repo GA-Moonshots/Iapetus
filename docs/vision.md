@@ -8,7 +8,8 @@ The Limelight can do two different jobs with AprilTags. Which one matters depend
 | **Localization** | "Where am *I*?" | tags bolted to the field | off until proven |
 
 Tracking is the flexible one: it works on field walls, game pieces, and anything else a game sticks
-a tag on. Localization waits behind two switches in `Tunables` for a game whose tags stay put.
+a tag on. Localization waits behind two switches in `Tunables` for a game whose tags stay put, and
+stays off whatever the switches say in a game whose tags all move.
 
 ## How tracking works
 
@@ -85,7 +86,20 @@ vanish.
    `Constants.CAMERA_*`, which are named to match its fields.
 
 Then run **Camera Calibration** with a tag at a measured spot. It reports the error and what the
-error usually means.
+error usually means. Its settings are live on the Panels dashboard, so you move the tag, type where
+you put it, and read the new error without a redeploy:
+
+| Setting | What it's for |
+|---|---|
+| `TAG_FORWARD`, `TAG_LEFT` | where you put the tag, inches from the robot's centre |
+| `TAG_UP` | the tag centre's height. Set it to check camera pitch; 0 skips it |
+| `TAG_ID` | the tag you measured, when several are in view. -1 takes the nearest |
+| `WHOLE_TARGET` | check the merged target instead, measured to the middle of its tags |
+| `FIELD_CHECK`, `KNOWN_*` | compare the camera's field pose to where the robot really is (fixed tags only) |
+
+It never moves the robot or corrects its pose, and it puts the localization switches back the way
+it found them when it stops. `Tunables` are static, so anything it left set would still be set in
+the next OpMode.
 
 ## Localization, for games with fixed tags
 
@@ -96,6 +110,14 @@ on telemetry with its reason.
 
 Leave both off until the tags are proven to stay put. A tag on a moved object reads just as
 confidently as a fixed one, and quietly drags odometry toward where the object used to be.
+
+**Which tags count as fixed is the SDK's call.** `FieldMap.localizationTags()` keeps a tag only if
+the SDK gives it a field position. The SDK writes "no position" as `(0,0,0)` rather than `null`
+(its short `addTag()` form, used for sample and motif tags), so that's what we filter on. Tags in
+a cluster never count: the SDK places them relative to their object, not the field. If the list
+comes back empty, as in a game
+where every tag rides on something that moves, `Sensors` keeps localization off entirely and says
+so on telemetry.
 
 ## What belongs in a season repo instead
 

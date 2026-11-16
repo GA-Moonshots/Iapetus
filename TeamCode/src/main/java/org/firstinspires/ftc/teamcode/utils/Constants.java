@@ -113,17 +113,6 @@ public class Constants {
     public static final boolean DEFAULT_FIELD_CENTRIC = true;
 
     // ============================================================
-    //                    FIELD GEOMETRY
-    //  Field is 144" x 144", origin at bottom-left. 0 rad points RIGHT.
-    //  ⚙ EVERY SEASON: replace these with the game's scoring coordinates.
-    // ============================================================
-
-    public static final double BLUE_TARGET_X = 12;
-    public static final double BLUE_TARGET_Y = 124;
-    public static final double RED_TARGET_X  = 132;
-    public static final double RED_TARGET_Y  = 124;
-
-    // ============================================================
     //                    PEDRO PATHING 3
     // ============================================================
     //
@@ -314,24 +303,23 @@ public class Constants {
     public static final Pose RIGHT = new Pose(114, 72);
 
     public static final Pose RED_SHOOT_SCORING = new Pose(60, 120, Math.toRadians(270));
-    public static final Pose RED_SHOOT_AUDIENCE = new Pose(60, 24, Math.toRadians(90));;
+    public static final Pose RED_SHOOT_AUDIENCE = new Pose(60, 24, Math.toRadians(90));
     public static final Pose RED_MIDDLE_CURVE = new Pose(34, 41);
-    public static final Pose BLUE_SHOOT_AUDIENCE = new Pose(84, 24, Math.toRadians(90));;
-    public static final Pose BLUE_SHOOT_SCORING = new Pose(84, 120, Math.toRadians(270));;
+    public static final Pose BLUE_SHOOT_AUDIENCE = new Pose(84, 24, Math.toRadians(90));
+    public static final Pose BLUE_SHOOT_SCORING = new Pose(84, 120, Math.toRadians(270));
     public static final Pose BLUE_MIDDLE_CURVE = new Pose(110, 103);
 
 
     // ============================================================
     //                   LAUNCHER CONSTANTS
     // Needed for math calculations for the launcher. May be
-    // measurements from the robot or physical constants. All values
-    // are in METERS.
+    // measurements from the robot or physical constants. All
+    // lengths are in METERS.
     // ============================================================
 
-    public static final double GRAVITY = 9.81;
-    public static final double INCHES_TO_METERS = 0.0254;
+    public static final double GRAVITY = 9.81;   // m/s²
     public static final double SHOOTING_ANGLE = Math.toRadians(75);
-    public static final double HIVE_OPENING_ELEVATION = 55.0 * INCHES_TO_METERS;
+    public static final double HIVE_OPENING_ELEVATION = DistanceUnit.INCH.toMeters(55.0);
     /**
      * ⚙ MEASURE: floor to where the ball leaves the launcher, in metres.
      * 27 cm — the old value was 10", so the 27 was centimetres.
@@ -339,10 +327,16 @@ public class Constants {
     public static final double LAUNCHER_ELEVATION = 0.27;
 
     /**
-     * Teleop trigger power → wheel surface speed (m/s), the unit Launcher uses.
-     * Measured: speed = 30.19 * power - 1.64.
+     * Teleop trigger power → wheel surface speed: m/s per unit of power, the
+     * unit Launcher uses. Measured: speed = 30.19 * power - 1.64.
      */
-    public static final double VELOCITY_TO_POWER_RATIO = 30;
+    public static final double LAUNCH_SPEED_PER_POWER = 30;
+
+    /**
+     * ⚙ TEAM TO CONFIRM: measure both wheels. The back was 0.07 until
+     * 2026-11-14. If it really is bigger, 0.05 here runs its surface ~40%
+     * faster than the front's.
+     */
     public static final double FRONT_WHEEL_RADIUS = 0.05;
     public static final double BACK_WHEEL_RADIUS = 0.05;
 

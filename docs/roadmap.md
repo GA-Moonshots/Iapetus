@@ -26,7 +26,8 @@ keeps driving on odometry alone.
 - [x] Coordinate bridge — metres/degrees → Pedro inches/radians, isolated in `FieldMap`, Pedro 3's 90° rotation included.
 - [x] **Tag tracking** — every tag in view placed on the field via odometry, remembered briefly, merged into targets by SDK cluster. `TagSighting` answers range, bearing, and aim-from-a-pivot for mechanisms. `DriveFaceTarget` is the example.
 - [x] **Localization** (games with fixed tags) — MegaTag2 + trust policy, kept behind `TAG_LOCALIZATION` / `VISION_CORRECTIONS_ENABLED`, both off until proven.
-- [x] `CameraCalibration` — tag check (any game) and field check (fixed tags only).
+- [x] `CameraCalibration` — tag check (any game) and field check (fixed tags only). Every setting live on Panels: pick one tag or a whole merged target, optional height check, field check on a switch.
+- [x] Localization switches do nothing without fixed tags in the SDK, so a game whose tags move can't be "corrected" by them.
 
 **Trust policy: snap, but only when confident.** Overwrite Pedro's pose only when the detection is
 fresh, close, on the field, and the implied jump is small. Log every rejection with its reason —

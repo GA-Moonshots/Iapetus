@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.utils;
 import com.pedropathing.math.Pose;
 import com.qualcomm.hardware.limelightvision.LLFieldMap;
 
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -40,7 +41,8 @@ import java.util.Map;
  *
  * FIRST distinguishes them for us: informational tags ship with NO field
  * position. So "has a field position" is the filter, and it needs no
- * per-season ID blacklist that somebody will forget to update.
+ * per-season ID blacklist that somebody will forget to update. Careful: the
+ * SDK writes "no position" as (0,0,0), not null — see hasFieldPosition().
  *
  * The 2025-26 DECODE field, as a worked example: tags 20 and 24 were the goal
  * targets and carried positions; 21/22/23 were Obelisk motif tags and did not.
@@ -205,7 +207,7 @@ public class FieldMap {
         List<Tag> tags = new ArrayList<>();
         try {
             for (AprilTagMetadata meta : gameLibrary().getAllTags()) {
-                if (meta.fieldPosition == null) continue;   // motif tag, not a landmark
+                if (!hasFieldPosition(meta)) continue;   // motif or sample tag, not a landmark
 
                 // The library reports in its own DistanceUnit; normalise to inches.
                 double xIn = meta.distanceUnit.toInches(meta.fieldPosition.get(0));
@@ -220,6 +222,17 @@ public class FieldMap {
             // A missing tag library shouldn't stop the robot driving.
         }
         return tags;
+    }
+
+    /**
+     * Is this tag pinned to a spot on the field? The SDK's short addTag() —
+     * used for sample tags and motif tags — stores (0,0,0) rather than null,
+     * and checking only for null once let the sample tags pass as landmarks
+     * at dead centre. Nothing real sits at the centre of the floor.
+     */
+    private static boolean hasFieldPosition(AprilTagMetadata meta) {
+        VectorF p = meta.fieldPosition;
+        return p != null && (p.get(0) != 0 || p.get(1) != 0 || p.get(2) != 0);
     }
 
     /** @return the tag with this id, or null if it isn't a localization tag. */

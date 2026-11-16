@@ -56,17 +56,22 @@ No while-loops, no `Thread.sleep()` in a Command. The scheduler runs every activ
 ```
 Iapetus.java                 subsystems, button bindings, autonomous plan
 
-commands/DriveAbstract       base for anything that moves the robot (timeout + cleanup)
 commands/Drive               default teleop drive
+commands/DriveAbstract       base for anything that moves the robot (timeout + cleanup)
 commands/DriveToPose         ├ go stand exactly there
+commands/DriveToPoseByPoint  ├ go stand there, bending through a point on the way
 commands/DriveFwdByDist      ├ go that way N inches
 commands/DriveTurnBy         ├ rotate N degrees
 commands/DriveTurnTo         ├ face this heading
 commands/DriveFaceTarget     └ face the nearest tracked target (the TagSighting example)
+commands/IntakeManual        default: operator's stick runs the intake (dead zone)
+commands/LaunchManual        default: operator's trigger + feed (dead zone)
+commands/LaunchAbstract      base for pre-programmed launches (timeout + cleanup)
+commands/LaunchDynamic       └ the auto-shot: spin up, feed, stop (auto AND teleop)
 
 subsystems/PedroDrive        mecanum + Pedro + dashboard drawing — tune it, don't rewrite it
 subsystems/Sensors           every shared sensor, Limelight tag tracking, AND the only telemetry flush
-subsystems/Intake, Launcher  this season's mechanisms (empty, waiting to be built)
+subsystems/Intake, Launcher  this season's mechanisms. They never read a gamepad.
 
 utils/Constants              hardware names, motor directions, follower config (final)
 utils/Tunables               values you edit live from the dashboard (not final)
@@ -75,9 +80,11 @@ utils/TagSighting            a tracked tag/target: field position, range, bearin
 utils/PersistentPoseManager  auto → teleop pose handoff
 utils/DriveyMcDriverson      teleop entry point
 utils/AutoMcAutty            autonomous entry point
-utils/CameraCalibration      is the camera telling the truth?
+utils/CameraCalibration      is the camera telling the truth? (all settings live on Panels)
+utils/LauncherTuner          find the launch speed that scores (ours, not Pedro's)
+utils/PinpointDoctor         is the odometry computer alive? No Pedro, no robot class
 utils/Tuning                 Pedro AutoTune — tune from a browser, see docs/tuning.md
-utils/*Tuner, utils/Tests     the tuners it runs (copied from Pedro — don't edit)
+utils/{Mecanum,Pinpoint,Foresight}Tuner, utils/Tests   the tuners it runs (copied from Pedro — don't edit)
 ```
 
 Adding a mechanism? Copy Ganymede's subsystems (`Intake`, `Launcher`, `Turret`):
@@ -85,6 +92,12 @@ https://github.com/GA-Moonshots/Ganymede/tree/master/TeamCode/src/main/java/org/
 Hardware lookups in the constructor, hardware names from `Constants`, small methods that each do
 one thing. Not `PedroDrive`: it wraps Pedro and is no model for a mechanism. Adding a movement? Extend
 `DriveAbstract`, and give it a real timeout.
+
+Subsystems never read a gamepad. The operator's controls go in a default command
+(`IntakeManual`, `LaunchManual`), dead zone included. A pre-programmed action is its own command
+that requires the subsystem: scheduling it interrupts the default command, and the default takes
+over again when it ends. That's how one command (`LaunchDynamic`) serves auto and a teleop button.
+In `Iapetus`, `register()` `Sensors` last: its `periodic()` is the telemetry flush.
 
 ## Rule 4: numbers have exactly one home
 

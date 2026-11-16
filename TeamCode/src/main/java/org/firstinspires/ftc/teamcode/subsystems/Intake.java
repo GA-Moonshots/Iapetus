@@ -12,6 +12,10 @@ import org.firstinspires.ftc.teamcode.utils.Constants;
  * ║                                                                           ║
  * ║  One motor pulls game pieces in. Negative power runs it backwards.        ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
+ *
+ * Never reads a gamepad. Teleop's stick lives in IntakeManual, the default
+ * command; anything pre-programmed is another command that requires this
+ * subsystem and interrupts it.
  */
 public class Intake extends SubsystemBase {
 
@@ -25,5 +29,9 @@ public class Intake extends SubsystemBase {
     /** -1 to 1. Negative reverses, e.g. to clear a jam. */
     public void setIntakeSpeed(double intakePower) {
         intakeMotor.setPower(intakePower);
+    }
+
+    public void stop() {
+        intakeMotor.setPower(0);
     }
 }

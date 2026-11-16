@@ -5,7 +5,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
-import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.utils.Constants;
@@ -19,10 +18,13 @@ import org.firstinspires.ftc.teamcode.utils.Tunables;
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  *
  * Speeds are wheel surface speed in m/s, so teleop's trigger and auto's
- * physics share one unit. Modes:
- *   MANUAL — follows player 2's trigger (teleop's default command)
- *   AUTO   — a command such as LaunchDynamic owns the speed
- *   IDLE   — wheels stopped; back to MANUAL once the trigger is released
+ * physics share one unit. Modes say who's in charge, for telemetry:
+ *   MANUAL — LaunchManual, teleop's default command, following the trigger
+ *   AUTO   — a pre-programmed command such as LaunchDynamic
+ *   IDLE   — stopped
+ *
+ * Never reads a gamepad. Whatever command owns the launcher says what to do;
+ * this only does it.
  */
 public class Launcher extends SubsystemBase {
     private final Iapetus robot;
@@ -75,7 +77,7 @@ public class Launcher extends SubsystemBase {
             robot.sensors.addTelemetry("Illegal launch power", "%.2f", launchPower);
             return;
         }
-        this.launchSpeed = launchPower * Constants.VELOCITY_TO_POWER_RATIO;
+        this.launchSpeed = launchPower * Constants.LAUNCH_SPEED_PER_POWER;
     }
 
     /** Auto: wheel surface speed, m/s. Clamped to 0..maxLaunchSpeed(). */
@@ -83,20 +85,25 @@ public class Launcher extends SubsystemBase {
         this.launchSpeed = Math.max(0, Math.min(launchSpeed, maxLaunchSpeed()));
     }
 
+    /** The speed we're aiming for, m/s, after clamping. */
+    public double getLaunchSpeed() {
+        return launchSpeed;
+    }
+
     /** The same ceiling teleop's trigger has, so auto can't spin faster than a driver can. */
     public static double maxLaunchSpeed() {
-        return Tunables.LAUNCHER_MAX_POWER * Constants.VELOCITY_TO_POWER_RATIO;
+        return Tunables.LAUNCHER_MAX_POWER * Constants.LAUNCH_SPEED_PER_POWER;
     }
 
     public void setMode(Mode mode) {
         this.mode = mode;
     }
 
-    /** Wheels and feed off. Wheels stay off until the trigger is released. */
+    /** Wheels and feed off. Whoever owns the launcher next starts from stopped. */
     public void stopAll() {
         this.mode = Mode.IDLE;
         feeding = false;
-        launchSpeed = 0;   // otherwise MANUAL resumes at the last speed (auto has no trigger to reset it)
+        launchSpeed = 0;
     }
 
     /** Both wheels within Tunables.LAUNCHER_SPEED_TOLERANCE of target. False when stopped. */
@@ -113,23 +120,13 @@ public class Launcher extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (this.mode == Mode.IDLE) {
-            // Actively stop. Skipping the write would leave the motors spinning
-            // at whatever velocity they were last told.
-            frontMotor.setVelocity(0, AngleUnit.RADIANS);
-            backMotor.setVelocity(0, AngleUnit.RADIANS);
-            // Hand control back to the trigger only once it's been let go, so a
-            // held trigger can't spin the wheels straight back up after Y.
-            if (Math.abs(robot.player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER))
-                    < Tunables.INPUT_THRESHOLD) {
-                this.mode = Mode.MANUAL;
-            }
-        } else {
-            frontMotor.setVelocity(launchSpeed / Constants.FRONT_WHEEL_RADIUS, AngleUnit.RADIANS);
-            backMotor.setVelocity(launchSpeed / Constants.BACK_WHEEL_RADIUS, AngleUnit.RADIANS);
-        }
+        // Always write the wheels, even to stop them: skip the write and they
+        // keep spinning at whatever velocity they were last told.
+        double speed = mode == Mode.IDLE ? 0 : launchSpeed;
+        frontMotor.setVelocity(speed / Constants.FRONT_WHEEL_RADIUS, AngleUnit.RADIANS);
+        backMotor.setVelocity(speed / Constants.BACK_WHEEL_RADIUS, AngleUnit.RADIANS);
 
-        // Always write the feed servos — continuous servos keep turning at the
+        // Same for the feed servos — continuous servos keep turning at the
         // last power they were given, so "stop" has to be said out loud.
         double feedPower = feeding ? 1 : 0;
         feedUpperLeft.setPower(feedPower);
@@ -137,7 +134,7 @@ public class Launcher extends SubsystemBase {
         feedUpperRight.setPower(-feedPower);
         feedLowerRight.setPower(-feedPower);
 
-        // Wheels differ in size, so report each rather than an average.
+        // Report each wheel rather than an average: if they disagree, that's the news.
         robot.sensors.addTelemetry("═══ Launcher ═══", "");
         robot.sensors.addTelemetry("Launcher mode", "%s%s", mode, feeding ? " + FEEDING" : "");
         robot.sensors.addTelemetry("Launcher RPM", "front %.0f / back %.0f",

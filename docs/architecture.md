@@ -33,6 +33,17 @@ own. That's why the driver never has to press anything to get control back.
 
 Default commands return `false` from `isFinished()` forever. They don't end — they get interrupted.
 
+The mechanisms work the same way. `IntakeManual` and `LaunchManual` are the intake's and launcher's
+default commands: they read player 2's stick and trigger, with a dead zone so a drifting stick
+does nothing. Subsystems never read a gamepad themselves. A pre-programmed action is its own
+command that requires the subsystem: `LaunchDynamic` interrupts `LaunchManual`, takes its shot,
+and the trigger is the operator's again. Because it doesn't care who scheduled it, the same
+command runs in an autonomous routine and from player 2's **A** button.
+
+`LaunchManual` adds one rule: whenever it takes over, the trigger must return to zero before it
+counts, so a trigger held through an auto-shot (or through **Y**, the launcher's panic stop) can't
+spin the wheels straight back up.
+
 ## The drive command family
 
 `DriveAbstract` is the base class for anything that moves the robot. It hands subclasses
@@ -41,14 +52,17 @@ Default commands return `false` from `isFinished()` forever. They don't end — 
 
 ```
 DriveAbstract  (base: references, timeout, cleanup)
-├── DriveToPose      go stand exactly there
-├── DriveFwdByDist   go that way N inches
-├── DriveTurnBy      rotate N degrees (relative)
-├── DriveTurnTo      face this heading (absolute)
-└── DriveFaceTarget  face the nearest thing the camera is tracking
+├── DriveToPose         go stand exactly there
+├── DriveToPoseByPoint  go stand there, bending through a point on the way
+├── DriveFwdByDist      go that way N inches
+├── DriveTurnBy         rotate N degrees (relative)
+├── DriveTurnTo         face this heading (absolute)
+└── DriveFaceTarget     face the nearest thing the camera is tracking
 ```
 
-Adding another is the normal way to extend this — copy whichever is closest.
+Adding another is the normal way to extend this — copy whichever is closest. `LaunchAbstract` is
+the same idea for the launcher: references, `patience`, and a `standardCleanup()` that stops the
+wheels and feed. `LaunchDynamic` is its one subclass so far.
 
 **Every one takes a timeout, and that is not optional.** A command that never quite reaches its
 tolerance otherwise runs until the match ends, blocking everything queued behind it. The timer is
@@ -69,7 +83,9 @@ follower handles *how*.
 
 **All telemetry goes through `Sensors`.** Call `robot.sensors.addTelemetry(...)`. Never call
 `telemetry.update()` anywhere else — `Sensors.periodic()` is the only flush in the project, and a
-second one costs you half your data. `Sensors` also owns the Limelight, because a camera is a
+second one costs you half your data. Register `Sensors` *last* in `Iapetus`: subsystems'
+`periodic()` runs in registration order, so anything after the flush prints a loop late, under
+the wrong heading. `Sensors` also owns the Limelight, because a camera is a
 sensor: it tracks every tag in view and answers "where is that?" with a `TagSighting`
 ([vision.md](vision.md)).
 
@@ -86,13 +102,19 @@ Iapetus.java                 subsystems, button bindings, auto plan
 commands/Drive               default teleop drive
 commands/DriveAbstract       base for all movement commands
 commands/DriveToPose         ├ go stand exactly there
+commands/DriveToPoseByPoint  ├ go stand there, bending through a point
 commands/DriveFwdByDist      ├ go that way N inches
 commands/DriveTurnBy         ├ rotate N degrees
 commands/DriveTurnTo         ├ face this heading
 commands/DriveFaceTarget     └ face the nearest tracked target
+commands/IntakeManual        default: player 2's stick runs the intake
+commands/LaunchManual        default: player 2's trigger and feed
+commands/LaunchAbstract      base for pre-programmed launches
+commands/LaunchDynamic       └ the auto-shot, in auto and teleop
 
 subsystems/PedroDrive        mecanum + Pedro + all dashboard drawing
 subsystems/Sensors           shared sensors, Limelight tag tracking, the only telemetry flush
+subsystems/Intake, Launcher  this season's mechanisms
 
 utils/Constants              hardware names, directions, follower config (final)
 utils/Tunables               live-editable from the dashboard (not final)
@@ -102,8 +124,10 @@ utils/PersistentPoseManager  auto → teleop pose handoff
 utils/DriveyMcDriverson      teleop entry point
 utils/AutoMcAutty            autonomous entry point
 utils/CameraCalibration      is the camera telling the truth?
+utils/LauncherTuner          find the launch speed that scores
+utils/PinpointDoctor         is the odometry computer alive?
 utils/Tuning                 Pedro AutoTune — tune from a browser, see docs/tuning.md
-utils/*Tuner, utils/Tests     the tuners it runs (copied from Pedro — don't edit)
+utils/{Mecanum,Pinpoint,Foresight}Tuner, utils/Tests   the tuners it runs (copied from Pedro — don't edit)
 ```
 
 OpModes live in `utils/`. Don't add a fourth folder.

@@ -1,21 +1,22 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Iapetus;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.utils.Constants;
 import org.firstinspires.ftc.teamcode.utils.TagSighting;
 import org.firstinspires.ftc.teamcode.utils.Tunables;
 
-
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 /**
  * Aim → spin up → feed → done. The phase timer is a field because execute()
  * runs every loop; a timer created inside it would restart every loop.
  *
- * Speed: Tunables.AUTO_LAUNCH_SPEED (found with the Launcher Tuner). With
- * AUTO_SHOT_USE_CAMERA on, camera range + physics when the Hive is in view.
- * Either way it always takes the shot.
+ * Speed in auto: Tunables.AUTO_LAUNCH_SPEED (found with the Launcher Tuner),
+ * or camera range + physics with AUTO_SHOT_USE_CAMERA on. In teleop it tries
+ * the camera first. Either way it always takes the shot, falling back to
+ * AUTO_LAUNCH_SPEED when the camera has no answer.
  */
 public class LaunchDynamic extends LaunchAbstract {
 
@@ -23,6 +24,9 @@ public class LaunchDynamic extends LaunchAbstract {
 
     private Phase phase;
     private final ElapsedTime phaseTimer = new ElapsedTime();
+
+    /** Why we picked the speed we did. Reported every loop, not just once. */
+    private String speedSource;
 
     public LaunchDynamic(Iapetus robot, double timeoutSeconds) {
         super(robot, timeoutSeconds);
@@ -32,6 +36,7 @@ public class LaunchDynamic extends LaunchAbstract {
     public void initialize() {
         patience.start();   // Timing.Timer starts paused: without this it never times out
         phase = Phase.AIMING;
+        speedSource = "choosing";
         launcher.setFeeding(false);
         launcher.setLaunchSpeed(0);
         launcher.setMode(Launcher.Mode.AUTO);
@@ -67,7 +72,8 @@ public class LaunchDynamic extends LaunchAbstract {
             default:
                 break;
         }
-        robot.sensors.addTelemetry("Launch", phase.toString());
+        robot.sensors.addTelemetry("Launch", "%s  %.1f m/s (%s)",
+                phase, launcher.getLaunchSpeed(), speedSource);
     }
 
     @Override
@@ -77,25 +83,26 @@ public class LaunchDynamic extends LaunchAbstract {
 
     @Override
     public void end(boolean interrupted) {
-        launcher.stopAll();
+        standardCleanup();
         robot.sensors.addTelemetry("Launch",
                 interrupted ? "INTERRUPTED" : (phase == Phase.DONE ? "Done" : "TIMED OUT in " + phase));
     }
 
     /** m/s to launch at. Physics only if enabled and it has an answer; otherwise the tuned speed. */
     private double chooseSpeed() {
-        if ((robot.mode == Iapetus.Mode.AUTONOMOUS) && !Tunables.AUTO_SHOT_USE_CAMERA) {
+        if (robot.mode == Iapetus.Mode.AUTONOMOUS && !Tunables.AUTO_SHOT_USE_CAMERA) {
+            speedSource = "AUTO_LAUNCH_SPEED";
             return Tunables.AUTO_LAUNCH_SPEED;
         }
         TagSighting hive = robot.sensors.getOurTarget();
         if (hive != null) {
             double speed = physicsSpeed(hive.range()) * Tunables.LAUNCH_SPEED_SCALE;
             if (speed > 0) {
-                robot.sensors.addTelemetry("Launch physics", "%.0f\" → %.2f m/s", hive.range(), speed);
+                speedSource = String.format("camera, %.0f\" away", hive.range());
                 return speed;
             }
         }
-        robot.sensors.addTelemetry("Launch physics", "no answer — using AUTO_LAUNCH_SPEED");
+        speedSource = "no camera answer, AUTO_LAUNCH_SPEED";
         return Tunables.AUTO_LAUNCH_SPEED;
     }
 
@@ -105,7 +112,7 @@ public class LaunchDynamic extends LaunchAbstract {
      * Uncorrected: multiply by Tunables.LAUNCH_SPEED_SCALE for the real wheel speed.
      */
     public static double physicsSpeed(double rangeInches) {
-        double xDistance = rangeInches * Constants.INCHES_TO_METERS;
+        double xDistance = DistanceUnit.INCH.toMeters(rangeInches);
         double yDistance = (Constants.HIVE_OPENING_ELEVATION - Constants.LAUNCHER_ELEVATION);
 
         // Launch angle in radians (physics functions use radians)

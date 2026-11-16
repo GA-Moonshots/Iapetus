@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-
-
 import com.pedropathing.math.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,7 +7,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.Robot;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
-import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.button.GamepadButton;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
@@ -20,7 +17,9 @@ import org.firstinspires.ftc.teamcode.commands.DriveFaceTarget;
 import org.firstinspires.ftc.teamcode.commands.DriveToPose;
 import org.firstinspires.ftc.teamcode.commands.DriveToPoseByPoint;
 import org.firstinspires.ftc.teamcode.commands.DriveTurnBy;
+import org.firstinspires.ftc.teamcode.commands.IntakeManual;
 import org.firstinspires.ftc.teamcode.commands.LaunchDynamic;
+import org.firstinspires.ftc.teamcode.commands.LaunchManual;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.PedroDrive;
@@ -58,7 +57,7 @@ public class Iapetus extends Robot {
     // Match configuration
     public boolean isRed;
     public boolean isCorner;
-    public static enum Mode { TELEOP, AUTONOMOUS }
+    public enum Mode { TELEOP, AUTONOMOUS }
     public Mode mode;
 
     // Subsystems
@@ -132,7 +131,10 @@ public class Iapetus extends Robot {
         intake = new Intake(this);
         launcher = new Launcher(this);
 
-        register(drive, sensors, intake, launcher);
+        // Sensors registers LAST. The scheduler runs periodic() in this order,
+        // and Sensors' periodic() is the telemetry flush: anything after it
+        // prints a loop late, under the wrong heading.
+        register(drive, intake, launcher, sensors);
     }
 
     // ============================================================
@@ -140,8 +142,9 @@ public class Iapetus extends Robot {
     // ============================================================
 
     /**
-     * Our alliance's scoring Hive, if the camera has seen it lately. Null
-     * otherwise — no camera, not in view, or seen too long ago. Always check.
+     * Our alliance's Hive on the half of the field we're in: the audience Hive
+     * below y = 72, the scoring Hive above (see Sensors.getOurTarget()). Null
+     * if the camera hasn't seen it lately. Always check.
      */
     public TagSighting ourScoringHive() {
         return sensors.getOurTarget();
@@ -156,6 +159,9 @@ public class Iapetus extends Robot {
 
         // The default command: runs whenever nothing else claims the wheels.
         drive.setDefaultCommand(new Drive(this));
+
+        intake.setDefaultCommand(new IntakeManual(this));
+        launcher.setDefaultCommand(new LaunchManual(this));
 
         /*
          ██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗      ██╗
@@ -175,7 +181,7 @@ public class Iapetus extends Robot {
         new GamepadButton(player1, GamepadKeys.Button.B)
                 .whenPressed(new InstantCommand(() -> drive.toggleFieldCentric()));
 
-        // X — turn to face OUR scoring Hive (looked up on press).
+        // X — turn to face our Hive on this half of the field (looked up on press).
         new GamepadButton(player1, GamepadKeys.Button.X)
                 .whenPressed(new DriveFaceTarget(this, 1.5, true));
 
@@ -205,22 +211,25 @@ public class Iapetus extends Robot {
             OPERATOR — runs the mechanisms. Never drives.
         */
 
+        // The sticks and trigger live in default commands, dead zones included.
+        // Anything pre-programmed requires the subsystem, interrupts these, and
+        // hands control back when it finishes — same trick as Drive.
+
         // LEFT STICK Y — intake, either direction (reverse to clear a jam).
-        intake.setDefaultCommand(new RunCommand(() ->
-                intake.setIntakeSpeed(player2.getLeftY() * Tunables.INTAKE_MAX_POWER), intake));
+
 
         // RIGHT TRIGGER — flywheel speed. Telemetry "Launcher ready" says when to feed.
-        launcher.setDefaultCommand(new RunCommand(() ->
-                launcher.setLaunchPower(player2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)
-                        * Tunables.LAUNCHER_MAX_POWER), launcher));
+        // X — feed on/off. Read inside LaunchManual, so it only works while
+        //     the operator owns the launcher, never mid auto-shot.
 
-        // X — feed on/off.
-        new GamepadButton(player2, GamepadKeys.Button.X)
-                .whenPressed(new InstantCommand(() -> launcher.toggleFeed()));
+        // A — auto-shot: spin up, feed, stop. The same command auto uses.
+        new GamepadButton(player2, GamepadKeys.Button.A)
+                .whenPressed(new LaunchDynamic(this, 5));
 
-        // Y — stop the launcher. Stays stopped until the trigger is released.
+        // Y — panic stop for the launcher, auto-shot included (requiring the
+        // launcher is what interrupts it). Stays stopped until the trigger is released.
         new GamepadButton(player2, GamepadKeys.Button.Y)
-                .whenPressed(new InstantCommand(() -> launcher.stopAll()));
+                .whenPressed(new InstantCommand(() -> launcher.stopAll(), launcher));
     }
 
     // ============================================================
@@ -251,6 +260,10 @@ public class Iapetus extends Robot {
 
         // Exactly ONE routine gets scheduled. Every routine requires the drive,
         // so scheduling two means the second silently cancels the first.
+        //
+        // ⚙ TEAM TO CONFIRM: the corner routines park on their own wall, but the
+        // middle ones cross the field to the OTHER alliance's park pose, by way
+        // of a loop through UP/DOWN. Check that against the game manual.
         if (isRed && isCorner) {
             // Red Corner
             new SequentialCommandGroup(

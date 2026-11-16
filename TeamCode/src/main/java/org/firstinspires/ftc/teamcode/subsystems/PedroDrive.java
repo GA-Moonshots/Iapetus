@@ -296,14 +296,6 @@ public class PedroDrive extends SubsystemBase {
         setPose(getPose().withHeading(robot.isRed ? 0 : Math.PI));
     }
 
-    /** Straight-line inches to our alliance's scoring target. */
-    public double getDistanceToGoal() {
-        Pose current = getPose();
-        double targetX = robot.isRed ? Constants.RED_TARGET_X : Constants.BLUE_TARGET_X;
-        double targetY = robot.isRed ? Constants.RED_TARGET_Y : Constants.BLUE_TARGET_Y;
-        return Math.hypot(targetX - current.x(), targetY - current.y());
-    }
-
     // ============================================================
     //                    MODES
     // ============================================================
@@ -395,7 +387,7 @@ public class PedroDrive extends SubsystemBase {
         panels.line(pose.x() + noseX, pose.y() + noseY);
     }
 
-    /** Remember where we are, if we've moved far enough to be worth remembering. */
+    /** Remember where we are and when, every loop. Anything older than POSE_HISTORY_NANOS goes. */
     private void rememberPose() {
         long now = System.nanoTime();
         poseHistory.addLast(new Stamped(now, getPose()));

@@ -11,7 +11,9 @@ Iapetus, Saturn's two-faced moon: one side bright, one side dark. Much like tele
 Everything Artemis provides (Pedro Pathing drive, the command pattern, AprilTag tracking, one
 telemetry funnel, one coordinate frame) plus this season's layer:
 
-- **`Iapetus.java`**: the robot, with `Intake` and `Launcher` wired in and waiting to be built
+- **`Iapetus.java`**: the robot, with its `Intake` and `Launcher`, teleop bindings, and auto routines
+- **Launching**: `LaunchManual` (operator's trigger) and `LaunchDynamic` (the auto-shot, in auto and
+  teleop), with the **Launcher Tuner** OpMode to find the speed
 - **Hive tracking**: `robot.ourScoringHive()` and the four Hive names in `Constants`
 - **[docs/biobuzz.md](docs/biobuzz.md)**: tag ids, tag size, camera settings for this game
 
