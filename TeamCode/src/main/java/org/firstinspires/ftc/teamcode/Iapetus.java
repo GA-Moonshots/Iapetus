@@ -268,7 +268,7 @@ public class Iapetus extends Robot {
             // Red Corner
             new SequentialCommandGroup(
                     new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 5),
-                    new LaunchDynamic(this, 5),
+                    // new LaunchDynamic(this, 5),
                     new DriveToPose(this, startPose, 5),
                     new DriveToPoseByPoint(this, Constants.RED_PARK, Constants.LEFT, 5)
             ).schedule();

@@ -181,15 +181,15 @@ public class Constants {
         /** ⚙ TUNE: Pinpoint Tuner measures these. xPodOffset is how far LEFT of
          *  centre the forward pod sits; yPodOffset is how far FORWARD the strafe
          *  pod sits. (Pedro 2 called these forwardPodY and strafePodX.) */
-        c.xPodOffset.set(6.75);
-        c.yPodOffset.set(-6.504940243217889);
+        c.xPodOffset.set(7.874);
+        c.yPodOffset.set(-6.496);
         c.offsetUnits.set(DistanceUnit.INCH);
         c.globalDistanceUnit.set(DistanceUnit.INCH);
 
         /** ⚙ TUNE: pushing forward must INCREASE X; pushing left must INCREASE Y.
          *  Wrong? Flip it here, not the wiring. */
         c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
     });
 
     // ============================================================
