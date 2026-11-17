@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.utils.Tunables;
  * operator owns the launcher: a stray press can't start the feed halfway
  * through LaunchDynamic's spin-up.
  */
-public class LaunchManual extends CommandBase {
+public class LaunchManual extends LaunchAbstract {
 
     private final Launcher launcher;
     private final GamepadEx player2;
@@ -34,6 +34,7 @@ public class LaunchManual extends CommandBase {
     private boolean waitingForRelease;
 
     public LaunchManual(Iapetus robot) {
+        super(robot, Double.POSITIVE_INFINITY);
         this.launcher = robot.launcher;
         this.player2 = robot.player2;
         addRequirements(launcher);

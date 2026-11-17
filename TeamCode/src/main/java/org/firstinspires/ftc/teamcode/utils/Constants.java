@@ -189,7 +189,7 @@ public class Constants {
         /** ⚙ TUNE: pushing forward must INCREASE X; pushing left must INCREASE Y.
          *  Wrong? Flip it here, not the wiring. */
         c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
     });
 
     // ============================================================
@@ -198,36 +198,27 @@ public class Constants {
 
     public static ForesightConfig foresightConfig = new ForesightConfig(
             c -> {
-                Controller primaryTranslationalForward = Controller.proportional(0.39423453370741146);
-                Controller secondaryTranslationalForward = Controller.proportional(0.1456591260641378);
-                Controller primaryTranslationalLateral = Controller.proportional(0.5610783912401233);
-                Controller secondaryTranslationalLateral = Controller.proportional(0.20730347327249463);
+                Controller primaryTranslationalForward = Controller.proportional(0.3581596282563899);
+                Controller secondaryTranslationalForward = Controller.proportional(0.13233041243921212);
+                Controller primaryTranslationalLateral = Controller.proportional(0.8827086053938497);
+                Controller secondaryTranslationalLateral = Controller.proportional(0.3261372432846942);
 
                 c.forwardTranslational.set(Controller.piecewise(secondaryTranslationalForward).put(2.5, primaryTranslationalForward));
                 c.strafeTranslational.set(Controller.piecewise(secondaryTranslationalLateral).put(2.5, primaryTranslationalLateral));
 
-                c.coast.set(Controller.proportionalFeedforward(0.01970171221008133));
-                c.brake.set(Controller.proportionalFeedforward(0.01674645537856913));
+                c.coast.set(Controller.proportionalFeedforward(0.02080770694082476));
+                c.brake.set(Controller.proportionalFeedforward(0.017686550899701045));
 
-                c.headingFeedback.set(Controller.proportional(5.894435272994427));
-                c.headingBrakeCoefficients.set(Vector2D.cartesian(0.03156469461021456, 0.01453883311023464));
+                c.headingFeedback.set(Controller.proportional(7.944905729480544));
+                c.headingBrakeCoefficients.set(Vector2D.cartesian(0.04975966760977834, 0.00918404558518437));
 
-                c.linearBrakeCoefficients.set(Matrix.diag(0.019093769817524888, 0.015785693978363536));
-                c.quadraticBrakeCoefficients.set(Matrix.diag(0.0030042483645642995, 0.003126114594015711));
+                c.linearBrakeCoefficients.set(Matrix.diag(0.010947095374738978, 0.04167839077888501));
+                c.quadraticBrakeCoefficients.set(Matrix.diag(0.004261321783045632, 0.0019479745357714087));
 
-                c.maxAchievableForwardVelocity.set(67.26114667899839);
-                c.maxAchievableStrafeVelocity.set(50.836449353006444);
-                c.naturalForwardDeceleration.set(121.43798643460069);
-                c.naturalStrafeDeceleration.set(124.59838781592711);
-
-                // ⚠ KEEP THESE WHEN YOU PASTE. AutoTune doesn't generate them, so
-                // pasting its block over this one silently deletes them (it has,
-                // twice). They decide when a path counts as "done".
-                c.parametricTConstraint.set(0.01);             // follow until 99% complete...
-                c.velocityConstraint.set(0.1);                 // ...AND slower than 0.1 in/s
-                c.translationalConstraint.set(0.5);            // ...AND within 0.5"
-                c.headingConstraint.set(Math.toRadians(1.0));  // ...AND within 1°
-                c.timeoutConstraint.set(200.0);                // can't settle? give up after 200ms
+                c.maxAchievableForwardVelocity.set(55.87964688663608);
+                c.maxAchievableStrafeVelocity.set(40.31580656621319);
+                c.naturalForwardDeceleration.set(78.88205430683563);
+                c.naturalStrafeDeceleration.set(125.34489603969237);
             }
     );
 
