@@ -182,14 +182,14 @@ public class Constants {
          *  centre the forward pod sits; yPodOffset is how far FORWARD the strafe
          *  pod sits. (Pedro 2 called these forwardPodY and strafePodX.) */
         c.xPodOffset.set(7.874);
-        c.yPodOffset.set(-6.496);
+        c.yPodOffset.set(6.496);
         c.offsetUnits.set(DistanceUnit.INCH);
         c.globalDistanceUnit.set(DistanceUnit.INCH);
 
         /** ⚙ TUNE: pushing forward must INCREASE X; pushing left must INCREASE Y.
          *  Wrong? Flip it here, not the wiring. */
         c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
     });
 
     // ============================================================
@@ -198,27 +198,27 @@ public class Constants {
 
     public static ForesightConfig foresightConfig = new ForesightConfig(
             c -> {
-                Controller primaryTranslationalForward = Controller.proportional(0.3581596282563899);
-                Controller secondaryTranslationalForward = Controller.proportional(0.13233041243921212);
-                Controller primaryTranslationalLateral = Controller.proportional(0.8827086053938497);
-                Controller secondaryTranslationalLateral = Controller.proportional(0.3261372432846942);
+                Controller primaryTranslationalForward = Controller.proportional(0.30504057557256875);
+                Controller secondaryTranslationalForward = Controller.proportional(0.11270434183976881);
+                Controller primaryTranslationalLateral = Controller.proportional(0.4804188567554112);
+                Controller secondaryTranslationalLateral = Controller.proportional(0.177501930542849);
 
                 c.forwardTranslational.set(Controller.piecewise(secondaryTranslationalForward).put(2.5, primaryTranslationalForward));
                 c.strafeTranslational.set(Controller.piecewise(secondaryTranslationalLateral).put(2.5, primaryTranslationalLateral));
 
-                c.coast.set(Controller.proportionalFeedforward(0.02080770694082476));
-                c.brake.set(Controller.proportionalFeedforward(0.017686550899701045));
+                c.coast.set(Controller.proportionalFeedforward(0.020401258408975824));
+                c.brake.set(Controller.proportionalFeedforward(0.01734106964762945));
 
-                c.headingFeedback.set(Controller.proportional(7.944905729480544));
-                c.headingBrakeCoefficients.set(Vector2D.cartesian(0.04975966760977834, 0.00918404558518437));
+                c.headingFeedback.set(Controller.proportional(5.358187632846964));
+                c.headingBrakeCoefficients.set(Vector2D.cartesian(0.049590099759691975, 0.008320282542052358));
 
-                c.linearBrakeCoefficients.set(Matrix.diag(0.010947095374738978, 0.04167839077888501));
-                c.quadraticBrakeCoefficients.set(Matrix.diag(0.004261321783045632, 0.0019479745357714087));
+                c.linearBrakeCoefficients.set(Matrix.diag(0.03425663979634154, 0.07076832684979194));
+                c.quadraticBrakeCoefficients.set(Matrix.diag(0.002954712742378578, 0.0015502133155862383));
 
-                c.maxAchievableForwardVelocity.set(55.87964688663608);
-                c.maxAchievableStrafeVelocity.set(40.31580656621319);
-                c.naturalForwardDeceleration.set(78.88205430683563);
-                c.naturalStrafeDeceleration.set(125.34489603969237);
+                c.maxAchievableForwardVelocity.set(58.18871074373199);
+                c.maxAchievableStrafeVelocity.set(43.96786510198571);
+                c.naturalForwardDeceleration.set(89.55015768431342);
+                c.naturalStrafeDeceleration.set(117.00425023169247);
             }
     );
 
@@ -323,11 +323,6 @@ public class Constants {
      */
     public static final double LAUNCH_SPEED_PER_POWER = 30;
 
-    /**
-     * ⚙ TEAM TO CONFIRM: measure both wheels. The back was 0.07 until
-     * 2026-11-14. If it really is bigger, 0.05 here runs its surface ~40%
-     * faster than the front's.
-     */
     public static final double FRONT_WHEEL_RADIUS = 0.05;
     public static final double BACK_WHEEL_RADIUS = 0.05;
 

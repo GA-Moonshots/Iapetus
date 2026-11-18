@@ -122,7 +122,7 @@ public class Launcher extends SubsystemBase {
     public void periodic() {
         // Always write the wheels, even to stop them: skip the write and they
         // keep spinning at whatever velocity they were last told.
-        double speed = mode == Mode.IDLE ? 0 : launchSpeed;
+        double speed = (mode == Mode.IDLE) ? 0 : launchSpeed;
         frontMotor.setVelocity(speed / Constants.FRONT_WHEEL_RADIUS, AngleUnit.RADIANS);
         backMotor.setVelocity(speed / Constants.BACK_WHEEL_RADIUS, AngleUnit.RADIANS);
 
