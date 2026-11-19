@@ -49,8 +49,8 @@ public class AutoMcAutty extends CommandOpMode {
         if (gamepad1.dpad_down) facingOpp = false;
 
         telemetry.addData("Alliance", isRed ? "RED" : "BLUE");
-        telemetry.addData("Position", facingOpp ? "CORNER" : "MIDDLE");
-        telemetry.addData("Controls", "X = BLUE, B = RED, DPAD UP = CORNER, DPAD DOWN = MIDDLE");
+        telemetry.addData("Position", facingOpp ? "FACING ENEMIES" : "FACING GOAL");
+        telemetry.addData("Controls", "X = BLUE, B = RED, DPAD UP = FACING ENEMIES, DPAD DOWN = FACING GOAL");
         telemetry.addData("Ready?", "Press START when this looks right");
         telemetry.update();
     }

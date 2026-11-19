@@ -56,7 +56,7 @@ public class Iapetus extends Robot {
 
     // Match configuration
     public boolean isRed;
-    public boolean isCorner;
+    public boolean facingOpp;
     public enum Mode { TELEOP, AUTONOMOUS }
     public Mode mode;
 
@@ -106,12 +106,12 @@ public class Iapetus extends Robot {
     //                  AUTONOMOUS CONSTRUCTOR
     // ============================================================
 
-    public Iapetus(LinearOpMode opMode, boolean isRed, boolean isCorner, Pose startPose) {
+    public Iapetus(LinearOpMode opMode, boolean isRed, boolean facingOpp, Pose startPose) {
         this.opMode = opMode;
         this.telemetry = opMode.telemetry;
         this.hardwareMap = opMode.hardwareMap;
         this.isRed = isRed;
-        this.isCorner = isCorner;
+        this.facingOpp = facingOpp;
         this.startPose = startPose;
 
         this.player1 = new GamepadEx(opMode.gamepad1);
@@ -243,7 +243,7 @@ public class Iapetus extends Robot {
      */
     public void setStart(boolean isRed, boolean isCorner, Pose startPose) {
         this.isRed = isRed;
-        this.isCorner = isCorner;
+        this.facingOpp = isCorner;
         this.startPose = startPose;
         drive.setPose(startPose);
     }
@@ -264,31 +264,37 @@ public class Iapetus extends Robot {
         // ⚙ TEAM TO CONFIRM: the corner routines park on their own wall, but the
         // middle ones cross the field to the OTHER alliance's park pose, by way
         // of a loop through UP/DOWN. Check that against the game manual.
-        if (isRed && isCorner) {
-            // Red Corner
+        if (isRed && facingOpp) {
+            // Red Facing Opp
             new SequentialCommandGroup(
-                    new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 5),
+                    new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 3),
                     // new LaunchDynamic(this, 5),
-                    new DriveToPose(this, startPose, 5),
-                    new DriveToPoseByPoint(this, Constants.RED_PARK, Constants.LEFT, 5)
+                    new DriveToPose(this, startPose, 3),
+                    new DriveToPoseByPoint(this, Constants.RED_PARK, Constants.LEFT, 3)
             ).schedule();
         } else if (isRed) {
-            // Red Middle
+            // Red Facing Goal
             new SequentialCommandGroup(
-
-            ).schedule();
-        } else if (isCorner) {
-            // Blue Corner
-            new SequentialCommandGroup(
-                    new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 5),
+                    new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 3),
                     // new LaunchDynamic(this, 5),
-                    new DriveToPose(this, startPose, 5),
-                    new DriveToPoseByPoint(this, Constants.BLUE_PARK, Constants.RIGHT, 5)
+                    new DriveToPoseByPoint(this, Constants.UP, Constants.CENTER, 3),
+                    new DriveToPose(this, Constants.RED_PARK, 3)
+            ).schedule();
+        } else if (facingOpp) {
+            // Blue Facing Opp
+            new SequentialCommandGroup(
+                    new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 3),
+                    // new LaunchDynamic(this, 5),
+                    new DriveToPose(this, startPose, 3),
+                    new DriveToPoseByPoint(this, Constants.BLUE_PARK, Constants.RIGHT, 3)
             ).schedule();
         } else {
-            // Blue Middle
+            // Blue Facing Goal
             new SequentialCommandGroup(
-
+                    new DriveToPose(this, Constants.BLUE_SHOOT_AUDIENCE, 3),
+                    // new LaunchDynamic(this, 5),
+                    new DriveToPoseByPoint(this, Constants.DOWN, Constants.CENTER, 3),
+                    new DriveToPose(this, Constants.RED_PARK, 3)
             ).schedule();
         }
     }
