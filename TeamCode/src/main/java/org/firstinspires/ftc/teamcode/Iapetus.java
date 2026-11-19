@@ -275,26 +275,20 @@ public class Iapetus extends Robot {
         } else if (isRed) {
             // Red Middle
             new SequentialCommandGroup(
-                    new DriveToPoseByPoint(this, Constants.RED_SHOOT_AUDIENCE, Constants.RED_MIDDLE_CURVE, 5),
-                    new LaunchDynamic(this, 5),
-                    new DriveToPoseByPoint(this, Constants.CENTER, Constants.UP, 5),
-                    new DriveToPoseByPoint(this, Constants.BLUE_PARK, Constants.DOWN, 5)
+
             ).schedule();
         } else if (isCorner) {
             // Blue Corner
             new SequentialCommandGroup(
                     new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 5),
-                    new LaunchDynamic(this, 5),
+                    // new LaunchDynamic(this, 5),
                     new DriveToPose(this, startPose, 5),
                     new DriveToPoseByPoint(this, Constants.BLUE_PARK, Constants.RIGHT, 5)
             ).schedule();
         } else {
             // Blue Middle
             new SequentialCommandGroup(
-                    new DriveToPoseByPoint(this, Constants.BLUE_SHOOT_SCORING, Constants.BLUE_MIDDLE_CURVE, 5),
-                    new LaunchDynamic(this, 5),
-                    new DriveToPoseByPoint(this, Constants.CENTER, Constants.DOWN, 5),
-                    new DriveToPoseByPoint(this, Constants.RED_PARK, Constants.UP, 5)
+
             ).schedule();
         }
     }

@@ -38,7 +38,11 @@ public class Launcher extends SubsystemBase {
 
     private Mode mode;
     private boolean feeding;
+    /**
+     * Speed of the wheels, in METERS/SEC.
+     */
     private double launchSpeed;
+    private double rotationSpeed;
 
     public enum Mode { IDLE, MANUAL, AUTO }
 
@@ -77,7 +81,7 @@ public class Launcher extends SubsystemBase {
             robot.sensors.addTelemetry("Illegal launch power", "%.2f", launchPower);
             return;
         }
-        this.launchSpeed = launchPower * Constants.LAUNCH_SPEED_PER_POWER;
+        this.launchSpeed = powerToLaunchSpeed(launchPower);
     }
 
     /** Auto: wheel surface speed, m/s. Clamped to 0..maxLaunchSpeed(). */
@@ -90,9 +94,21 @@ public class Launcher extends SubsystemBase {
         return launchSpeed;
     }
 
-    /** The same ceiling teleop's trigger has, so auto can't spin faster than a driver can. */
+    /**
+     * Calculate the launch speed (tangential speed) given a certain maximum
+     * launch power, clamped between 0 and Tunables.LAUNCHER_MAX_POWER.
+     * The bottleneck is the wheel with the SMALLER radius: it requires more
+     * angular speed, and thus power, to hit the same tangential one.
+     */
+    public static double powerToLaunchSpeed(double power) {
+        power = Math.max(0, Math.min(power, Tunables.LAUNCHER_MAX_POWER));
+        return power * Constants.LAUNCH_SPEED_PER_POWER *
+                Math.min(Constants.FRONT_WHEEL_RADIUS, Constants.BACK_WHEEL_RADIUS);
+    }
+
+
     public static double maxLaunchSpeed() {
-        return Tunables.LAUNCHER_MAX_POWER * Constants.LAUNCH_SPEED_PER_POWER;
+        return powerToLaunchSpeed(Tunables.LAUNCHER_MAX_POWER);
     }
 
     public void setMode(Mode mode) {
@@ -120,14 +136,15 @@ public class Launcher extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Always write the wheels, even to stop them: skip the write and they
-        // keep spinning at whatever velocity they were last told.
+        // Constantly set the wheels' velocities, even to stop them: skip the write and they
+        // keep spinning at whatever velocity they were last told. launchSpeed is in METERS/SEC,
+        // and is converted to RADIANS/SEC and fed to the setVelocity() method.
         double speed = (mode == Mode.IDLE) ? 0 : launchSpeed;
         frontMotor.setVelocity(speed / Constants.FRONT_WHEEL_RADIUS, AngleUnit.RADIANS);
         backMotor.setVelocity(speed / Constants.BACK_WHEEL_RADIUS, AngleUnit.RADIANS);
 
         // Same for the feed servos — continuous servos keep turning at the
-        // last power they were given, so "stop" has to be said out loud.
+        // last power they were given, so the "stop" command must be explicitly given.
         double feedPower = feeding ? 1 : 0;
         feedUpperLeft.setPower(feedPower);
         feedLowerLeft.setPower(feedPower);

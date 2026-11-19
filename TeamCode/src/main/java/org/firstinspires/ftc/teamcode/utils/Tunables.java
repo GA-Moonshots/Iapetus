@@ -65,7 +65,7 @@ public class Tunables {
     // ---- Launcher / Intake ----
 
     /** Maximum allowed launcher power. */
-    public static double LAUNCHER_MAX_POWER = 0.65;
+    public static double LAUNCHER_MAX_POWER = 0.80;
 
     /** Maximum allowed intake power. */
     public static double INTAKE_MAX_POWER = 0.8;
@@ -80,7 +80,7 @@ public class Tunables {
     public static int LAUNCHER_FEED_SERVO_DURATION_MS = 500;
 
     /** "At speed" = each wheel within this fraction of its target (0.10 = 10%). */
-    public static double LAUNCHER_SPEED_TOLERANCE = 0.10;
+    public static double LAUNCHER_SPEED_TOLERANCE = 0.07;
 
     /**
      * Auto shot speed, m/s. Auto shoots from the same spots every time, so one

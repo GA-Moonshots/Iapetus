@@ -281,10 +281,10 @@ public class Constants {
     //  or to avoid.
     // ============================================================
 
-    public static final Pose RED_START_POSE_CORNER = new Pose(8.25, 24, Math.toRadians(0));
-    public static final Pose RED_START_POSE_MIDDLE = new Pose(8.25, 72, Math.toRadians(0));
-    public static final Pose BLUE_START_POSE_CORNER = new Pose(135.75, 120, Math.toRadians(180));
-    public static final Pose BLUE_START_POSE_MIDDLE = new Pose(135.75, 72, Math.toRadians(180));
+    public static final Pose RED_START_FACING_OPP = new Pose(8.5, 24, Math.toRadians(0));
+    public static final Pose RED_START_FACING_GOAL = new Pose(48, 8.5, Math.toRadians(90));
+    public static final Pose BLUE_START_FACING_OPP = new Pose(135.5, 120, Math.toRadians(180));
+    public static final Pose BLUE_START_FACING_GOAL = new Pose(96, 135.5, Math.toRadians(270));
     public static final Pose RED_PARK = new Pose(8.25, 108, Math.toRadians(0));
     public static final Pose BLUE_PARK = new Pose(135.75, 36, Math.toRadians(180));
     public static final Pose CENTER = new Pose(72, 72);
@@ -295,10 +295,8 @@ public class Constants {
 
     public static final Pose RED_SHOOT_SCORING = new Pose(60, 120, Math.toRadians(270));
     public static final Pose RED_SHOOT_AUDIENCE = new Pose(60, 24, Math.toRadians(90));
-    public static final Pose RED_MIDDLE_CURVE = new Pose(34, 41);
     public static final Pose BLUE_SHOOT_AUDIENCE = new Pose(84, 24, Math.toRadians(90));
     public static final Pose BLUE_SHOOT_SCORING = new Pose(84, 120, Math.toRadians(270));
-    public static final Pose BLUE_MIDDLE_CURVE = new Pose(110, 103);
 
 
     // ============================================================
@@ -318,7 +316,7 @@ public class Constants {
     public static final double LAUNCHER_ELEVATION = 0.27;
 
     /**
-     * Teleop trigger power → wheel surface speed: m/s per unit of power, the
+     * Teleop trigger power → wheel surface speed: rad/s per unit of power, the
      * unit Launcher uses. Measured: speed = 30.19 * power - 1.64.
      */
     public static final double LAUNCH_SPEED_PER_POWER = 30;

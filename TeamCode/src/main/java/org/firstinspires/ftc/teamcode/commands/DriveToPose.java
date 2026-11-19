@@ -35,7 +35,7 @@ public class DriveToPose extends DriveAbstract {
         arrived = false;
 
         // A path with no heading rule throws the moment it's followed. constant() is the rule.
-        follower.follow(Paths.line(drive.getPose(), targetPose).constant(targetPose));
+        follower.follow(Paths.line(drive.getPose(), targetPose).linear(drive.getPose(), targetPose));
         drive.setTargetPose(targetPose);   // so the dashboard shows intent vs. reality
 
         robot.sensors.addTelemetry("DriveToPose", "→ (%.1f, %.1f)",

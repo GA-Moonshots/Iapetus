@@ -36,7 +36,7 @@ public class PersistentPoseManager {
 
     /** Best guess with no handoff: that alliance's corner start, facing away from its drivers. */
     public static Pose defaultPose(boolean isRed) {
-        return isRed ? Constants.RED_START_POSE_CORNER : Constants.BLUE_START_POSE_CORNER;
+        return isRed ? Constants.RED_START_FACING_OPP : Constants.BLUE_START_FACING_OPP;
     }
 
     /** What auto left behind, already checked for staleness. */

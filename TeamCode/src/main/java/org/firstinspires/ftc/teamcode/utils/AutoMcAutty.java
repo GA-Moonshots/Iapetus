@@ -28,14 +28,14 @@ public class AutoMcAutty extends CommandOpMode {
 
     // Chosen during init, before the match clock starts.
     private boolean isRed = true;
-    private boolean isCorner = true;
+    private boolean facingOpp = true;
 
     @Override
     public void initialize() {
         // Build now, not after START: a missing device or bad config fails
         // here, where you can see it, and the camera gets time to warm up.
         // The real alliance and start pose are applied at START.
-        robot = new Iapetus(this, isRed, isCorner, startingPose());
+        robot = new Iapetus(this, isRed, facingOpp, startingPose());
     }
 
     /** Runs repeatedly between INIT and START. Where the drive team answers. */
@@ -45,11 +45,11 @@ public class AutoMcAutty extends CommandOpMode {
         // flips on every loop the button is held and lands wherever it lands.
         if (gamepad1.x) isRed = false;
         if (gamepad1.b) isRed = true;
-        if (gamepad1.dpad_up)   isCorner = true;
-        if (gamepad1.dpad_down) isCorner = false;
+        if (gamepad1.dpad_up)   facingOpp = true;
+        if (gamepad1.dpad_down) facingOpp = false;
 
         telemetry.addData("Alliance", isRed ? "RED" : "BLUE");
-        telemetry.addData("Position", isCorner ? "CORNER" : "MIDDLE");
+        telemetry.addData("Position", facingOpp ? "CORNER" : "MIDDLE");
         telemetry.addData("Controls", "X = BLUE, B = RED, DPAD UP = CORNER, DPAD DOWN = MIDDLE");
         telemetry.addData("Ready?", "Press START when this looks right");
         telemetry.update();
@@ -59,7 +59,7 @@ public class AutoMcAutty extends CommandOpMode {
     public void run() {
         // First loop after START: the choices above are final now.
         if (!started) {
-            robot.setStart(isRed, isCorner, startingPose());
+            robot.setStart(isRed, facingOpp, startingPose());
             robot.initAuto();
             started = true;
         }
@@ -85,10 +85,10 @@ public class AutoMcAutty extends CommandOpMode {
      */
     private Pose startingPose() {
         if (isRed) {
-            if (isCorner) return Constants.RED_START_POSE_CORNER;
-            return Constants.RED_START_POSE_MIDDLE;
+            if (facingOpp) return Constants.RED_START_FACING_OPP;
+            return Constants.RED_START_FACING_GOAL;
         }
-        if (isCorner) return Constants.BLUE_START_POSE_CORNER;
-        return Constants.BLUE_START_POSE_MIDDLE;
+        if (facingOpp) return Constants.BLUE_START_FACING_OPP;
+        return Constants.BLUE_START_FACING_GOAL;
     }
 }

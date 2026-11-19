@@ -39,7 +39,7 @@ public class DriveToPoseByPoint extends DriveAbstract {
 
         // start -> via -> target. Read the start now, not in the constructor:
         // where we are depends on whatever command ran before this one.
-        follower.follow(Paths.through(drive.getPose(), viaPose, targetPose).constant(targetPose));
+        follower.follow(Paths.through(drive.getPose(), viaPose, targetPose).tangent());
         drive.setTargetPose(targetPose);   // so the dashboard shows intent vs. reality
 
         robot.sensors.addTelemetry("DriveToPoseByPoint", "→ (%.1f, %.1f) via (%.1f, %.1f)",
