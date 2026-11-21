@@ -29,6 +29,7 @@ public class AutoMcAutty extends CommandOpMode {
     // Chosen during init, before the match clock starts.
     private boolean isRed = true;
     private boolean facingOpp = true;
+    private boolean shootFirst = true;   // false = park only, e.g. when a partner takes our shot
 
     @Override
     public void initialize() {
@@ -47,10 +48,14 @@ public class AutoMcAutty extends CommandOpMode {
         if (gamepad1.b) isRed = true;
         if (gamepad1.dpad_up)   facingOpp = true;
         if (gamepad1.dpad_down) facingOpp = false;
+        if (gamepad1.y) shootFirst = true;
+        if (gamepad1.a) shootFirst = false;
 
         telemetry.addData("Alliance", isRed ? "RED" : "BLUE");
         telemetry.addData("Position", facingOpp ? "FACING ENEMIES" : "FACING GOAL");
+        telemetry.addData("Plan", shootFirst ? "SHOOT, then PARK" : "PARK ONLY (no shooting)");
         telemetry.addData("Controls", "X = BLUE, B = RED, DPAD UP = FACING ENEMIES, DPAD DOWN = FACING GOAL");
+        telemetry.addData("Controls", "Y = SHOOT + PARK, A = PARK ONLY");
         telemetry.addData("Ready?", "Press START when this looks right");
         telemetry.update();
     }
@@ -59,7 +64,7 @@ public class AutoMcAutty extends CommandOpMode {
     public void run() {
         // First loop after START: the choices above are final now.
         if (!started) {
-            robot.setStart(isRed, facingOpp, startingPose());
+            robot.setStart(isRed, facingOpp, shootFirst, startingPose());
             robot.initAuto();
             started = true;
         }

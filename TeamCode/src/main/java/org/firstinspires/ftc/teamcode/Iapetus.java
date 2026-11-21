@@ -4,6 +4,7 @@ import com.pedropathing.math.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.Robot;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
@@ -57,6 +58,8 @@ public class Iapetus extends Robot {
     // Match configuration
     public boolean isRed;
     public boolean facingOpp;
+    /** Auto only: false = skip the shot and drive straight to park. */
+    public boolean shootFirst = true;
     public enum Mode { TELEOP, AUTONOMOUS }
     public Mode mode;
 
@@ -241,15 +244,20 @@ public class Iapetus extends Robot {
      * hardware problems show up during INIT, not after the match starts.
      * Call once at START with the final choice.
      */
-    public void setStart(boolean isRed, boolean isCorner, Pose startPose) {
+    public void setStart(boolean isRed, boolean facingOpp, boolean shootFirst, Pose startPose) {
         this.isRed = isRed;
-        this.facingOpp = isCorner;
+        this.facingOpp = facingOpp;
+        this.shootFirst = shootFirst;
         this.startPose = startPose;
         drive.setPose(startPose);
     }
 
     /**
      * Schedules the routine for the chosen alliance + start position.
+     *
+     * Every routine is two legs: SHOOT, then PARK. "Park only" leaves the
+     * first leg off, so the park path is the same code either way. Write each
+     * shoot leg so it ends somewhere its park leg can start from.
      *
      * Sequential = one after another. Parallel = all at once. Nest them freely;
      * that's how a whole autonomous becomes one schedulable object.
@@ -258,44 +266,44 @@ public class Iapetus extends Robot {
         this.mode = Mode.AUTONOMOUS;
         drive.follower.update();  // know where we are before we move
 
-        // Exactly ONE routine gets scheduled. Every routine requires the drive,
-        // so scheduling two means the second silently cancels the first.
-        //
-        // ⚙ TEAM TO CONFIRM: the corner routines park on their own wall, but the
-        // middle ones cross the field to the OTHER alliance's park pose, by way
-        // of a loop through UP/DOWN. Check that against the game manual.
+        // BUILD COMMANDS HERE: WE RUN THEM AFTER
+        Command shoot, park;
         if (isRed && facingOpp) {
-            // Red Facing Opp
-            new SequentialCommandGroup(
+            // Red Facing Opp — shoot, come home, then park
+            shoot = new SequentialCommandGroup(
                     new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 3),
                     new LaunchDynamic(this, 5),
-                    new DriveToPose(this, startPose, 3),
-                    new DriveToPoseByPoint(this, Constants.RED_PARK_CLOSE, Constants.LEFT, 3)
-            ).schedule();
+                    new DriveToPose(this, startPose, 3));
+            park = new DriveToPoseByPoint(this, Constants.RED_PARK_CLOSE, Constants.LEFT, 3);
         } else if (isRed) {
             // Red Facing Goal
-            new SequentialCommandGroup(
+            shoot = new SequentialCommandGroup(
                     new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 3),
-                    new LaunchDynamic(this, 5),
+                    new LaunchDynamic(this, 5));
+            park = new SequentialCommandGroup(
                     new DriveToPoseByPoint(this, Constants.UP, Constants.CENTER, 3),
-                    new DriveToPose(this, Constants.RED_PARK_FAR, 3)
-            ).schedule();
+                    new DriveToPose(this, Constants.RED_PARK_FAR, 3));
         } else if (facingOpp) {
-            // Blue Facing Opp
-            new SequentialCommandGroup(
-                    // new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 3),
-                    // new LaunchDynamic(this, 5),
-                    // new DriveToPose(this, startPose, 3),
-                    new DriveToPoseByPoint(this, Constants.BLUE_PARK_CLOSE, Constants.RIGHT, 3)
-            ).schedule();
-        } else {
-            // Blue Facing Goal
-            new SequentialCommandGroup(
+            // Blue Facing Opp — shoot, come home, then park
+            shoot = new SequentialCommandGroup(
                     new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 3),
                     new LaunchDynamic(this, 5),
+                    new DriveToPose(this, startPose, 3));
+            park = new DriveToPoseByPoint(this, Constants.BLUE_PARK_CLOSE, Constants.RIGHT, 3);
+        } else {
+            // Blue Facing Goal
+            shoot = new SequentialCommandGroup(
+                    new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 3),
+                    new LaunchDynamic(this, 5));
+            park = new SequentialCommandGroup(
                     new DriveToPoseByPoint(this, Constants.DOWN, Constants.CENTER, 3),
-                    new DriveToPose(this, Constants.BLUE_PARK_FAR, 3)
-            ).schedule();
+                    new DriveToPose(this, Constants.BLUE_PARK_FAR, 3));
         }
+
+        // ONE routine gets scheduled. This is DRY and stable
+        SequentialCommandGroup routine = new SequentialCommandGroup();
+        if (shootFirst) routine.addCommands(shoot);
+        routine.addCommands(park);
+        routine.schedule();
     }
 }

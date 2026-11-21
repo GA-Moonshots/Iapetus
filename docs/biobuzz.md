@@ -83,6 +83,8 @@ surface speed. Neither reads a gamepad; the operator's controls are their defaul
 Find the auto-shot speed with the **Launcher Tuner** OpMode ([tuning.md](tuning.md)). Anything that
 aims at a Hive reads a `TagSighting` in its command's `execute()` every loop.
 
+**Auto:** every routine is a shoot leg then a park leg (`Iapetus.initAuto()`). During INIT on
+gamepad 1, Y = shoot + park, A = park only.
+
 **Still for the team to confirm:** the back flywheel's radius (`Constants.BACK_WHEEL_RADIUS`, 0.07
-until 2026-11-14, now 0.05), and the middle autos' parking spots, which cross to the other
-alliance's wall (`Iapetus.initAuto()`).
+until 2026-11-14, now 0.05).
