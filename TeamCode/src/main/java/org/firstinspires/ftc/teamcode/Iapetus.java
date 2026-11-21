@@ -268,33 +268,33 @@ public class Iapetus extends Robot {
             // Red Facing Opp
             new SequentialCommandGroup(
                     new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 3),
-                    // new LaunchDynamic(this, 5),
+                    new LaunchDynamic(this, 5),
                     new DriveToPose(this, startPose, 3),
-                    new DriveToPoseByPoint(this, Constants.RED_PARK, Constants.LEFT, 3)
+                    new DriveToPoseByPoint(this, Constants.RED_PARK_CLOSE, Constants.LEFT, 3)
             ).schedule();
         } else if (isRed) {
             // Red Facing Goal
             new SequentialCommandGroup(
                     new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 3),
-                    // new LaunchDynamic(this, 5),
+                    new LaunchDynamic(this, 5),
                     new DriveToPoseByPoint(this, Constants.UP, Constants.CENTER, 3),
-                    new DriveToPose(this, Constants.RED_PARK, 3)
+                    new DriveToPose(this, Constants.RED_PARK_FAR, 3)
             ).schedule();
         } else if (facingOpp) {
             // Blue Facing Opp
             new SequentialCommandGroup(
-                    new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 3),
+                    // new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 3),
                     // new LaunchDynamic(this, 5),
-                    new DriveToPose(this, startPose, 3),
-                    new DriveToPoseByPoint(this, Constants.BLUE_PARK, Constants.RIGHT, 3)
+                    // new DriveToPose(this, startPose, 3),
+                    new DriveToPoseByPoint(this, Constants.BLUE_PARK_CLOSE, Constants.RIGHT, 3)
             ).schedule();
         } else {
             // Blue Facing Goal
             new SequentialCommandGroup(
-                    new DriveToPose(this, Constants.BLUE_SHOOT_AUDIENCE, 3),
-                    // new LaunchDynamic(this, 5),
+                    new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 3),
+                    new LaunchDynamic(this, 5),
                     new DriveToPoseByPoint(this, Constants.DOWN, Constants.CENTER, 3),
-                    new DriveToPose(this, Constants.RED_PARK, 3)
+                    new DriveToPose(this, Constants.BLUE_PARK_FAR, 3)
             ).schedule();
         }
     }

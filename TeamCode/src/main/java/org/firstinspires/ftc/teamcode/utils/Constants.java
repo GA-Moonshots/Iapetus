@@ -285,8 +285,10 @@ public class Constants {
     public static final Pose RED_START_FACING_GOAL = new Pose(48, 8.5, Math.toRadians(90));
     public static final Pose BLUE_START_FACING_OPP = new Pose(135.5, 120, Math.toRadians(180));
     public static final Pose BLUE_START_FACING_GOAL = new Pose(96, 135.5, Math.toRadians(270));
-    public static final Pose RED_PARK = new Pose(8.25, 108, Math.toRadians(0));
-    public static final Pose BLUE_PARK = new Pose(135.75, 36, Math.toRadians(180));
+    public static final Pose RED_PARK_CLOSE = new Pose(8.5, 96, Math.toRadians(0));
+    public static final Pose RED_PARK_FAR = new Pose(8.5, 120, Math.toRadians(0));
+    public static final Pose BLUE_PARK_CLOSE = new Pose(135.5, 48, Math.toRadians(180));
+    public static final Pose BLUE_PARK_FAR = new Pose(135.5, 24, Math.toRadians(180));
     public static final Pose CENTER = new Pose(72, 72);
     public static final Pose UP = new Pose(72, 114);
     public static final Pose LEFT = new Pose(30, 72);
