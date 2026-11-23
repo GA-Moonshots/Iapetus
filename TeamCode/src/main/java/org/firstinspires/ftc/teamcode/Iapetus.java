@@ -281,7 +281,7 @@ public class Iapetus extends Robot {
                     new DriveToPose(this, Constants.RED_SHOOT_AUDIENCE, 3),
                     new LaunchDynamic(this, 5));
             park = new SequentialCommandGroup(
-                    new DriveToPoseByPoint(this, Constants.UP, Constants.CENTER, 3),
+                    new DriveToPose(this, Constants.RED_ALLEYWAY_SCORING, 3),
                     new DriveToPose(this, Constants.RED_PARK_FAR, 3));
         } else if (facingOpp) {
             // Blue Facing Opp — shoot, come home, then park
@@ -296,7 +296,7 @@ public class Iapetus extends Robot {
                     new DriveToPose(this, Constants.BLUE_SHOOT_SCORING, 3),
                     new LaunchDynamic(this, 5));
             park = new SequentialCommandGroup(
-                    new DriveToPoseByPoint(this, Constants.DOWN, Constants.CENTER, 3),
+                    new DriveToPose(this, Constants.BLUE_ALLEYWAY_AUDIENCE, 3),
                     new DriveToPose(this, Constants.BLUE_PARK_FAR, 3));
         }
 

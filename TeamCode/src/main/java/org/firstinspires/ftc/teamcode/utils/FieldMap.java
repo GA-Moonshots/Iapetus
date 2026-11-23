@@ -158,7 +158,7 @@ public class FieldMap {
         Position p = targetRobotSpace.getPosition();
         // The SDK's placeholder when the camera sent nothing: exactly zero.
         if (p.x == 0 && p.y == 0 && p.z == 0) return null;
-        return new double[] { p.unit.toInches(p.x), -p.unit.toInches(p.y), p.unit.toInches(p.z) };
+        return new double[] { p.unit.toInches(p.z), -p.unit.toInches(p.x), -p.unit.toInches(p.y) };
     }
 
     /** A point relative to the robot → the field, given where the robot is. */

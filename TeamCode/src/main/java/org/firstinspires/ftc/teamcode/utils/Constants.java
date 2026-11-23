@@ -281,19 +281,30 @@ public class Constants {
     //  or to avoid.
     // ============================================================
 
-    public static final Pose RED_START_FACING_OPP = new Pose(8.5, 24, Math.toRadians(0));
-    public static final Pose RED_START_FACING_GOAL = new Pose(48, 8.5, Math.toRadians(90));
-    public static final Pose BLUE_START_FACING_OPP = new Pose(135.5, 120, Math.toRadians(180));
-    public static final Pose BLUE_START_FACING_GOAL = new Pose(96, 135.5, Math.toRadians(270));
-    public static final Pose RED_PARK_CLOSE = new Pose(8.5, 96, Math.toRadians(0));
-    public static final Pose RED_PARK_FAR = new Pose(8.5, 120, Math.toRadians(0));
-    public static final Pose BLUE_PARK_CLOSE = new Pose(135.5, 48, Math.toRadians(180));
-    public static final Pose BLUE_PARK_FAR = new Pose(135.5, 24, Math.toRadians(180));
+    public static final double ROBOT_HALF_LENGTH = 8.5;
+
+    public static final Pose RED_START_FACING_OPP = new Pose(ROBOT_HALF_LENGTH, 24, Math.toRadians(0));
+    public static final Pose RED_START_FACING_GOAL = new Pose(48, ROBOT_HALF_LENGTH, Math.toRadians(90));
+    public static final Pose BLUE_START_FACING_OPP = new Pose(144 - ROBOT_HALF_LENGTH, 120, Math.toRadians(180));
+    public static final Pose BLUE_START_FACING_GOAL = new Pose(96, 144 - ROBOT_HALF_LENGTH, Math.toRadians(270));
+
+    public static final Pose RED_PARK_CLOSE = new Pose(ROBOT_HALF_LENGTH, 96, Math.toRadians(0));
+    public static final Pose RED_PARK_FAR = new Pose(ROBOT_HALF_LENGTH, 120, Math.toRadians(0));
+    public static final Pose BLUE_PARK_CLOSE = new Pose(144 - ROBOT_HALF_LENGTH, 48, Math.toRadians(180));
+    public static final Pose BLUE_PARK_FAR = new Pose(144 - ROBOT_HALF_LENGTH, 24, Math.toRadians(180));
+
     public static final Pose CENTER = new Pose(72, 72);
     public static final Pose UP = new Pose(72, 114);
     public static final Pose LEFT = new Pose(30, 72);
     public static final Pose DOWN = new Pose(72, 30);
     public static final Pose RIGHT = new Pose(114, 72);
+
+    public static final Pose RED_ALLEYWAY = new Pose(60, 72);
+    public static final Pose BLUE_ALLEYWAY = new Pose(84, 72);
+    public static final Pose RED_ALLEYWAY_AUDIENCE = new Pose(60, 48 - ROBOT_HALF_LENGTH);
+    public static final Pose RED_ALLEYWAY_SCORING = new Pose(60, 96 + ROBOT_HALF_LENGTH);
+    public static final Pose BLUE_ALLEYWAY_AUDIENCE = new Pose(84, 48 - ROBOT_HALF_LENGTH);
+    public static final Pose BLUE_ALLEYWAY_SCORING = new Pose(84, 96 + ROBOT_HALF_LENGTH);
 
     public static final Pose RED_SHOOT_SCORING = new Pose(60, 120, Math.toRadians(270));
     public static final Pose RED_SHOOT_AUDIENCE = new Pose(60, 24, Math.toRadians(90));

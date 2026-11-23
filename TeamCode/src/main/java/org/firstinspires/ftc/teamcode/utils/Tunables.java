@@ -87,7 +87,7 @@ public class Tunables {
      * tuned number is the reliable choice. Starting estimate: ~80% of teleop's
      * full trigger (0.65 × 30 = 19.5 m/s). Tune with the Launcher Tuner OpMode.
      */
-    public static double AUTO_LAUNCH_SPEED = 15.5;
+    public static double AUTO_LAUNCH_SPEED = 10;
 
     /**
      * Aim auto shots with camera range + physics instead, when the Hive is in
