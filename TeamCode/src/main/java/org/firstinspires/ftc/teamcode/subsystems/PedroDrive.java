@@ -272,8 +272,12 @@ public class PedroDrive extends SubsystemBase {
      */
     public boolean isFacing(double radians, double degrees) {
         double errorDeg = Math.toDegrees(Angle.error(getPose().heading(), radians));
-        double spinDegPerSec = Math.toDegrees(follower.velocity().omega);
-        return Math.abs(errorDeg) < degrees && Math.abs(spinDegPerSec) < degrees * 10;
+        return Math.abs(errorDeg) < degrees && Math.abs(turnRateDegPerSec()) < degrees * 10;
+    }
+
+    /** How fast we're spinning, degrees per second. + = counter-clockwise (left). */
+    public double turnRateDegPerSec() {
+        return Math.toDegrees(follower.velocity().omega);
     }
 
     /**

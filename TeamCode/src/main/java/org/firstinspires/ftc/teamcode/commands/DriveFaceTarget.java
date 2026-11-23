@@ -21,6 +21,11 @@ import org.firstinspires.ftc.teamcode.utils.Tunables;
  * as we turn, so chasing it would mean re-aiming at our own motion. The field
  * position holds still. We only re-aim when the target itself has moved.
  *
+ * And only while we're nearly still. Every camera frame is a little late, so
+ * mid-spin each one puts the target slightly ahead of us. Re-aim at that and
+ * we spin faster, which puts it further ahead: the robot chases until the
+ * target leaves the frame. Aim on the press, re-aim once we've slowed down.
+ *
  * Nothing in view when it starts? It ends immediately and says so. Guessing
  * is how a robot spins in circles for five seconds.
  */
@@ -28,6 +33,9 @@ public class DriveFaceTarget extends DriveAbstract {
 
     /** Don't restart the turn for wobble smaller than this. Restarting resets the controller. */
     private static final double REAIM_DEGREES = 3.0;
+
+    /** Spinning faster than this, frames are too stale to trust. Keep the current aim. */
+    private static final double STILL_ENOUGH_DEG_PER_SEC = 30.0;
 
     private final boolean ourHiveOnly;
     private String lockedOn = null;
@@ -64,12 +72,14 @@ public class DriveFaceTarget extends DriveAbstract {
         TagSighting target = robot.sensors.target(lockedOn);
         if (target == null) return;   // briefly out of view: keep the last aim
 
+        robot.sensors.addTelemetry("FaceTarget", "%s, %.0f\" away", lockedOn, target.range());
+        if (Math.abs(drive.turnRateDegPerSec()) > STILL_ENOUGH_DEG_PER_SEC) return;
+
         double fresh = target.headingFrom(drive.getPose());
         if (Math.abs(Math.toDegrees(Angle.error(headingRad, fresh))) > REAIM_DEGREES) {
             headingRad = fresh;
             drive.turnTo(headingRad);
         }
-        robot.sensors.addTelemetry("FaceTarget", "%s, %.0f\" away", lockedOn, target.range());
     }
 
     @Override

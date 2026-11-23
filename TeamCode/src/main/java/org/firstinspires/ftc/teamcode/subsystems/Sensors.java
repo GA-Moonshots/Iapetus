@@ -314,9 +314,12 @@ public class Sensors extends SubsystemBase {
             return;
         }
 
-        // The frame is staleMs old, so place its tags from where the robot was
-        // THEN. A turn in those few ms would otherwise swing every tag sideways.
-        long seenAt = System.nanoTime() - staleMs * 1_000_000L;
+        // Place the frame's tags from where the robot was when the picture was
+        // TAKEN. Staleness only counts since the Hub received it; the camera's
+        // own capture + processing time comes first. Skip that and a turning
+        // robot places every tag ahead of itself, and DriveFaceTarget chases.
+        long latencyMs = staleMs + Math.round(result.getCaptureLatency() + result.getTargetingLatency());
+        long seenAt = System.nanoTime() - latencyMs * 1_000_000L;
         Pose here = robot.drive.getPose();
         Pose then = robot.drive.poseAt(seenAt);
         int placed = 0;
